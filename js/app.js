@@ -184,6 +184,14 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  // The floating buttons would otherwise cover the footer's QR code.
+  var floating = document.querySelector('.floating');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      floating.classList.toggle('is-away', entries[0].isIntersecting);
+    }).observe(document.querySelector('.footer__qr'));
+  }
+
   var reveals = all('.reveal');
   if ('IntersectionObserver' in window && !reduceMotion) {
     document.documentElement.classList.add('anim');

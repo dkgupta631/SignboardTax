@@ -164,6 +164,12 @@
         <h2 class="title" data-i18n="calcTitle">เริ่มคำนวณภาษีป้าย</h2>
         <p class="calc__sub" data-i18n="calcSub">กรอกข้อมูลรายละเอียดของป้าย เพื่อคำนวณภาษีป้ายที่ต้องชำระต่อปี</p>
 
+        <div class="scan-entry">
+          <button type="button" class="btn btn--scan" id="scanBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scanBtn">สแกนขนาดป้าย</span></button>
+          <p class="scan-entry__or" data-i18n="scanOr">หรือกรอกความกว้างและความยาวด้วยตนเองด้านล่าง</p>
+          <p class="calc__error" id="scanError" role="alert" hidden></p>
+        </div>
+
         <div class="calc__grid">
           <div class="field">
             <span class="field__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-width"/></svg></span>
@@ -288,7 +294,7 @@
 
     <section class="app-only quick container" data-screen="contact">
       <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="quickCall">โทร</span></a>
-      <a href="https://line.me/R/ti/p/@959xjnkn" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="28" height="28"><span>LINE</span></a>
+      <a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="28" height="28"><span>LINE</span></a>
       <a href="mailto:Deccodrug@gmail.com"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="quickMail">อีเมล</span></a>
     </section>
 
@@ -299,11 +305,11 @@
           <h2 data-i18n="consultTitle">ปรึกษาเราได้เลย!</h2>
           <p data-i18n="consultA">ทีมผู้เชี่ยวชาญพร้อมให้คำแนะนำ</p>
           <p data-i18n="consultB">ฟรี! ไม่มีค่าใช้จ่าย</p>
-          <a class="btn btn--line" href="https://line.me/R/ti/p/@959xjnkn?oat_content=url&amp;ts=08251838" target="_blank" rel="noopener">
+          <a class="btn btn--line" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener">
             <img src="assets/img/social/line.png" alt="" width="26" height="26">
             <span data-i18n="addLine">เพิ่มเพื่อนในไลน์</span>
           </a>
-          <strong class="consult-card__id">@deccodrug</strong>
+          <strong class="consult-card__id">@sbangpa</strong>
         </div>
         <img class="consult-card__qr" src="assets/img/line-qr.png" alt="LINE QR code" width="540" height="540" loading="lazy">
       </div>
@@ -353,8 +359,8 @@
       <div>
         <h3 data-i18n="fContact">ติดต่อสอบถาม</h3>
         <ul>
-          <li><a href="https://line.me/R/ti/p/@959xjnkn" target="_blank" rel="noopener" data-i18n="fk1">แจ้งปัญหา</a></li>
-          <li><a href="https://line.me/R/ti/p/@959xjnkn" target="_blank" rel="noopener" data-i18n="fk2">ปรึกษาปัญหา</a></li>
+          <li><a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener" data-i18n="fk1">แจ้งปัญหา</a></li>
+          <li><a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener" data-i18n="fk2">ปรึกษาปัญหา</a></li>
           <li><a href="https://www.deccodrug.com/estimate" data-i18n="fk3">ประเมินราคาเบื้องต้น</a></li>
           <li data-i18n="fk4">ขั้นตอนการทำงาน</li>
           <li>Decco Drug (DCD) AI Information</li>
@@ -363,7 +369,7 @@
           <div class="footer__links">
             <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>089-2012641</a>
             <a href="tel:0638960577"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>063-8960577</a>
-            <a href="https://lin.ee/qwuLlw7" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="18" height="18">@deccodesign</a>
+            <a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="18" height="18">@sbangpa</a>
             <a href="https://www.facebook.com/deccodrug" target="_blank" rel="noopener"><img src="assets/img/social/facebook.png" alt="" width="18" height="18">Deccodrug</a>
           </div>
           <img class="footer__qr" src="assets/img/line-qr.png" alt="LINE QR code" width="85" height="85" loading="lazy">
@@ -383,7 +389,7 @@
 
   <div class="floating">
     <a class="floating__btn floating__btn--phone" href="tel:+66892012641" aria-label="Phone"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></a>
-    <a class="floating__btn floating__btn--line" href="https://line.me/R/ti/p/@959xjnkn?oat_content=url&amp;ts=01302122" target="_blank" rel="noopener" aria-label="LINE"><img src="assets/img/social/line.png" alt="" width="36" height="36"></a>
+    <a class="floating__btn floating__btn--line" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener" aria-label="LINE"><img src="assets/img/social/line.png" alt="" width="36" height="36"></a>
   </div>
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -403,6 +409,7 @@
       <symbol id="i-font" viewBox="0 0 24 24"><path fill="currentColor" d="M2 5h12v3.4h-4V19H6.2V8.4H2zm13 5h7v2.8h-2V19h-3v-6.2h-2z"/></symbol>
       <symbol id="i-reset" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.6-5.9L4 8.5M4 4v4.5h4.5"/></g></symbol>
       <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6a1.5 1.5 0 0 0-1.5 1.5v16A1.5 1.5 0 0 0 6 21.5h12a1.5 1.5 0 0 0 1.5-1.5V8zM14 2.5V8h5.5M8 12h8M8 15h8M8 18h5"/></g></symbol>
+      <symbol id="i-scan" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5.500A2.500 2.500 0 0 1 5.500 3H8M16 3h2.500A2.500 2.500 0 0 1 21 5.500V8M21 16v2.500a2.500 2.500 0 0 1-2.500 2.500H16M8 21H5.500A2.500 2.500 0 0 1 3 18.500V16M7 12h10"/></g></symbol>
       <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5V19a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 19V8.5A1.5 1.5 0 0 0 19.5 7H12l-2-3H4.500A1.500 1.500 0 0 0 3 5.500zM12 10.500v6M9 14l3 3 3-3"/></g></symbol>
       <symbol id="i-shop" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h30l6 13a5 5 0 0 1-7 4 5 5 0 0 1-7 0 5 5 0 0 1-7 0 5 5 0 0 1-7 0 5 5 0 0 1-7 0 5 5 0 0 1-7-4zM8 24v20h32V24M13 44V29h9v15M27 29h9v9h-9zM16 6v-3h16v3M21 10h6M24 7.500v5"/></g></symbol>
       <symbol id="i-building" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 44h42M6 44V20h14v24M26 44V22a15 15 0 0 1 16 0v22M26 28h16M26 34h16M34 18v26M4 12h12M4 16h16M10 4v8M9 26h8M9 32h8M9 38h8"/></g></symbol>
@@ -410,8 +417,55 @@
     </defs>
   </svg>
 
+  <div class="scan" id="scan" role="dialog" aria-modal="true" aria-label="Scan" data-step="live" hidden>
+    <div class="scan__top">
+      <p class="scan__text" id="scanText" aria-live="polite"></p>
+      <button type="button" class="scan__close" id="scanClose" data-i18n="scanClose">ปิด</button>
+    </div>
+    <div class="scan__stage">
+      <video class="scan__video" id="scanVideo" playsinline muted></video>
+      <div class="scan__guide" aria-hidden="true"></div>
+      <svg class="scan__live" id="scanLive" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+      <svg class="scan__pic" id="scanPic" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="scan__done">
+        <svg class="scan__check" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M29 52l15 15 28-31"/></svg>
+        <strong data-i18n="scanSuccess">สแกนสำเร็จ</strong>
+        <span id="scanResult"></span>
+      </div>
+    </div>
+    <div class="scan__bottom">
+      <div class="scan__controls scan__controls--live">
+        <button type="button" class="scan__shutter" id="scanCapture"><span data-i18n="scanCapture">ถ่ายภาพ</span></button>
+      </div>
+      <div class="scan__controls scan__controls--sign">
+        <button type="button" class="btn btn--ghost" id="scanRetake" data-i18n="scanRetake">ถ่ายใหม่</button>
+        <button type="button" class="btn btn--primary" id="scanNext" data-i18n="scanNext">ถัดไป</button>
+      </div>
+      <div class="scan__controls scan__controls--ref">
+        <label class="scan__ref-label"><span data-i18n="scanRefLabel">วัตถุอ้างอิง</span>
+          <select id="scanRefType">
+            <option value="a4" data-i18n="scanRefA4">กระดาษ A4 (21 x 29.7 ซม.)</option>
+            <option value="card" data-i18n="scanRefCard">บัตรประชาชนหรือบัตรเครดิต (5.4 x 8.6 ซม.)</option>
+            <option value="custom" data-i18n="scanRefCustom">กำหนดขนาดเอง</option>
+          </select>
+        </label>
+        <div class="scan__custom" id="scanCustom" hidden>
+          <input id="scanRefW" type="text" inputmode="decimal" placeholder="กว้าง (ซม.)" data-i18n-ph="scanRefW" aria-label="Width">
+          <input id="scanRefH" type="text" inputmode="decimal" placeholder="ยาว (ซม.)" data-i18n-ph="scanRefH" aria-label="Length">
+        </div>
+        <div class="scan__row">
+          <button type="button" class="btn btn--ghost" id="scanBack" data-i18n="scanBack">ย้อนกลับ</button>
+          <button type="button" class="btn btn--primary" id="scanMeasure" data-i18n="scanMeasure">วัดขนาด</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
   <script src="js/mobile-app.js"></script>
+  <script src="js/scan-voice.js"></script>
+  <script src="js/sign-detect.js"></script>
+  <script src="js/scanner.js"></script>
 </body>
 </html>

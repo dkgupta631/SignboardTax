@@ -25,6 +25,7 @@ Then open http://localhost:8000. Add `?lang=en` to the URL to open it in English
 | `js/app.js` | Calculator, tax rates, language switch, page interactions |
 | `js/i18n.js` | English text |
 | `js/mobile-app.js` | Phone app mode: screens, tab bar, install prompt |
+| `js/scanner.js`, `js/sign-detect.js` | Sign scanner: camera, automatic outline, corner marking, size measurement |
 | `sw.js`, `manifest.webmanifest` | Offline support and home-screen install |
 | `assets/` | Images, logo, fonts, and the P.P.1 form PDF |
 

@@ -1,5 +1,5 @@
 // Network first so a new deploy shows straight away; the cache is the offline fallback.
-const CACHE = 'signboard-tax-v6';
+const CACHE = 'signboard-tax-v8';
 const FONTS = [300, 400, 500, 600, 700].flatMap((w) => [
   `assets/fonts/prompt-thai-${w}-normal.woff2`,
   `assets/fonts/prompt-latin-${w}-normal.woff2`
@@ -10,7 +10,7 @@ const FILES = [
   'assets/img/logo-mark.svg', 'assets/img/hero.jpg', 'assets/img/signboard-photo.jpg',
   'assets/img/pharmacy-bg.jpg', 'assets/img/mascot.png', 'assets/img/contact-card.png',
   'assets/img/line-qr.png', 'assets/docs/sign-tax-form-pp1.pdf',
-  ...['facebook', 'instagram', 'youtube', 'tiktok', 'pinterest', 'line'].map((n) => `assets/img/social/${n}.png`),
+  'assets/img/social/line.png',
   ...FONTS
 ];
 

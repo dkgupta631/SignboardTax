@@ -219,9 +219,9 @@ html[lang=en] .hero__th{display:none}
 .contact-band__title{display:flex;align-items:center;gap:20px;color:var(--teal);font-size:22px;font-weight:600;text-align:center;margin-bottom:22px}
 .contact-band__title::before,.contact-band__title::after{content:"";flex:1;height:2px;background:var(--green)}
 .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);max-width:1076px;margin-inline:auto;background:rgba(255,255,255,.92);border:1px solid var(--green);border-radius:22px;padding:14px 0}
-.contact-grid a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:190px;padding:14px;text-align:center;text-decoration:none;color:var(--green);font-weight:600;font-size:15.5px;line-height:1.35;border-left:3px solid #a9adae;transition:background-color .2s}
-.contact-grid a:first-child{border-left:0}
-.contact-grid a .i{width:92px;height:92px;color:var(--teal);transition:transform .3s}
+.contact-grid a,.contact-grid .link-off{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:190px;padding:14px;text-align:center;text-decoration:none;color:var(--green);font-weight:600;font-size:15.5px;line-height:1.35;border-left:3px solid #a9adae;transition:background-color .2s}
+.contact-grid a:first-child,.contact-grid .link-off:first-child{border-left:0}
+.contact-grid a .i,.contact-grid .link-off .i{width:92px;height:92px;color:var(--teal);transition:transform .3s}
 .contact-grid a:hover .i{transform:translateY(-6px) scale(1.06)}
 
 /* Footer */
@@ -265,9 +265,9 @@ html[lang=en] .hero__th{display:none}
   .formula__grid{gap:30px}
   .footer__grid{grid-template-columns:1fr 1fr}
   .contact-grid{grid-template-columns:1fr 1fr}
-  .contact-grid a:nth-child(3){border-left:0}
-  .contact-grid a{min-height:160px}
-  .contact-grid a .i{width:72px;height:72px}
+  .contact-grid a:nth-child(3),  .contact-grid .link-off:nth-child(3){border-left:0}
+  .contact-grid a,  .contact-grid .link-off{min-height:160px}
+  .contact-grid a .i,.contact-grid .link-off .i{width:72px;height:72px}
   .consult-card{grid-template-columns:1fr;aspect-ratio:auto;justify-items:center;background:var(--green-soft);border:1px solid var(--line);border-radius:22px;padding:24px 20px}
   .consult-card__mascot{width:150px;margin:0}
   .consult-card__body{grid-column:auto;padding:0}
@@ -445,10 +445,9 @@ html.app .guide .small{font-size:14px}
 html.app .guide ul{padding-left:20px}
 
 /* Contact */
-html.app .quick.is-current{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+html.app .quick.is-current{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 .quick a{display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:16px;padding:12px 4px;color:#fff;text-decoration:none;font-size:13.5px;font-weight:500;background:var(--teal);transition:transform .15s}
 .quick a:nth-child(2){background:var(--line-green)}
-.quick a:nth-child(3){background:var(--orange)}
 .quick .i,.quick img{width:26px;height:26px}
 html.app .consult-card{grid-template-columns:1fr;aspect-ratio:auto;justify-items:center;background:#fff;border:0;border-radius:20px;padding:16px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
 html.app .consult-card__mascot{width:110px;margin:0}
@@ -458,8 +457,8 @@ html.app .consult-card__qr{display:block;width:150px;height:150px;margin-top:6px
 html.app .contact-band{background:none;padding-block:6px}
 html.app .contact-band__title{font-size:15px;margin-bottom:8px}
 html.app .contact-grid{grid-template-columns:1fr 1fr;gap:10px;background:none;border:0;padding:0}
-html.app .contact-grid a,html.app .contact-grid a:nth-child(3){min-height:124px;border:0;border-radius:16px;background:#fff;font-size:13.5px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
-html.app .contact-grid a .i{width:52px;height:52px}
+html.app .contact-grid a,html.app .contact-grid a:nth-child(3),html.app .contact-grid .link-off,html.app .contact-grid .link-off:nth-child(3){min-height:124px;border:0;border-radius:16px;background:#fff;font-size:13.5px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .contact-grid a .i,html.app .contact-grid .link-off .i{width:52px;height:52px}
 html.app .footer{margin:6px 12px 0;border-radius:20px;overflow:hidden}
 html.app .footer__grid{grid-template-columns:1fr;width:calc(100% - 32px);gap:16px;padding-block:16px}
 html.app .footer h3{font-size:17px}

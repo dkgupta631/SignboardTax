@@ -74,6 +74,7 @@
       stopCamera();
       errorBox.textContent = err && err.name === 'NotAllowedError' ? msg().scanDenied : msg().scanNoCamera;
       errorBox.hidden = false;
+      errorBox.scrollIntoView({ block: 'center' });
     });
   }
 
@@ -335,6 +336,11 @@
 
   /* ---------- Controls ---------- */
   $('scanBtn').addEventListener('click', open);
+  // The middle tab: move to the form the results fill in, and scan straight away.
+  $('tabScan').addEventListener('click', function () {
+    location.hash = '#/calc';
+    open();
+  });
   $('scanClose').addEventListener('click', close);
   $('scanCapture').addEventListener('click', capture);
   $('scanRetake').addEventListener('click', function () {

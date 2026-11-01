@@ -47,6 +47,7 @@
           <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
           <span data-i18n="sales">ติดต่อฝ่ายขาย</span>
         </a>
+        <button type="button" class="header__contact" data-go="contact" aria-label="Contact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span class="tabbar__label" data-i18n="tabContact" hidden>ติดต่อ</span></button>
       </div>
     </div>
   </header>
@@ -165,7 +166,7 @@
         <p class="calc__sub" data-i18n="calcSub">กรอกข้อมูลรายละเอียดของป้าย เพื่อคำนวณภาษีป้ายที่ต้องชำระต่อปี</p>
 
         <div class="scan-entry">
-          <button type="button" class="btn btn--scan" id="scanBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scanBtn">สแกนขนาดป้าย</span></button>
+          <button type="button" class="btn btn--scan" id="scanBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scanBtn">สแกนป้าย</span></button>
           <p class="scan-entry__or" data-i18n="scanOr">หรือกรอกความกว้างและความยาวด้วยตนเองด้านล่าง</p>
           <p class="calc__error" id="scanError" role="alert" hidden></p>
         </div>
@@ -329,58 +330,62 @@
 
   <footer class="footer" data-screen="contact">
     <div class="container footer__grid">
-      <div>
-        <h3 data-i18n="fServices">บริการทั้งหมด</h3>
+      <div class="footer__brand">
+        <div class="footer__logo">
+          <img src="assets/img/logo-mark.svg" alt="" width="48" height="48" loading="lazy">
+          <strong>Signboard <em>Tax</em></strong>
+        </div>
+        <p data-i18n="fAbout">เครื่องมือคำนวณภาษีป้ายเบื้องต้น ช่วยให้ร้านขายยาและธุรกิจหน้าร้านวางแผนค่าใช้จ่ายได้ง่ายและรวดเร็ว</p>
+      </div>
+      <nav class="footer__menu" aria-label="Footer">
+        <h3 data-i18n="fMenu">เมนู</h3>
         <ul>
-          <li><span class="link-off" data-i18n="fs1">ออกแบบร้านขายยา</span></li>
-          <li><span class="link-off" data-i18n="fs2">ตกแต่งร้านขายยา</span></li>
-          <li><span class="link-off" data-i18n="fs3">ออกแบบโลโก้</span></li>
-          <li><span class="link-off" data-i18n="fs4">ขออนุญาตเปิดร้านขายยา</span></li>
-          <li><span class="link-off" data-i18n="fs5">ต่ออายุใบขออนุญาต</span></li>
-          <li><span class="link-off" data-i18n="fs6">ทำความสะอาดร้านขายยา</span></li>
+          <li><button type="button" data-go="home" data-i18n="tabHome">หน้าหลัก</button></li>
+          <li><button type="button" data-go="rates" data-i18n="tabRates">อัตราภาษี</button></li>
+          <li><button type="button" data-go="calc" data-i18n="tabCalc">คำนวณ</button></li>
+          <li><button type="button" data-go="guide" data-i18n="tabGuide">วิธีเสียภาษี</button></li>
+          <li><a href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener" data-i18n="fForm">แบบฟอร์ม ภ.ป.1</a></li>
+        </ul>
+      </nav>
+      <div class="footer__services">
+        <h3 data-i18n="fServices">บริการของเรา</h3>
+        <ul>
+          <li data-i18n="fs1">ออกแบบร้านขายยา</li>
+          <li data-i18n="fs2">ตกแต่งร้านขายยา</li>
+          <li data-i18n="fs3">ออกแบบโลโก้</li>
+          <li data-i18n="fs4">ขออนุญาตเปิดร้านขายยา</li>
+          <li data-i18n="fs5">ต่ออายุใบอนุญาต</li>
+          <li data-i18n="fs6">ทำความสะอาดร้านขายยา</li>
         </ul>
       </div>
-      <div>
-        <h3 data-i18n="fProduct">สินค้า</h3>
-        <ul><li><span class="link-off" data-i18n="fp1">อุปกรณ์เฟอร์นิเจอร์</span></li></ul>
-      </div>
-      <div>
-        <h3>COMMUNITY</h3>
-        <ul>
-          <li><a href="#top" data-i18n="fc1">คำนวนภาษีป้ายร้านขายยา</a></li>
-          <li><span class="link-off" data-i18n="fc2">เอกสารการขออนุญาต</span></li>
-          <li><span class="link-off" data-i18n="fc3">ค่าออกแบบตกแต่งร้านขายยา</span></li>
-          <li><a href="https://www.pharmacycouncil.org/index.php?option=com_pharmacist_list" target="_blank" rel="noopener" data-i18n="fc4">ตรวจสอบรายชื่อเภสัชกร</a></li>
-          <li><a href="https://oryor.com/check-product-serial" target="_blank" rel="noopener" data-i18n="fc5">เช็คเลย อย. ผลิตภัณฑ์</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 data-i18n="fContact">ติดต่อสอบถาม</h3>
-        <ul>
-          <li><a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener" data-i18n="fk1">แจ้งปัญหา</a></li>
-          <li><a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener" data-i18n="fk2">ปรึกษาปัญหา</a></li>
-          <li><span class="link-off" data-i18n="fk3">ประเมินราคาเบื้องต้น</span></li>
-          <li data-i18n="fk4">ขั้นตอนการทำงาน</li>
-        </ul>
+      <div class="footer__contact">
+        <h3 data-i18n="fContact">ติดต่อเรา</h3>
         <div class="footer__reach">
           <div class="footer__links">
             <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>089-2012641</a>
-            <a href="tel:0638960577"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>063-8960577</a>
             <a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="18" height="18">@sbangpa</a>
           </div>
-          <img class="footer__qr" src="assets/img/line-qr.png" alt="LINE QR code" width="85" height="85" loading="lazy">
+          <figure class="footer__scan">
+            <img class="footer__qr" src="assets/img/line-qr.png" alt="LINE QR code" width="96" height="96" loading="lazy">
+            <figcaption data-i18n="fScan">สแกนเพื่อแชต</figcaption>
+          </figure>
         </div>
       </div>
     </div>
-    <p class="footer__copy">Copyright © 2024 All Rights Reserved</p>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <span>© 2026 Signboard Tax Calculator. All rights reserved.</span>
+        <span data-i18n="fNote">ผลการคำนวณเป็นการประเมินเบื้องต้นเท่านั้น</span>
+      </div>
+    </div>
   </footer>
 
   <nav class="tabbar" id="tabbar" aria-label="App">
     <button type="button" class="tabbar__item" data-go="home"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg></span><span class="tabbar__label" data-i18n="tabHome">หน้าหลัก</span></button>
     <button type="button" class="tabbar__item" data-go="rates"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg></span><span class="tabbar__label" data-i18n="tabRates">อัตราภาษี</span></button>
-    <button type="button" class="tabbar__item tabbar__item--main" data-go="calc"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg></span><span class="tabbar__label" data-i18n="tabCalc">คำนวณ</span></button>
+    <button type="button" class="tabbar__item tabbar__item--main" id="tabScan"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg></span><span class="tabbar__label" data-i18n="tabScan">สแกน</span></button>
+    <button type="button" class="tabbar__item" data-go="calc"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg></span><span class="tabbar__label" data-i18n="tabCalc">คำนวณ</span></button>
     <button type="button" class="tabbar__item" data-go="guide"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="tabbar__label" data-i18n="tabGuide">วิธีเสียภาษี</span></button>
-    <button type="button" class="tabbar__item" data-go="contact"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></span><span class="tabbar__label" data-i18n="tabContact">ติดต่อ</span></button>
   </nav>
 
   <div class="floating">

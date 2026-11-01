@@ -21,7 +21,7 @@
 
   /* ---------- Screens ---------- */
   function updateTitle() {
-    var tab = document.querySelector('.tabbar__item[data-go="' + current + '"] .tabbar__label');
+    var tab = document.querySelector('[data-go="' + current + '"] .tabbar__label');
     $('screenTitle').textContent = tab ? tab.textContent : '';
   }
 

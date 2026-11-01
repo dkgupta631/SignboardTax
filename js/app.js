@@ -179,20 +179,6 @@
   });
 
   /* ---------- Page chrome ---------- */
-  var burger = $('burger');
-  var nav = $('nav');
-  function closeMenu() {
-    nav.classList.remove('is-open');
-    burger.classList.remove('is-open');
-    burger.setAttribute('aria-expanded', 'false');
-  }
-  burger.addEventListener('click', function () {
-    var open = nav.classList.toggle('is-open');
-    burger.classList.toggle('is-open', open);
-    burger.setAttribute('aria-expanded', String(open));
-  });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
-
   var header = $('header');
   function onScroll() { header.classList.toggle('is-stuck', window.scrollY > 60); }
   window.addEventListener('scroll', onScroll, { passive: true });

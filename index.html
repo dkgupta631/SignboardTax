@@ -19,25 +19,6 @@
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">ข้ามเนื้อหาหลัก</a>
 
-  <div class="topbar">
-    <div class="container topbar__inner">
-      <div class="topbar__social">
-        <span>Connect With Us:</span>
-        <a href="https://www.facebook.com/deccodrug" target="_blank" rel="noopener" aria-label="Facebook"><img src="assets/img/social/facebook.png" alt="" width="22" height="22"></a>
-        <img src="assets/img/social/instagram.png" alt="Instagram" width="22" height="22">
-        <img src="assets/img/social/youtube.png" alt="YouTube" width="22" height="22">
-        <img src="assets/img/social/tiktok.png" alt="TikTok" width="22" height="22">
-        <img src="assets/img/social/pinterest.png" alt="Pinterest" width="22" height="22">
-        <a href="https://line.me/R/ti/p/@959xjnkn" target="_blank" rel="noopener" aria-label="LINE"><img src="assets/img/social/line.png" alt="" width="22" height="22"></a>
-      </div>
-      <div class="topbar__contact">
-        <a href="mailto:Deccodrug@gmail.com">Deccodrug@gmail.com</a>
-        <span aria-hidden="true">│</span>
-        <a href="tel:+66934241559">Tel. 093-4241559</a>
-      </div>
-    </div>
-  </div>
-
   <header class="header" id="header">
     <div class="container header__inner">
       <a class="brand" href="#top" aria-label="Signboard Tax Calculator">
@@ -49,37 +30,23 @@
         <span class="brand__screen" id="screenTitle"></span>
       </a>
 
-      <nav class="nav" id="nav" aria-label="Main">
-        <a href="https://www.deccodrug.com/">HOME</a>
-        <div class="nav__group">
-          <a href="https://www.deccodrug.com/service">SERVICE <svg class="i-chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <ul class="nav__menu">
-            <li><a href="https://www.deccodrug.com/course" data-i18n="navCourse">คอร์สเรียน</a></li>
-            <li><a href="https://www.deccodrug.com/services/pharmacy-design" data-i18n="navDesign">รับออกแบบร้านขายยา</a></li>
-            <li><a href="https://www.deccodrug.com/services/pharmacy-decorate" data-i18n="navDecorate">รับตกแต่งร้านขายยา</a></li>
-            <li><a href="https://www.deccodrug.com/services/logo-design" data-i18n="navLogo">ออกแบบโลโก้</a></li>
-            <li><a href="https://www.deccodrug.com/services/registration" data-i18n="navRegister">จดทะเบียนร้านขายยา</a></li>
-            <li><a href="https://www.deccodrug.com/services/cleaning" data-i18n="navClean">ทำความสะอาดร้านขายยา</a></li>
-          </ul>
-        </div>
-        <a href="https://www.deccodrug.com/product">PRODUCT</a>
-        <a href="https://www.deccodrug.com/portfolio">PORTFOLIO</a>
-        <a href="https://www.deccodrug.com/community">COMMUNITY</a>
-        <a href="https://www.deccodrug.com/blog-1">BLOG</a>
-        <a href="https://www.deccodrug.com/about-us">ABOUT</a>
+      <nav class="topnav" id="topnav" aria-label="Main">
+        <button type="button" class="topnav__item" data-go="home"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg><span data-i18n="tabHome">หน้าหลัก</span></button>
+        <button type="button" class="topnav__item" data-go="rates"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg><span data-i18n="tabRates">อัตราภาษี</span></button>
+        <button type="button" class="topnav__item" data-go="calc"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg><span data-i18n="tabCalc">คำนวณ</span></button>
+        <button type="button" class="topnav__item" data-go="guide"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span data-i18n="tabGuide">วิธีเสียภาษี</span></button>
+        <button type="button" class="topnav__item" data-go="contact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="tabContact">ติดต่อ</span></button>
       </nav>
-      <div class="sheet-backdrop" id="sheetBackdrop"></div>
 
       <div class="header__actions">
         <div class="lang" role="group" aria-label="Language">
           <button type="button" class="lang__btn" data-lang="th" aria-pressed="true">TH</button>
           <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a class="btn btn--sales" href="tel:+66934241559">
+        <a class="btn btn--sales" href="tel:+66892012641">
           <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
           <span data-i18n="sales">ติดต่อฝ่ายขาย</span>
         </a>
-        <button type="button" class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
       </div>
     </div>
   </header>
@@ -264,7 +231,7 @@
       <div class="download reveal">
         <svg class="i download__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>
         <span data-i18n="formName">แบบฟอร์มยื่นภาษีป้าย (ภ.ป.1)</span>
-        <a class="btn btn--download" href="assets/docs/sign-tax-form-pp1.pdf" download>
+        <a class="btn btn--download" href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener">
           <span data-i18n="download">ดาวน์โหลด</span>
           <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>
         </a>
@@ -320,7 +287,7 @@
     </section>
 
     <section class="app-only quick container" data-screen="contact">
-      <a href="tel:+66934241559"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="quickCall">โทร</span></a>
+      <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="quickCall">โทร</span></a>
       <a href="https://line.me/R/ti/p/@959xjnkn" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="28" height="28"><span>LINE</span></a>
       <a href="mailto:Deccodrug@gmail.com"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="quickMail">อีเมล</span></a>
     </section>
@@ -349,7 +316,7 @@
           <a href="https://www.deccodrug.com/services/pharmacy-design/facade"><svg class="i" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-shop"/></svg><span data-i18n="c1">บริการออกแบบฟาซาด</span></a>
           <a href="https://www.deccodrug.com/services/pharmacy-decorate/facade"><svg class="i" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-building"/></svg><span data-i18n="c2">บริการตกแต่งฟาซาด</span></a>
           <a href="https://www.deccodrug.com/estimate/facade"><svg class="i" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-budget"/></svg><span data-i18n="c3">ประเมินงบออกแบบตกแต่งฟาซาด</span></a>
-          <a href="tel:+66934241559"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone-line"/></svg><span data-i18n="c4">ติดต่อสอบถาม</span></a>
+          <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone-line"/></svg><span data-i18n="c4">ติดต่อสอบถาม</span></a>
         </div>
       </div>
     </section>
@@ -394,7 +361,7 @@
         </ul>
         <div class="footer__reach">
           <div class="footer__links">
-            <a href="tel:0934241559"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>093-4241559</a>
+            <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>089-2012641</a>
             <a href="tel:0638960577"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>063-8960577</a>
             <a href="https://lin.ee/qwuLlw7" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="18" height="18">@deccodesign</a>
             <a href="https://www.facebook.com/deccodrug" target="_blank" rel="noopener"><img src="assets/img/social/facebook.png" alt="" width="18" height="18">Deccodrug</a>
@@ -415,7 +382,7 @@
   </nav>
 
   <div class="floating">
-    <a class="floating__btn floating__btn--phone" href="tel:+66934241559" aria-label="Phone"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></a>
+    <a class="floating__btn floating__btn--phone" href="tel:+66892012641" aria-label="Phone"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <a class="floating__btn floating__btn--line" href="https://line.me/R/ti/p/@959xjnkn?oat_content=url&amp;ts=01302122" target="_blank" rel="noopener" aria-label="LINE"><img src="assets/img/social/line.png" alt="" width="36" height="36"></a>
   </div>
 

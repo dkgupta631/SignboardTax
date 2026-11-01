@@ -1,6 +1,6 @@
 // On phones the page runs as an app: one screen at a time, switched from a
-// bottom tab bar. Above the breakpoint none of this applies and the page is a
-// normal scrolling site.
+// bottom tab bar. Above the breakpoint the page is a normal scrolling site and
+// the same five destinations sit in the header, scrolling to their sections.
 (function () {
   'use strict';
 
@@ -55,11 +55,15 @@
     return hash.indexOf('#/') === 0 ? hash.slice(2) : 'home';
   }
 
-  window.addEventListener('hashchange', function () { closeSheet(); show(fromHash()); });
+  window.addEventListener('hashchange', function () { show(fromHash()); });
 
   document.addEventListener('click', function (e) {
     var target = e.target.closest('[data-go], .rate__val, a[href="#calculator"], a[href="#top"]');
-    if (!target || !isApp()) return;
+    if (!target) return;
+    if (!isApp()) {
+      if (target.dataset.go) { e.preventDefault(); scrollToScreen(target.dataset.go); }
+      return;
+    }
     e.preventDefault();
     tap();
     if (target.dataset.go) go(target.dataset.go);
@@ -69,15 +73,30 @@
 
   document.addEventListener('langchange', updateTitle);
 
-  /* ---------- Menu sheet ---------- */
-  var nav = $('nav');
-  var burger = $('burger');
-  function closeSheet() {
-    nav.classList.remove('is-open');
-    burger.classList.remove('is-open');
-    burger.setAttribute('aria-expanded', 'false');
+  /* ---------- Desktop header menu ---------- */
+  function sectionFor(name) {
+    return document.querySelector('[data-screen="' + name + '"]:not(.app-only)');
   }
-  $('sheetBackdrop').addEventListener('click', closeSheet);
+
+  function scrollToScreen(name) {
+    if (name === 'home') window.scrollTo(0, 0);
+    else sectionFor(name).scrollIntoView();
+  }
+
+  // Highlights the section being read.
+  function markCurrentSection() {
+    if (isApp()) return;
+    var active = 'home';
+    SCREENS.forEach(function (name) {
+      if (sectionFor(name).getBoundingClientRect().top <= 140) active = name;
+    });
+    if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) active = 'contact';
+    all('.topnav__item').forEach(function (b) {
+      if (b.dataset.go === active) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('scroll', markCurrentSection, { passive: true });
 
   /* ---------- Guide accordion ---------- */
   var heads = all('.guide__body h3');
@@ -113,8 +132,8 @@
   /* ---------- Mode ---------- */
   function applyMode() {
     var app = phone.matches;
-    closeSheet();
     root.classList.toggle('app', app);
+    markCurrentSection();
     heads.forEach(function (head) {
       if (app) {
         head.setAttribute('role', 'button');

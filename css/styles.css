@@ -321,3 +321,171 @@ html[lang=en] .hero__th{display:none}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
+/* ==========================================================================
+   Phone app mode: js/mobile-app.js sets html.app at 760px and below
+   ========================================================================== */
+.app-only,.tabbar,.brand__screen,.sheet-backdrop,.rate__tag{display:none}
+
+html.app{scroll-behavior:auto;scroll-padding-top:70px;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+html.app body{background:#eef3f2;font-size:15.5px;line-height:1.6;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+html.app [data-screen]:not(.is-current){display:none!important}
+html.app [data-screen].is-current{animation:screenIn .24s ease-out}
+@keyframes screenIn{from{opacity:0;transform:translateY(10px)}}
+html.app .app-only{display:block}
+html.app .container,html.app .container--narrow{width:calc(100% - 24px)}
+html.app .section{padding-block:6px}
+html.app .reveal{opacity:1;transform:none}
+html.app .topbar,html.app .floating,html.app .hero__wave{display:none}
+html.app button,html.app .btn,html.app .tabbar{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+html.app .btn:hover{transform:none}
+html.app .btn:active,html.app .tiles button:active,html.app .quick a:active,html.app .rate__val:active{transform:scale(.96)}
+
+/* App bar */
+html.app .header{z-index:70;background:var(--teal);padding-top:env(safe-area-inset-top);box-shadow:0 2px 10px rgba(16,50,55,.25)}
+html.app .header__inner{width:calc(100% - 24px);min-height:56px;gap:8px}
+html.app .brand{min-width:0;flex:1;gap:9px}
+html.app .brand img{width:36px;height:36px;border-radius:10px;box-shadow:0 0 0 1.5px rgba(255,255,255,.75)}
+html.app .brand__text small{display:none}
+html.app .brand strong{color:#fff;font-size:17px}
+html.app .brand em{color:#8fe3cb}
+html.app .brand__screen{color:#fff;font-size:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.app:not([data-screen=home]) .brand__text{display:none}
+html.app:not([data-screen=home]) .brand__screen{display:block}
+html.app .header__actions{margin-left:0;gap:4px}
+html.app .btn--sales{display:none}
+html.app .lang{background:rgba(255,255,255,.16)}
+html.app .lang__btn{color:#fff;font-size:12px;padding:5px 10px}
+html.app .lang__btn[aria-pressed=true]{background:#fff;color:var(--teal)}
+html.app .burger{display:flex;width:42px}
+html.app .burger span{background:#fff}
+
+/* Menu as a bottom sheet */
+html.app .nav{display:flex;position:fixed;top:auto;left:0;right:0;bottom:0;z-index:2;max-height:78vh;margin:0;padding:10px 18px calc(18px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.2);visibility:hidden;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility .28s}
+html.app .nav::before{content:"";flex:none;align-self:center;width:40px;height:5px;margin-bottom:8px;border-radius:3px;background:#cfd8d8}
+html.app .nav.is-open{visibility:visible;transform:none}
+html.app .nav>a,html.app .nav__group>a{padding:12px 4px;border-bottom:1px solid #eef2f2}
+html.app .nav__menu{min-width:0;left:auto}
+html.app .nav:not(.is-open) .nav__menu{visibility:hidden}
+html.app .sheet-backdrop{display:block;position:fixed;inset:0;z-index:1;background:rgba(10,30,34,.45);opacity:0;pointer-events:none;transition:opacity .25s}
+html.app .nav.is-open + .sheet-backdrop{opacity:1;pointer-events:auto}
+
+/* Tab bar */
+html.app .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:flex-end;background:#fff;padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px rgba(34,82,90,.14);border-radius:18px 18px 0 0}
+.tabbar__item{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;border:0;background:none;padding:2px 0;color:#7c8c8e;cursor:pointer;transition:color .2s}
+.tabbar__icon{display:grid;place-items:center;width:52px;height:30px;border-radius:15px;transition:background-color .2s}
+.tabbar__icon .i{width:22px;height:22px}
+.tabbar__label{font-size:11px;line-height:1.3;white-space:nowrap}
+.tabbar__item[aria-current]{color:var(--teal);font-weight:600}
+.tabbar__item[aria-current] .tabbar__icon{background:#d9f1e9}
+.tabbar__item--main .tabbar__icon{width:54px;height:54px;margin-top:-26px;border-radius:50%;color:#fff;background:linear-gradient(135deg,var(--green),var(--teal));border:4px solid #fff;box-shadow:0 6px 14px rgba(34,82,90,.35)}
+.tabbar__item--main[aria-current] .tabbar__icon{background:linear-gradient(135deg,#f6a35c,var(--orange))}
+
+/* Home */
+html.app .hero{margin:12px 12px 0;border-radius:22px;background:var(--teal-900) url(../assets/img/hero.jpg) 62% 0/auto 220px no-repeat;box-shadow:var(--shadow)}
+html.app .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(34,82,90,0) 110px,var(--teal-900) 220px)}
+html.app .hero__content{width:100%;min-height:0;padding:186px 18px 20px}
+html.app .hero h1{font-size:25px}
+html.app .hero p{max-width:none;margin-block:8px 16px;font-size:14.5px;line-height:1.55}
+html.app .btn--cta{width:100%;min-height:52px;padding:10px 16px;border-radius:15px;border:0}
+html.app .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.tiles button{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;border:0;border-radius:16px;background:#fff;color:var(--teal);padding:13px 4px;font-size:13px;font-weight:500;line-height:1.25;box-shadow:0 2px 8px rgba(34,82,90,.08);cursor:pointer;transition:transform .15s}
+.tiles .i{width:30px;height:30px;padding:0;color:var(--green)}
+.install{display:flex;align-items:center;gap:10px;margin-top:12px;background:#fff;border-radius:16px;padding:10px 12px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+.install img{width:40px;height:40px;flex:none}
+.install p{flex:1;min-width:0;font-size:13px;line-height:1.4}
+.install__go{flex:none;border:0;border-radius:999px;background:var(--teal);color:#fff;padding:7px 14px;font-size:13px;cursor:pointer}
+.install__close{flex:none;border:0;background:none;color:#7c8c8e;padding:6px;cursor:pointer}
+html.app .intro__top{display:block;background:#fff;border-radius:20px;padding:12px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .intro__photo{border-radius:14px;box-shadow:none;margin-bottom:12px}
+html.app .intro__title{font-size:23px;margin-bottom:4px}
+html.app .intro__lead{font-size:15px}
+html.app .formula{margin-top:12px;padding:0;background:none;border:0}
+html.app .formula__callout{font-size:14px;margin-bottom:26px}
+html.app .formula__row{flex-direction:column;align-items:flex-start}
+html.app .formula__grid{grid-template-columns:1fr;gap:28px}
+html.app .formula__card{box-shadow:0 2px 8px rgba(34,82,90,.08)}
+
+/* Rates as cards */
+html.app .rates .title,html.app .calc .title,html.app .guide h2{display:none}
+html.app .rate-wrap{overflow:visible;box-shadow:none;border-radius:0}
+html.app .rate,html.app .rate thead,html.app .rate tbody,html.app .rate thead tr:first-child,html.app .rate__head{display:block;width:100%}
+html.app .rate thead tr:nth-child(2),html.app .rate__corner{display:none}
+html.app .rate__head{border-radius:14px;margin-bottom:10px;font-size:15px;text-align:center}
+html.app .rate tbody tr{display:grid;grid-template-columns:1fr 1fr;margin-bottom:12px;border:0;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(34,82,90,.1)}
+html.app .rate tbody th{grid-column:1/-1;display:block;height:auto}
+html.app .rate tbody td{display:block;height:auto;background:#fff;border:0}
+html.app .rate tbody td + td{border-left:1px solid #e6ecec}
+html.app .rate__type{clip-path:none;min-height:0;padding:10px 14px;gap:10px}
+html.app .rate__type strong{font-size:15.5px}
+html.app .rate__type small{font-size:12px}
+html.app .rate__val{min-height:92px;padding:8px 6px;font-size:14px}
+html.app .rate__val b{font-size:30px}
+html.app .rate__tag{display:block;color:var(--muted);font-size:11.5px;line-height:1.3;margin-bottom:2px}
+html.app .rate__val.is-active .rate__tag{color:#fff}
+
+/* Calculator */
+html.app .calc{padding:0;background:none;border:0;box-shadow:none}
+html.app .calc__sub{font-size:14px;color:var(--muted);margin-block:4px 10px}
+html.app .calc__grid{grid-template-columns:1fr;gap:8px}
+html.app .field{border-radius:16px;box-shadow:0 2px 8px rgba(34,82,90,.08);padding:9px 12px}
+html.app .field__icon{width:46px;height:46px;border-radius:12px}
+html.app .field__icon .i{width:28px;height:28px}
+html.app .field label{font-size:12.5px;color:var(--muted);margin-bottom:1px}
+html.app .field input,html.app .field select{height:30px;border:0;border-radius:0;padding-inline:0;font-size:16px;font-weight:500;box-shadow:none}
+html.app .field input{background:none}
+html.app .field select{padding-right:22px;background-position:right 2px center}
+html.app .field.is-invalid{box-shadow:0 0 0 1.5px #d93c2c}
+html.app .result{flex-wrap:wrap;margin-top:12px;border:0;border-radius:18px;padding:14px 16px;background:linear-gradient(135deg,var(--teal-900),#2f8a78);color:#fff}
+html.app .result.is-done{animation:appPulse .45s ease}
+@keyframes appPulse{40%{transform:scale(1.025)}}
+html.app .result__icon{width:36px;height:36px;color:#fff}
+html.app .result__label strong{color:#fff;font-size:15.5px}
+html.app .result__label small{color:rgba(255,255,255,.8);font-size:12px}
+html.app .result__value{width:100%;justify-content:flex-end;color:#fff;font-size:16px}
+html.app .result output{color:#fff;font-size:34px;line-height:1.2}
+html.app .calc__hint{font-size:13px;background:#fff}
+html.app .calc__actions{flex-wrap:nowrap;gap:10px;margin-top:12px}
+html.app .calc__actions .btn{min-height:52px;border-radius:15px;padding:8px 12px}
+html.app .calc__actions .btn--primary{flex:2;background:linear-gradient(135deg,var(--orange),#e8741f)}
+html.app .calc__actions .btn--ghost{flex:1;white-space:nowrap}
+html.app .note{margin-top:12px;font-size:13px;color:var(--muted)}
+html.app .section[data-screen=calc]:not(.calc-section) .title{font-size:17px;text-align:left;margin:8px 2px}
+html.app .download{flex-wrap:nowrap;border:0;border-radius:16px;background:#fff;padding:10px 12px;font-size:14px;line-height:1.35;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .download>span{flex:1;min-width:0}
+html.app .download__icon{width:34px;height:34px}
+html.app .btn--download{flex:none;width:auto;margin:0;padding:10px 14px;font-size:13px}
+html.app .btn--download .i{width:20px;height:20px}
+
+/* Guide as an accordion */
+html.app .guide__body>p{font-size:14.5px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .guide h3{position:relative;margin:8px 0 0;padding:14px 42px 14px 14px;background:#fff;border-radius:16px;font-size:15.5px;line-height:1.35;cursor:pointer;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .guide h3::after{content:"";position:absolute;right:18px;top:50%;width:9px;height:9px;margin-top:-7px;border:solid var(--green);border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .2s}
+html.app .guide h3.is-open{border-radius:16px 16px 0 0;box-shadow:none}
+html.app .guide h3.is-open::after{transform:rotate(-135deg);margin-top:-2px}
+html.app .acc__body{display:none;background:#fff;border-radius:0 0 16px 16px;padding:0 14px 14px;font-size:14.5px}
+html.app .guide h3.is-open + .acc__body{display:block}
+html.app .guide .small{font-size:14px}
+html.app .guide ul{padding-left:20px}
+
+/* Contact */
+html.app .quick.is-current{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.quick a{display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:16px;padding:12px 4px;color:#fff;text-decoration:none;font-size:13.5px;font-weight:500;background:var(--teal);transition:transform .15s}
+.quick a:nth-child(2){background:var(--line-green)}
+.quick a:nth-child(3){background:var(--orange)}
+.quick .i,.quick img{width:26px;height:26px}
+html.app .consult-card{grid-template-columns:1fr;aspect-ratio:auto;justify-items:center;background:#fff;border:0;border-radius:20px;padding:16px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .consult-card__mascot{width:110px;margin:0}
+html.app .consult-card__body{grid-column:auto;padding:0}
+html.app .consult-card__body h2{font-size:24px;margin-bottom:4px}
+html.app .consult-card__qr{display:block;width:150px;height:150px;margin-top:6px}
+html.app .contact-band{background:none;padding-block:6px}
+html.app .contact-band__title{font-size:15px;margin-bottom:8px}
+html.app .contact-grid{grid-template-columns:1fr 1fr;gap:10px;background:none;border:0;padding:0}
+html.app .contact-grid a,html.app .contact-grid a:nth-child(3){min-height:124px;border:0;border-radius:16px;background:#fff;font-size:13.5px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .contact-grid a .i{width:52px;height:52px}
+html.app .footer{margin:6px 12px 0;border-radius:20px;overflow:hidden}
+html.app .footer__grid{grid-template-columns:1fr;width:calc(100% - 32px);gap:16px;padding-block:16px}
+html.app .footer h3{font-size:17px}
+html.app .footer ul{font-size:14px}
+html.app .footer__copy{font-size:11.5px}

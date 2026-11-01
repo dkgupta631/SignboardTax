@@ -2,11 +2,17 @@
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>โปรแกรมคำนวณภาษีป้ายออนไลน์ | Signboard Tax Calculator</title>
   <meta name="description" content="เครื่องมือช่วยคำนวณภาษีป้ายเบื้องต้น สำหรับร้านขายยาและธุรกิจหน้าร้าน ที่ต้องการวางแผนค่าใช้จ่ายก่อนติดตั้งป้ายจริง">
   <meta name="theme-color" content="#2a5d63">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/img/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sign Tax">
   <link rel="preload" href="assets/fonts/prompt-thai-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -40,6 +46,7 @@
           <strong>Signboard <em>Tax</em></strong>
           <small data-i18n="brandSub">โปรแกรมคำนวณภาษีป้าย</small>
         </span>
+        <span class="brand__screen" id="screenTitle"></span>
       </a>
 
       <nav class="nav" id="nav" aria-label="Main">
@@ -61,6 +68,7 @@
         <a href="https://www.deccodrug.com/blog-1">BLOG</a>
         <a href="https://www.deccodrug.com/about-us">ABOUT</a>
       </nav>
+      <div class="sheet-backdrop" id="sheetBackdrop"></div>
 
       <div class="header__actions">
         <div class="lang" role="group" aria-label="Language">
@@ -79,7 +87,7 @@
   <main id="main">
     <span id="top"></span>
 
-    <section class="hero">
+    <section class="hero" data-screen="home">
       <div class="container hero__content">
         <h1><span class="hero__th" data-i18n-hide="en">โปรแกรมคำนวณภาษีป้าย</span> <span>Signboard Tax Calculator</span></h1>
         <p data-i18n="heroText">เครื่องมือช่วยคำนวณภาษีป้ายเบื้องต้น สำหรับร้านขายยาและธุรกิจหน้าร้าน ที่ต้องการวางแผนค่าใช้จ่ายก่อนติดตั้งป้ายจริง ใช้งานง่าย</p>
@@ -91,7 +99,21 @@
       <svg class="hero__wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90V62C300 18 560 0 800 0c250 0 450 24 640 66v24z" fill="#fff"/></svg>
     </section>
 
-    <section class="section intro container container--narrow">
+    <section class="app-only container" data-screen="home">
+      <div class="install" id="installCard" hidden>
+        <img src="assets/img/logo-mark.svg" alt="" width="44" height="44">
+        <p id="installText"></p>
+        <button type="button" class="install__go" id="installGo" data-i18n="installBtn">ติดตั้ง</button>
+        <button type="button" class="install__close" id="installClose" aria-label="Close">✕</button>
+      </div>
+      <div class="tiles">
+        <button type="button" data-go="calc"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg><span data-i18n="tabCalc">คำนวณ</span></button>
+        <button type="button" data-go="rates"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg><span data-i18n="tabRates">อัตราภาษี</span></button>
+        <button type="button" data-go="guide"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span data-i18n="tabGuide">วิธีเสียภาษี</span></button>
+      </div>
+    </section>
+
+    <section class="section intro container container--narrow" data-screen="home">
       <div class="intro__top reveal">
         <figure class="intro__photo">
           <img src="assets/img/signboard-photo.jpg" alt="ป้ายร้านยาพร้อมเส้นบอกความกว้างและความยาว" data-i18n-alt="photoAlt" width="1054" height="643" loading="lazy">
@@ -135,7 +157,7 @@
       </div>
     </section>
 
-    <section class="section rates container container--narrow">
+    <section class="section rates container container--narrow" data-screen="rates">
       <h2 class="title reveal" data-i18n="ratesTitle">ตารางแสดงอัตราภาษีป้าย</h2>
       <div class="rate-wrap reveal">
         <table class="rate" id="rateTable">
@@ -152,25 +174,25 @@
           <tbody>
             <tr>
               <th scope="row"><div class="rate__type"><span class="shield">1</span><span><strong data-i18n="t1">ประเภทที่ 1</strong><small data-i18n="t1d">อักษรไทยล้วน</small></span></div></th>
-              <td><button type="button" class="rate__val" data-sign="changeable" data-font="type1"><b>10</b> <span data-i18n="baht">บาท</span></button></td>
-              <td><button type="button" class="rate__val" data-sign="fixed" data-font="type1"><b>5</b> <span data-i18n="baht">บาท</span></button></td>
+              <td><button type="button" class="rate__val" data-sign="changeable" data-font="type1"><small class="rate__tag" data-i18n="tagChange">เปลี่ยนข้อความ/ภาพได้</small><b>10</b> <span data-i18n="baht">บาท</span></button></td>
+              <td><button type="button" class="rate__val" data-sign="fixed" data-font="type1"><small class="rate__tag" data-i18n="tagFixed">เปลี่ยนข้อความ/ภาพไม่ได้</small><b>5</b> <span data-i18n="baht">บาท</span></button></td>
             </tr>
             <tr>
               <th scope="row"><div class="rate__type"><span class="shield">2</span><span><strong data-i18n="t2">ประเภทที่ 2</strong><small data-i18n="t2d">อักษรไทยปนต่างประเทศ ภาพ เครื่องหมาย</small></span></div></th>
-              <td><button type="button" class="rate__val" data-sign="changeable" data-font="type2"><b>52</b> <span data-i18n="baht">บาท</span></button></td>
-              <td><button type="button" class="rate__val" data-sign="fixed" data-font="type2"><b>26</b> <span data-i18n="baht">บาท</span></button></td>
+              <td><button type="button" class="rate__val" data-sign="changeable" data-font="type2"><small class="rate__tag" data-i18n="tagChange">เปลี่ยนข้อความ/ภาพได้</small><b>52</b> <span data-i18n="baht">บาท</span></button></td>
+              <td><button type="button" class="rate__val" data-sign="fixed" data-font="type2"><small class="rate__tag" data-i18n="tagFixed">เปลี่ยนข้อความ/ภาพไม่ได้</small><b>26</b> <span data-i18n="baht">บาท</span></button></td>
             </tr>
             <tr>
               <th scope="row"><div class="rate__type"><span class="shield">3</span><span><strong data-i18n="t3">ประเภทที่ 3</strong><small data-i18n="t3d">ไม่มีอักษรไทยหรือมีบางส่วน อยู่ต่ำกว่าอักษรต่างประเทศ</small></span></div></th>
-              <td><button type="button" class="rate__val" data-sign="changeable" data-font="type3"><b>52</b> <span data-i18n="baht">บาท</span></button></td>
-              <td><button type="button" class="rate__val" data-sign="fixed" data-font="type3"><b>50</b> <span data-i18n="baht">บาท</span></button></td>
+              <td><button type="button" class="rate__val" data-sign="changeable" data-font="type3"><small class="rate__tag" data-i18n="tagChange">เปลี่ยนข้อความ/ภาพได้</small><b>52</b> <span data-i18n="baht">บาท</span></button></td>
+              <td><button type="button" class="rate__val" data-sign="fixed" data-font="type3"><small class="rate__tag" data-i18n="tagFixed">เปลี่ยนข้อความ/ภาพไม่ได้</small><b>50</b> <span data-i18n="baht">บาท</span></button></td>
             </tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="section calc-section container container--narrow" id="calculator">
+    <section class="section calc-section container container--narrow" id="calculator" data-screen="calc">
       <form class="calc reveal" id="calcForm" novalidate>
         <h2 class="title" data-i18n="calcTitle">เริ่มคำนวณภาษีป้าย</h2>
         <p class="calc__sub" data-i18n="calcSub">กรอกข้อมูลรายละเอียดของป้าย เพื่อคำนวณภาษีป้ายที่ต้องชำระต่อปี</p>
@@ -237,7 +259,7 @@
       <p class="note reveal"><strong data-i18n="noteB">หมายเหตุ:</strong> <span data-i18n="note">ผลการคำนวณนี้เป็นเพียงการประเมินภาษีป้ายเบื้องต้น โปรดตรวจสอบรายละเอียดกับหน่วยงานท้องถิ่นที่รับผิดชอบอีกครั้งก่อนชำระภาษีจริง</span></p>
     </section>
 
-    <section class="section container container--narrow">
+    <section class="section container container--narrow" data-screen="calc">
       <h2 class="title reveal" data-i18n="formTitle">แบบฟอร์มสำหรับยื่นภาษีป้าย</h2>
       <div class="download reveal">
         <svg class="i download__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>
@@ -249,7 +271,7 @@
       </div>
     </section>
 
-    <section class="section guide container">
+    <section class="section guide container" data-screen="guide">
       <div class="guide__body reveal">
         <h2 data-i18n="payTitle">วิธีเสียภาษีป้าย</h2>
         <p data-i18n="payIntro">ภาษีป้ายจะเรียกเก็บเป็นรายปี โดยเจ้าของป้ายจะต้องยื่นแบบ ภ.ป.1 ภายในวันที่ 31 มีนาคมของทุกปี และเมื่อได้รับการแจ้งประเมินภาษีป้ายแล้ว ต้องชำระภาษีภายใน 15 วันนับแต่วันที่ได้รับแจ้งการประเมิน ทั้งนี้ ก่อนติดตั้งป้ายต้องขออนุญาตผู้บริหารท้องถิ่นก่อนติดตั้งป้าย โดยมีขั้นตอน ดังนี้</p>
@@ -297,7 +319,13 @@
       </div>
     </section>
 
-    <section class="section container">
+    <section class="app-only quick container" data-screen="contact">
+      <a href="tel:+66934241559"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="quickCall">โทร</span></a>
+      <a href="https://line.me/R/ti/p/@959xjnkn" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="28" height="28"><span>LINE</span></a>
+      <a href="mailto:Deccodrug@gmail.com"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="quickMail">อีเมล</span></a>
+    </section>
+
+    <section class="section container" data-screen="contact">
       <div class="consult-card reveal">
         <img class="consult-card__mascot" src="assets/img/mascot.png" alt="" width="344" height="421" loading="lazy">
         <div class="consult-card__body">
@@ -314,7 +342,7 @@
       </div>
     </section>
 
-    <section class="contact-band">
+    <section class="contact-band" data-screen="contact">
       <div class="container">
         <h2 class="contact-band__title reveal"><span>CONSULT CONTACT</span></h2>
         <div class="contact-grid reveal">
@@ -327,7 +355,7 @@
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" data-screen="contact">
     <div class="container footer__grid">
       <div>
         <h3 data-i18n="fServices">บริการทั้งหมด</h3>
@@ -378,6 +406,14 @@
     <p class="footer__copy">Copyright © 2024 deccodrug.com All Rights Reserved</p>
   </footer>
 
+  <nav class="tabbar" id="tabbar" aria-label="App">
+    <button type="button" class="tabbar__item" data-go="home"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg></span><span class="tabbar__label" data-i18n="tabHome">หน้าหลัก</span></button>
+    <button type="button" class="tabbar__item" data-go="rates"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg></span><span class="tabbar__label" data-i18n="tabRates">อัตราภาษี</span></button>
+    <button type="button" class="tabbar__item tabbar__item--main" data-go="calc"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg></span><span class="tabbar__label" data-i18n="tabCalc">คำนวณ</span></button>
+    <button type="button" class="tabbar__item" data-go="guide"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="tabbar__label" data-i18n="tabGuide">วิธีเสียภาษี</span></button>
+    <button type="button" class="tabbar__item" data-go="contact"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></span><span class="tabbar__label" data-i18n="tabContact">ติดต่อ</span></button>
+  </nav>
+
   <div class="floating">
     <a class="floating__btn floating__btn--phone" href="tel:+66934241559" aria-label="Phone"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <a class="floating__btn floating__btn--line" href="https://line.me/R/ti/p/@959xjnkn?oat_content=url&amp;ts=01302122" target="_blank" rel="noopener" aria-label="LINE"><img src="assets/img/social/line.png" alt="" width="36" height="36"></a>
@@ -385,6 +421,9 @@
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
+      <symbol id="i-home" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 11 12 3.500 21 11M5.500 9.500V20.500h13V9.500M10 20.500V14.500h4v6"/></symbol>
+      <symbol id="i-table" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.500"/><path d="M3 9.500h18M3 14.800h18M10 9.500V20"/></g></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.500"/><path d="m4 7 8 6 8-6"/></g></symbol>
       <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></symbol>
       <symbol id="i-phone-line" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></symbol>
       <symbol id="i-calc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><rect x="7.5" y="6" width="9" height="3.2" rx=".8"/><path d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01" stroke-width="2.4"/></g></symbol>
@@ -406,5 +445,6 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/mobile-app.js"></script>
 </body>
 </html>

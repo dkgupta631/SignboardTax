@@ -1,0 +1,17 @@
+{
+  "name": "Signboard Tax Calculator",
+  "short_name": "Sign Tax",
+  "description": "โปรแกรมคำนวณภาษีป้ายออนไลน์",
+  "lang": "th",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#22525a",
+  "theme_color": "#2a5d63",
+  "icons": [
+    { "src": "assets/img/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/img/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/img/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

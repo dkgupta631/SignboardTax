@@ -1,6 +1,16 @@
 // Thai is the page's default text and lives in index.html. app.js snapshots it
 // on load, so only the English strings need to be listed here.
 window.I18N_EN = {
+  tabHome: 'Home',
+  tabRates: 'Rates',
+  tabCalc: 'Calculate',
+  tabGuide: 'Guide',
+  tabContact: 'Contact',
+  tagChange: 'Changeable',
+  tagFixed: 'Not changeable',
+  quickCall: 'Call',
+  quickMail: 'Email',
+  installBtn: 'Install',
   skip: 'Skip to main content',
   brandSub: 'Calculator',
   navCourse: 'Courses',
@@ -134,12 +144,16 @@ window.I18N_MESSAGES = {
     error: 'กรุณากรอกข้อมูลให้ครบถ้วน',
     breakdown: function (area, rate) { return '(' + area + ' ตร.ซม. x ' + rate + ' บาท) ÷ 500'; },
     installment: 'ยอดภาษีตั้งแต่ 3,000 บาท สามารถขอผ่อนชำระได้ 3 งวด งวดละ 1 เดือน',
-    title: 'โปรแกรมคำนวณภาษีป้ายออนไลน์ | Signboard Tax Calculator'
+    title: 'โปรแกรมคำนวณภาษีป้ายออนไลน์ | Signboard Tax Calculator',
+    installAndroid: 'ติดตั้งเป็นแอปบนมือถือ ใช้งานได้แม้ไม่มีอินเทอร์เน็ต',
+    installIos: 'ติดตั้งแอป: แตะปุ่มแชร์ แล้วเลือก “เพิ่มไปยังหน้าจอโฮม”'
   },
   en: {
     error: 'Please fill in all the information.',
     breakdown: function (area, rate) { return '(' + area + ' sq. cm x ' + rate + ' baht) ÷ 500'; },
     installment: 'Tax of 3,000 baht or more can be paid in three equal monthly installments on request.',
-    title: 'Online Sign Tax Calculator | Signboard Tax Calculator'
+    title: 'Online Sign Tax Calculator | Signboard Tax Calculator',
+    installAndroid: 'Install as a mobile app. Works without internet too.',
+    installIos: 'Install the app: tap Share, then “Add to Home Screen”.'
   }
 };

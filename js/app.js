@@ -60,6 +60,7 @@
     all('.lang__btn').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === next)); });
     try { localStorage.setItem(LANG_KEY, next); } catch (e) { /* storage unavailable */ }
     renderMessages();
+    document.dispatchEvent(new Event('langchange'));
   }
 
   all('.lang__btn').forEach(function (b) {

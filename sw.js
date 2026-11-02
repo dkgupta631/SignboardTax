@@ -1,5 +1,5 @@
 // Network first so a new deploy shows straight away; the cache is the offline fallback.
-const CACHE = 'signboard-tax-v13';
+const CACHE = 'signboard-tax-v14';
 const FONTS = [300, 400, 500, 600, 700].flatMap((w) => [
   `assets/fonts/prompt-thai-${w}-normal.woff2`,
   `assets/fonts/prompt-latin-${w}-normal.woff2`

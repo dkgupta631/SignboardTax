@@ -180,7 +180,12 @@
 
   /* ---------- Page chrome ---------- */
   var header = $('header');
-  function onScroll() { header.classList.toggle('is-stuck', window.scrollY > 60); }
+  var progress = $('scrollProgress');
+  function onScroll() {
+    header.classList.toggle('is-stuck', window.scrollY > 60);
+    var range = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.transform = 'scaleX(' + (range > 0 ? window.scrollY / range : 0) + ')';
+  }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
@@ -192,18 +197,33 @@
     }).observe(document.querySelector('.footer__qr'));
   }
 
+  // The guide is long, so its blocks appear one by one rather than all at once.
+  var guide = document.querySelector('.guide__body');
+  guide.classList.remove('reveal');
+  Array.prototype.forEach.call(guide.children, function (el) { el.classList.add('reveal'); });
+
+  // Children of a revealed block follow each other; styles.css uses --i as the delay.
+  all('.formula__grid, .rate tbody, .calc__grid, .contact-grid, .consult-card, .footer__grid').forEach(function (group) {
+    Array.prototype.forEach.call(group.children, function (el, i) { el.style.setProperty('--i', i); });
+  });
+
   var reveals = all('.reveal');
   if ('IntersectionObserver' in window && !reduceMotion) {
     document.documentElement.classList.add('anim');
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -40px 0px' });
-    reveals.forEach(function (el) { io.observe(el); });
+    var startReveals = function () {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -40px 0px' });
+      reveals.forEach(function (el) { io.observe(el); });
+    };
+    // Held back while the loader is up, otherwise they would play unseen behind it.
+    if (document.documentElement.classList.contains('loading')) document.addEventListener('pageready', startReveals);
+    else startReveals();
   }
 
   setLang(storedLang());

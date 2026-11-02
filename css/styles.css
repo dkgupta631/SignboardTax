@@ -524,3 +524,51 @@ html.app .footer__bottom-inner{width:calc(100% - 36px);flex-direction:column;ali
 html.app .header__contact{display:flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;margin-left:4px;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;cursor:pointer}
 html.app .header__contact .i{width:20px;height:20px}
 html[data-screen="contact"].app .header__contact{background:#fff;color:var(--teal)}
+
+/* ==========================================================================
+   Motion. Entrances fill backwards only, so hover transforms still work once
+   they finish. The reduced-motion rule above switches all of this off.
+   ========================================================================== */
+@keyframes riseIn{from{opacity:0;transform:translateY(18px)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(-26px)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(26px)}}
+@keyframes headerIn{from{opacity:0;transform:translateY(-100%)}}
+@keyframes heroZoom{from{transform:scale(1.07)}}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}}
+@keyframes tabPop{40%{transform:scale(1.14)}}
+@keyframes fieldShake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes titleBar{from{transform:scaleX(0)}}
+@keyframes shine{to{left:130%}}
+
+/* Page load, held until the loader lifts */
+html.loading *{animation-play-state:paused}
+html.loading .loader,html.loading .loader *,html.loading .loader *::before,html.loading .loader *::after{animation-play-state:running}
+.header{animation:headerIn .55s cubic-bezier(.2,.7,.2,1) backwards}
+.hero{isolation:isolate}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:inherit;animation:heroZoom 1.8s cubic-bezier(.2,.7,.2,1) backwards}
+.hero__content>*{animation:riseIn .7s cubic-bezier(.2,.7,.2,1) backwards}
+.hero__content>p{animation-delay:.15s}
+.hero__content>.btn{animation-delay:.3s}
+.floating__btn{animation:popIn .45s cubic-bezier(.3,1.5,.5,1) .7s backwards}
+.floating__btn--line{animation-delay:.82s}
+
+/* Scroll position, desktop only */
+.scroll-progress{position:fixed;top:0;left:0;right:0;z-index:60;height:3px;background:linear-gradient(90deg,var(--teal),var(--green));transform:scaleX(0);transform-origin:left;pointer-events:none}
+html.app .scroll-progress{display:none}
+
+/* Blocks entering on scroll */
+.anim .reveal.is-in>.intro__photo{animation:slideLeft .75s ease backwards}
+.anim .reveal.is-in>.intro__photo+div{animation:slideRight .75s ease backwards}
+.anim .is-in .formula__card,.anim .is-in .calc__grid>.field,.anim .contact-grid.is-in>*,.anim .consult-card.is-in>*,.anim .footer__grid.is-in>*{animation:riseIn .6s ease backwards;animation-delay:calc(var(--i,0)*90ms + 120ms)}
+.anim .rate-wrap.is-in tbody>tr{animation:fadeIn .6s ease backwards;animation-delay:calc(var(--i,0)*110ms + 120ms)}
+html:not(.app) .title.reveal::after{content:"";display:block;width:56px;height:3px;margin:10px auto 0;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--green))}
+html:not(.app).anim .title.reveal.is-in::after{animation:titleBar .7s ease .25s backwards}
+
+/* Small feedback */
+.btn--cta,.btn--primary{position:relative;overflow:hidden}
+.btn--cta::after,.btn--primary::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);pointer-events:none}
+.btn--cta:hover::after,.btn--primary:hover::after{animation:shine .75s ease}
+.field.is-invalid{animation:fieldShake .32s ease}
+#breakdown:not([hidden]),.calc__error:not([hidden]),.calc__hint:not([hidden]){animation:riseIn .3s ease}
+.tabbar__item[aria-current] .tabbar__icon{animation:tabPop .3s ease}

@@ -1,4 +1,4 @@
-# Signboard Tax Calculator
+# Signnage Tax Calculator
 
 A static, bilingual (Thai by default, English on toggle) sign tax calculator. It has no build step and no dependencies, and all images and fonts are served from this repository.
 
@@ -14,7 +14,7 @@ Then open http://localhost:8000. Add `?lang=en` to the URL to open it in English
 
 1. Push this repository to GitHub.
 2. Go to **Settings → Pages**, then under **Build and deployment** choose **Deploy from a branch**, with `main` and `/ (root)`.
-3. The site appears at `https://<account>.github.io/SignboardTax/`.
+3. The site appears at `https://<account>.github.io/SignnageTax/`.
 
 ## Project layout
 

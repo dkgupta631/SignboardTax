@@ -155,7 +155,7 @@
     renderField(field);
   }
 
-  var ALERT_ICON = { error: 'i-warn', success: 'i-shield' };
+  var ALERT_ICON = { error: 'i-warn', success: 'i-shield', info: 'i-lock' };
   function renderAlert(box) {
     var key = box.dataset.key;
     box.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#' + ALERT_ICON[box.dataset.type] + '"/></svg><span></span>';
@@ -615,6 +615,8 @@
     var s = session();
     userBox.hidden = !s;
     signinBtn.hidden = !!s;
+    root.classList.toggle('signed-in', !!s);
+    root.classList.toggle('signed-out', !s);
     if (!s) return;
     var c = s.customer;
     var initial = initialOf(c.name);
@@ -656,13 +658,59 @@
   function closeAuth() {
     if (!root.classList.contains('auth-on') || root.classList.contains('auth-leaving')) return;
     closeList();
+    pending = null;
     root.classList.add('auth-leaving');
     setTimeout(function () {
       root.classList.remove('auth-on', 'auth-leaving');
-      card.classList.remove('is-done');
+      card.classList.remove('is-done', 'has-download');
+      if (session()) {
+        loginForm.reset();
+        clearAlert(loginForm);
+        hidePasswords(loginForm);
+      }
       (session() ? userBtn : signinBtn).focus({ preventScroll: true });
     }, reduceMotion ? 0 : 340);
   }
+
+  /* ---------- Members-only actions: scan, calculate, download the form ---------- */
+  var pending = null; // what the visitor tried before signing in: { type, el }
+
+  function requireLogin(type, el) {
+    clearAlert(loginForm);
+    openAuth('login');
+    pending = { type: type, el: el };
+    showAlert(loginForm, 'info', 'need_' + type);
+  }
+
+  function resume(p) {
+    if (p.type === 'calc') {
+      if (p.el.requestSubmit) p.el.requestSubmit();
+      else p.el.querySelector('[type=submit]').click();
+    } else {
+      p.el.click();
+    }
+  }
+
+  // Capture phase, so these run before app.js, scanner.js and mobile-app.js see the event.
+  document.addEventListener('click', function (e) {
+    var opener = e.target.closest('[data-auth-open]');
+    if (opener) { openAuth(opener.dataset.authOpen); return; }
+    var el = e.target.closest('[data-auth]');
+    if (!el || el.tagName === 'FORM' || session()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    requireLogin(el.dataset.auth, el);
+  }, true);
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!form.matches('[data-auth]') || session()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    requireLogin(form.dataset.auth, form);
+  }, true);
+
+  $('authDownload').addEventListener('click', function () { closeAuth(); });
 
   signinBtn.addEventListener('click', function () { openAuth('login'); });
   $('authClose').addEventListener('click', closeAuth);
@@ -672,17 +720,17 @@
 
   function signIn(customer) {
     write(SESSION_KEY, { customer: customer, at: Date.now() });
-    $('authWelcome').textContent = msg().welcome(customer.name);
-    card.classList.add('is-done');
-    setTimeout(unlock, reduceMotion ? 300 : 1300);
-  }
-
-  function unlock() {
     renderUser();
-    closeAuth();
-    loginForm.reset();
-    clearAlert(loginForm);
-    hidePasswords(loginForm);
+    $('authWelcome').textContent = msg().welcome(customer.name);
+    var p = pending;
+    pending = null;
+    card.classList.add('is-done');
+    // Browsers block a PDF tab that opens without a click, so offer a button instead.
+    if (p && p.type === 'download') { card.classList.add('has-download'); return; }
+    setTimeout(function () {
+      closeAuth();
+      if (p) setTimeout(function () { resume(p); }, reduceMotion ? 20 : 380);
+    }, reduceMotion ? 300 : 1300);
   }
 
   $('logoutBtn').addEventListener('click', function () {

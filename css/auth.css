@@ -179,6 +179,7 @@ html.loading .auth *,html.loading .auth *::before,html.loading .auth *::after{an
 .auth__alert .i{width:20px;height:20px;margin-top:1px}
 .auth__alert[data-type=error]{background:var(--danger-soft);border-color:#f3c4c4;color:#9f2626}
 .auth__alert[data-type=success]{background:#e8f7f0;border-color:#b5e2cf;color:#17654c}
+.auth__alert[data-type=info]{background:var(--gov-gold-soft);border-color:#ecd38a;color:#6e5410}
 .auth__alert.is-shown{animation:alertIn .35s cubic-bezier(.2,.8,.2,1)}
 
 .auth__privacy{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:13px;line-height:1.5}
@@ -216,6 +217,8 @@ html.loading .auth *,html.loading .auth *::before,html.loading .auth *::after{an
 .auth__done strong{color:var(--gov-navy);font-size:22px}
 .auth__done span{color:var(--muted)}
 .auth__check{width:96px;height:96px;margin-bottom:8px}
+.auth__done-download{display:none;width:auto;min-height:48px;margin-top:14px;padding:0 26px;text-decoration:none}
+.auth__card.has-download .auth__done-download{display:flex;animation:riseIn .4s ease .5s both}
 .auth__check circle{fill:none;stroke:var(--green);stroke-width:5;stroke-dasharray:277;stroke-dashoffset:277}
 .auth__check path{fill:none;stroke:var(--green);stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:70;stroke-dashoffset:70}
 .auth__card.is-done .auth__check circle{animation:draw .55s ease forwards}
@@ -224,6 +227,29 @@ html.loading .auth *,html.loading .auth *::before,html.loading .auth *::after{an
 /* Footer */
 .auth__footer{background:var(--gov-navy-deep);color:#a9bbd6;font-size:13px}
 .auth__footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 20px;padding-block:14px}
+
+/* Members-only actions on the calculate screen */
+.locked-note{display:none}
+html.signed-out .locked-note{display:flex;align-items:center;gap:14px;margin:0 auto 22px;max-width:760px;padding:14px 16px;border-radius:16px;background:linear-gradient(100deg,#fff8e3,#fffdf6);border:1px solid #efd894;box-shadow:0 6px 16px rgba(160,120,10,.08);text-align:left}
+.locked-note__icon{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:13px;background:var(--gov-gold);color:#fff}
+.locked-note__icon .i{width:22px;height:22px}
+.locked-note__text{flex:1;min-width:0;display:grid;line-height:1.45}
+.locked-note__text strong{color:#6e5410;font-size:15.5px}
+.locked-note__text span{color:#7d6a3a;font-size:14px}
+.locked-note__actions{display:flex;gap:8px;flex:none}
+.locked-note__btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--teal);background:var(--teal);color:#fff;font-size:14px;font-weight:500;padding:8px 16px;border-radius:999px;cursor:pointer;transition:transform .2s,background .2s,color .2s}
+.locked-note__btn .i{width:17px;height:17px}
+.locked-note__btn:hover{transform:translateY(-1px)}
+.locked-note__btn--alt{background:#fff;color:var(--teal)}
+.locked-note__btn--alt:hover{background:var(--green-soft)}
+.lock-badge{display:none;width:15px!important;height:15px!important;opacity:.85}
+html.signed-out .lock-badge{display:inline-block}
+@media (max-width:760px){
+  html.signed-out .locked-note{flex-wrap:wrap;margin-bottom:14px}
+  .locked-note__text{flex-basis:calc(100% - 58px)}
+  .locked-note__actions{width:100%}
+  .locked-note__btn{flex:1;justify-content:center;padding:10px}
+}
 
 /* Site header Sign in button and account menu */
 .btn--signin{background:#fff;color:var(--teal);border:1.5px solid var(--teal);padding:8px 18px 8px 14px;font-size:15px;white-space:nowrap}

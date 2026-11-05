@@ -18,7 +18,7 @@ Then open http://localhost:8000. Add `?lang=en` to the URL to open it in English
 
 ## Login and registration
 
-The whole site stays open to everyone. The **Sign in** button in the header opens the login, registration and forgot-password screen as an overlay. Accounts live in the **SignnageTax** Google Sheet: the `District_code` tab supplies the registration offices, and new members are added to the `Customer` tab. A Google Apps Script web app connects the two.
+Every page can be read without an account, but scanning a sign, calculating the tax and downloading the P.P.1 form need a sign-in. Trying one of them while signed out opens the sign-in screen, and the action continues after signing in. The **Sign in** button in the header opens the login, registration and forgot-password screen as an overlay. Accounts live in the **SignnageTax** Google Sheet: the `District_code` tab supplies the registration offices, and new members are added to the `Customer` tab. A Google Apps Script web app connects the two.
 
 ### One-time setup
 
@@ -47,6 +47,7 @@ After changing `Code.gs` later, use **Deploy → Manage deployments → Edit →
 
 - Passwords are stored as plain text in the sheet, because the forgot-password screen has to show them. Anyone with access to the sheet can read them.
 - Anyone who knows a member's email or phone number can see that member's password on the forgot-password screen.
+- The members-only lock runs in the browser. Someone who knows the PDF's direct address, or edits the page in developer tools, can still get past it.
 
 ## Project layout
 

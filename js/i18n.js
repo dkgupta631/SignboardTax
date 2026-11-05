@@ -194,6 +194,9 @@ window.I18N_EN = {
   authFooter: 'Calculations are estimates only. Please confirm with your local authority.',
   logout: 'Sign out',
   backHome: 'Back to home',
+  lockTitle: 'Members only',
+  lockText: 'Please sign in to scan signs, calculate the tax and download the P.P.1 form.',
+  downloadForm: 'Download the P.P.1 form',
 };
 
 // Strings built at runtime by the calculator, in both languages.
@@ -233,6 +236,9 @@ window.I18N_MESSAGES = {
       not_configured: 'ระบบสมาชิกยังไม่ได้เชื่อมต่อกับ Google Sheet กรุณาติดต่อผู้ดูแลระบบ',
       registered: 'ลงทะเบียนสำเร็จ กรุณาเข้าสู่ระบบด้วยรหัสผ่านที่ตั้งไว้',
       found: 'พบบัญชีของท่านแล้ว',
+      need_scan: 'กรุณาเข้าสู่ระบบก่อนใช้งานการสแกนป้าย',
+      need_calc: 'กรุณาเข้าสู่ระบบก่อนคำนวณภาษีป้าย',
+      need_download: 'กรุณาเข้าสู่ระบบก่อนดาวน์โหลดแบบฟอร์ม ภ.ป.1',
       copied: 'คัดลอกแล้ว',
       districtsLoading: 'กำลังโหลดรายการสำนักทะเบียน...',
       districtsReady: function (n) { return 'มีสำนักทะเบียนให้เลือก ' + n.toLocaleString('en-US') + ' แห่ง พิมพ์เพื่อค้นหา'; },
@@ -282,6 +288,9 @@ window.I18N_MESSAGES = {
       not_configured: 'The member system is not connected to Google Sheets yet. Please contact the administrator.',
       registered: 'Registration complete. Please sign in with the password you set.',
       found: 'Your account was found.',
+      need_scan: 'Please sign in to scan a sign.',
+      need_calc: 'Please sign in to calculate the sign tax.',
+      need_download: 'Please sign in to download the P.P.1 form.',
       copied: 'Copied',
       districtsLoading: 'Loading registration offices...',
       districtsReady: function (n) { return n.toLocaleString('en-US') + ' registration offices available. Type to search.'; },

@@ -280,6 +280,7 @@
               <svg class="auth__check" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M29 52l15 15 28-31"/></svg>
               <strong data-i18n="loginOk">เข้าสู่ระบบสำเร็จ</strong>
               <span id="authWelcome"></span>
+              <a class="auth__submit auth__done-download" id="authDownload" href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg><span data-i18n="downloadForm">ดาวน์โหลดแบบฟอร์ม ภ.ป.1</span></a>
             </div>
           </div>
         </section>
@@ -459,12 +460,24 @@
     </section>
 
     <section class="section calc-section container container--narrow" id="calculator" data-screen="calc">
-      <form class="calc reveal" id="calcForm" novalidate>
+      <form class="calc reveal" id="calcForm" data-auth="calc" novalidate>
         <h2 class="title" data-i18n="calcTitle">เริ่มคำนวณภาษีป้าย</h2>
         <p class="calc__sub" data-i18n="calcSub">กรอกข้อมูลรายละเอียดของป้าย เพื่อคำนวณภาษีป้ายที่ต้องชำระต่อปี</p>
 
+        <div class="locked-note" role="note">
+          <span class="locked-note__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></span>
+          <div class="locked-note__text">
+            <strong data-i18n="lockTitle">สำหรับสมาชิกเท่านั้น</strong>
+            <span data-i18n="lockText">กรุณาเข้าสู่ระบบเพื่อสแกนป้าย คำนวณภาษี และดาวน์โหลดแบบฟอร์ม ภ.ป.1</span>
+          </div>
+          <div class="locked-note__actions">
+            <button type="button" class="locked-note__btn" data-auth-open="login"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-login"/></svg><span data-i18n="tabLogin">เข้าสู่ระบบ</span></button>
+            <button type="button" class="locked-note__btn locked-note__btn--alt" data-auth-open="register"><span data-i18n="tabRegister">ลงทะเบียน</span></button>
+          </div>
+        </div>
+
         <div class="scan-entry">
-          <button type="button" class="btn btn--scan" id="scanBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scanBtn">สแกนป้าย</span></button>
+          <button type="button" class="btn btn--scan needs-auth" id="scanBtn" data-auth="scan"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scanBtn">สแกนป้าย</span><svg class="i lock-badge" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></button>
           <p class="scan-entry__or" data-i18n="scanOr">หรือกรอกความกว้างและความยาวด้วยตนเองด้านล่าง</p>
           <p class="calc__error" id="scanError" role="alert" hidden></p>
         </div>
@@ -524,7 +537,7 @@
         <p class="calc__hint" id="installHint" hidden></p>
 
         <div class="calc__actions">
-          <button type="submit" class="btn btn--primary"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg><span data-i18n="calcBtn">คำนวณภาษีป้าย</span></button>
+          <button type="submit" class="btn btn--primary needs-auth"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg><span data-i18n="calcBtn">คำนวณภาษีป้าย</span><svg class="i lock-badge" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></button>
           <button type="reset" class="btn btn--ghost"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reset"/></svg><span data-i18n="resetBtn">เริ่มใหม่</span></button>
         </div>
       </form>
@@ -536,9 +549,10 @@
       <div class="download reveal">
         <svg class="i download__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>
         <span data-i18n="formName">แบบฟอร์มยื่นภาษีป้าย (ภ.ป.1)</span>
-        <a class="btn btn--download" href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener">
+        <a class="btn btn--download needs-auth" href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener" data-auth="download">
           <span data-i18n="download">ดาวน์โหลด</span>
           <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>
+          <svg class="i lock-badge" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg>
         </a>
       </div>
     </section>
@@ -642,7 +656,7 @@
           <li><button type="button" data-go="rates" data-i18n="tabRates">อัตราภาษี</button></li>
           <li><button type="button" data-go="calc" data-i18n="tabCalc">คำนวณ</button></li>
           <li><button type="button" data-go="guide" data-i18n="tabGuide">วิธีเสียภาษี</button></li>
-          <li><a href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener" data-i18n="fForm">แบบฟอร์ม ภ.ป.1</a></li>
+          <li><a href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener" data-auth="download" data-i18n="fForm">แบบฟอร์ม ภ.ป.1</a></li>
         </ul>
       </nav>
       <div class="footer__services">
@@ -681,7 +695,7 @@
   <nav class="tabbar" id="tabbar" aria-label="App">
     <button type="button" class="tabbar__item" data-go="home"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg></span><span class="tabbar__label" data-i18n="tabHome">หน้าหลัก</span></button>
     <button type="button" class="tabbar__item" data-go="rates"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg></span><span class="tabbar__label" data-i18n="tabRates">อัตราภาษี</span></button>
-    <button type="button" class="tabbar__item tabbar__item--main" id="tabScan"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg></span><span class="tabbar__label" data-i18n="tabScan">สแกน</span></button>
+    <button type="button" class="tabbar__item tabbar__item--main" id="tabScan" data-auth="scan"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg></span><span class="tabbar__label" data-i18n="tabScan">สแกน</span></button>
     <button type="button" class="tabbar__item" data-go="calc"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg></span><span class="tabbar__label" data-i18n="tabCalc">คำนวณ</span></button>
     <button type="button" class="tabbar__item" data-go="guide"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="tabbar__label" data-i18n="tabGuide">วิธีเสียภาษี</span></button>
   </nav>

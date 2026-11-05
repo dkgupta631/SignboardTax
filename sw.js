@@ -1,11 +1,11 @@
 // Network first so a new deploy shows straight away; the cache is the offline fallback.
-const CACHE = 'signnage-tax-v15';
+const CACHE = 'signnage-tax-v18';
 const FONTS = [300, 400, 500, 600, 700].flatMap((w) => [
   `assets/fonts/prompt-thai-${w}-normal.woff2`,
   `assets/fonts/prompt-latin-${w}-normal.woff2`
 ]);
 const FILES = [
-  './', 'index.html', 'css/styles.css', 'js/i18n.js', 'js/app.js', 'js/mobile-app.js', 'js/scan-voice.js', 'js/sign-detect.js', 'js/scanner.js',
+  './', 'index.html', 'css/styles.css', 'css/auth.css', 'js/i18n.js', 'js/app.js', 'js/auth-config.js', 'js/auth.js', 'js/mobile-app.js', 'js/scan-voice.js', 'js/sign-detect.js', 'js/scanner.js',
   'favicon.svg', 'manifest.webmanifest',
   'assets/img/logo-mark.svg', 'assets/img/hero.jpg', 'assets/img/signboard-photo.jpg',
   'assets/img/pharmacy-bg.jpg', 'assets/img/mascot.png', 'assets/img/contact-card.png',

@@ -1,6 +1,6 @@
-// On phones the page runs as an app: one screen at a time, switched from a
-// bottom tab bar. Above the breakpoint the page is a normal scrolling site and
-// the same five destinations sit in the header, scrolling to their sections.
+// The site shows one screen at a time: home, rates, calculate, guide, contact.
+// On phones (html.app) they are switched from a bottom tab bar; on larger
+// screens the same five destinations sit in the header menu.
 (function () {
   'use strict';
 
@@ -34,12 +34,13 @@
     all('[data-screen]').forEach(function (el) {
       el.classList.toggle('is-current', el.dataset.screen === name);
     });
-    all('.tabbar__item').forEach(function (b) {
+    all('.tabbar__item, .topnav__item').forEach(function (b) {
       if (b.dataset.go === name) b.setAttribute('aria-current', 'page');
       else b.removeAttribute('aria-current');
     });
     updateTitle();
-    if (changed && isApp()) window.scrollTo(0, scrollPos[name] || 0);
+    // Phones return to where each tab was left; the desktop menu opens a screen at its top.
+    if (changed) window.scrollTo(0, isApp() ? scrollPos[name] || 0 : 0);
   }
 
   // Screens live in the URL so the phone's back button moves between them.
@@ -52,7 +53,8 @@
   function fromHash() {
     var hash = location.hash;
     if (hash === '#calculator') return 'calc';
-    return hash.indexOf('#/') === 0 ? hash.slice(2) : 'home';
+    if (hash.indexOf('#/') === 0) return hash.slice(2);
+    return hash && hash !== '#top' ? current : 'home'; // e.g. the skip link's #main stays put
   }
 
   window.addEventListener('hashchange', function () { show(fromHash()); });
@@ -60,43 +62,14 @@
   document.addEventListener('click', function (e) {
     var target = e.target.closest('[data-go], .rate__val, a[href="#calculator"], a[href="#top"]');
     if (!target) return;
-    if (!isApp()) {
-      if (target.dataset.go) { e.preventDefault(); scrollToScreen(target.dataset.go); }
-      return;
-    }
     e.preventDefault();
-    tap();
+    if (isApp()) tap();
     if (target.dataset.go) go(target.dataset.go);
     else if (target.classList.contains('rate__val') || target.getAttribute('href') === '#calculator') go('calc');
     else go('home');
   });
 
   document.addEventListener('langchange', updateTitle);
-
-  /* ---------- Desktop header menu ---------- */
-  function sectionFor(name) {
-    return document.querySelector('[data-screen="' + name + '"]:not(.app-only)');
-  }
-
-  function scrollToScreen(name) {
-    if (name === 'home') window.scrollTo(0, 0);
-    else sectionFor(name).scrollIntoView();
-  }
-
-  // Highlights the section being read.
-  function markCurrentSection() {
-    if (isApp()) return;
-    var active = 'home';
-    SCREENS.forEach(function (name) {
-      if (sectionFor(name).getBoundingClientRect().top <= 140) active = name;
-    });
-    if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) active = 'contact';
-    all('.topnav__item').forEach(function (b) {
-      if (b.dataset.go === active) b.setAttribute('aria-current', 'true');
-      else b.removeAttribute('aria-current');
-    });
-  }
-  window.addEventListener('scroll', markCurrentSection, { passive: true });
 
   /* ---------- Guide accordion ---------- */
   var heads = all('.guide__body h3');
@@ -133,7 +106,6 @@
   function applyMode() {
     var app = phone.matches;
     root.classList.toggle('app', app);
-    markCurrentSection();
     heads.forEach(function (head) {
       if (app) {
         head.setAttribute('role', 'button');

@@ -16,6 +16,38 @@ Then open http://localhost:8000. Add `?lang=en` to the URL to open it in English
 2. Go to **Settings → Pages**, then under **Build and deployment** choose **Deploy from a branch**, with `main` and `/ (root)`.
 3. The site appears at `https://<account>.github.io/SignnageTax/`.
 
+## Login and registration
+
+The whole site stays open to everyone. The **Sign in** button in the header opens the login, registration and forgot-password screen as an overlay. Accounts live in the **SignnageTax** Google Sheet: the `District_code` tab supplies the registration offices, and new members are added to the `Customer` tab. A Google Apps Script web app connects the two.
+
+### One-time setup
+
+1. Open the SignnageTax spreadsheet and choose **Extensions → Apps Script**.
+2. Replace the editor's contents with `google-apps-script/Code.gs` and save.
+3. Choose the `setup` function and press **Run**. Approve the permission prompt. This writes the column headings to the `Customer` tab.
+4. Choose **Deploy → New deployment**, pick the type **Web app**, and set:
+   - **Execute as:** Me
+   - **Who has access:** Anyone
+5. Press **Deploy** and copy the web app URL that ends in `/exec`.
+6. Paste that URL into `scriptUrl` in `js/auth-config.js`, then commit and push.
+
+After changing `Code.gs` later, use **Deploy → Manage deployments → Edit → Version: New version**. This keeps the same URL.
+
+### How it works
+
+| Action | What the script does |
+| --- | --- |
+| Register | Checks the district code exists, rejects a duplicate email or phone, and appends a row to `Customer` |
+| Sign in | Matches the email or phone number with the password, and records the time in `Last Login` |
+| Forgot password | Shows the stored password for a registered email or phone number |
+
+`District_code` is read from row 4 down: column B is the code and column C is the office name. The `Customer` columns are Customer ID, Registered At, District Code, District Name, Name, Phone, Email, Password, Address, Last Login.
+
+### Security limits
+
+- Passwords are stored as plain text in the sheet, because the forgot-password screen has to show them. Anyone with access to the sheet can read them.
+- Anyone who knows a member's email or phone number can see that member's password on the forgot-password screen.
+
 ## Project layout
 
 | Path | Contents |
@@ -24,7 +56,10 @@ Then open http://localhost:8000. Add `?lang=en` to the URL to open it in English
 | `css/styles.css` | Styles and colour variables |
 | `js/app.js` | Calculator, tax rates, language switch, page interactions |
 | `js/i18n.js` | English text |
-| `js/mobile-app.js` | Phone app mode: screens, tab bar, install prompt |
+| `js/auth.js`, `css/auth.css` | Login, registration and forgot-password screens, and the signed-in account menu |
+| `js/auth-config.js` | The Apps Script web app URL |
+| `google-apps-script/Code.gs` | Backend that reads and writes the Google Sheet |
+| `js/mobile-app.js` | Screen switching for the header menu and phone tab bar, install prompt |
 | `js/scanner.js`, `js/sign-detect.js` | Sign scanner: camera, automatic outline, corner marking, size measurement |
 | `sw.js`, `manifest.webmanifest` | Offline support and home-screen install |
 | `assets/` | Images, logo, fonts, and the P.P.1 form PDF |
@@ -41,6 +76,10 @@ Then open http://localhost:8000. Add `?lang=en` to the URL to open it in English
 
 To change a rate, edit `RATES` in `js/app.js` and the matching row in the table in `index.html`.
 
+## Screens
+
+The site shows one screen at a time: Home, Rates, Calculate, Guide and Contact. Each section in `index.html` names its screen with `data-screen`. On desktop the header menu switches screens and the footer shows on every screen.
+
 ## Phone app mode
 
-At 760px wide and below, the page runs as an app with a bottom tab bar. On GitHub Pages it can be installed to the home screen and used offline. If you add a new asset, add it to `FILES` in `sw.js` too.
+At 760px wide and below, the same screens are switched from a bottom tab bar. On GitHub Pages it can be installed to the home screen and used offline. If you add a new asset, add it to `FILES` in `sw.js` too.

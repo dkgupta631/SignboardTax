@@ -173,8 +173,10 @@
       clearInvalid(fields.signType);
       clearInvalid(fields.fontType);
       highlightRate();
-      $('calculator').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-      fields.width.focus({ preventScroll: true });
+      // mobile-app.js switches to the calculate screen; focus once it shows (not on phones, to keep the keyboard down).
+      if (!document.documentElement.classList.contains('app')) {
+        setTimeout(function () { fields.width.focus({ preventScroll: true }); }, 60);
+      }
     });
   });
 

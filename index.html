@@ -15,6 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="Sign Tax">
   <link rel="preload" href="assets/fonts/prompt-thai-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/auth.css">
   <style>
     /* Inline so the loader paints before styles.css arrives. Its content waits .3s, so fast loads never show it. */
     .loader{display:grid;place-items:center;position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#fff 40%,#eaf7f2);color:#22525a;font-family:Prompt,system-ui,sans-serif;text-align:center;transition:opacity .4s ease}
@@ -84,6 +85,215 @@
       <span class="loader__bar"></span>
     </div>
   </div>
+  <div class="auth" id="auth" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth__topbar">
+      <div class="auth__wrap auth__topbar-inner">
+        <span class="auth__date"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cal"/></svg><span id="authDate"></span></span>
+        <div class="auth__top-right">
+          <a class="auth__hotline" href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="authHotline">สายด่วน</span> 089-2012641</a>
+          <div class="lang" role="group" aria-label="Language">
+            <button type="button" class="lang__btn" data-lang="th" aria-pressed="true">TH</button>
+            <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header class="auth__header">
+      <div class="auth__wrap auth__header-inner">
+        <img src="assets/img/logo-mark.svg" alt="" width="56" height="56">
+        <div class="auth__brand">
+          <strong>Signnage <em>Tax</em></strong>
+          <span data-i18n="authPortal">ระบบบริการสมาชิกออนไลน์ โปรแกรมคำนวณภาษีป้าย</span>
+        </div>
+        <button type="button" class="auth__close" id="authClose"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg><span data-i18n="backHome">กลับหน้าหลัก</span></button>
+      </div>
+    </header>
+
+    <main class="auth__main">
+      <div class="auth__wrap auth__grid">
+        <section class="auth__intro" aria-labelledby="authTitle">
+          <span class="auth__eyebrow"><span class="auth__dot"></span><span data-i18n="authEyebrow">ระบบสมาชิก</span></span>
+          <h1 id="authTitle" data-i18n="authTitle">ยินดีต้อนรับสู่ระบบคำนวณภาษีป้ายออนไลน์</h1>
+          <p class="auth__lead" data-i18n="authLead">เข้าสู่ระบบเพื่อคำนวณภาษีป้าย สแกนขนาดป้าย และดูขั้นตอนการยื่นแบบ ภ.ป.1 ได้ในที่เดียว</p>
+          <ul class="auth__features">
+            <li><span class="auth__feat-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg></span><span><b data-i18n="authF1">คำนวณภาษีป้าย</b><small data-i18n="authF1d">ตามอัตราภาษีป้ายที่กฎหมายกำหนด</small></span></li>
+            <li><span class="auth__feat-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg></span><span><b data-i18n="authF2">สแกนขนาดป้าย</b><small data-i18n="authF2d">วัดความกว้างและความยาวด้วยกล้องมือถือ</small></span></li>
+            <li><span class="auth__feat-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><span><b data-i18n="authF3">คู่มือการยื่นภาษี</b><small data-i18n="authF3d">ขั้นตอน เอกสาร และแบบฟอร์ม ภ.ป.1</small></span></li>
+          </ul>
+          <ol class="auth__steps">
+            <li><span>1</span><b data-i18n="authS1">ลงทะเบียน</b></li>
+            <li><span>2</span><b data-i18n="authS2">เข้าสู่ระบบ</b></li>
+            <li><span>3</span><b data-i18n="authS3">เริ่มใช้งาน</b></li>
+          </ol>
+        </section>
+
+        <section class="auth__card" id="authCard" data-view="login" aria-label="Account">
+          <div class="auth__tabs" role="tablist">
+            <button type="button" class="auth__tab" role="tab" id="tabLogin" aria-controls="loginForm" aria-selected="true" data-view-go="login"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-login"/></svg><span data-i18n="tabLogin">เข้าสู่ระบบ</span></button>
+            <button type="button" class="auth__tab" role="tab" id="tabRegister" aria-controls="registerForm" aria-selected="false" tabindex="-1" data-view-go="register"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user-plus"/></svg><span data-i18n="tabRegister">ลงทะเบียน</span></button>
+            <span class="auth__ink" aria-hidden="true"></span>
+          </div>
+
+          <div class="auth__views">
+            <!-- Login -->
+            <form class="auth__view" id="loginForm" data-view="login" role="tabpanel" aria-labelledby="tabLogin" novalidate>
+              <div class="auth__head">
+                <h2 data-i18n="loginTitle">เข้าสู่ระบบสมาชิก</h2>
+                <p data-i18n="loginSub">กรอกอีเมลหรือเบอร์โทรศัพท์ และรหัสผ่านที่ลงทะเบียนไว้</p>
+              </div>
+              <div class="auth__alert" role="alert" hidden></div>
+              <div class="afield">
+                <label for="loginId"><span data-i18n="idLabel">อีเมลหรือเบอร์โทรศัพท์</span><i class="req" aria-hidden="true">*</i></label>
+                <div class="afield__box">
+                  <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg>
+                  <input id="loginId" name="identifier" type="text" autocomplete="username" inputmode="email" placeholder="example@email.com หรือ 0812345678" data-i18n-ph="idPh" required>
+                </div>
+                <p class="afield__err"></p>
+              </div>
+              <div class="afield">
+                <label for="loginPass"><span data-i18n="passLabel">รหัสผ่าน</span><i class="req" aria-hidden="true">*</i></label>
+                <div class="afield__box">
+                  <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg>
+                  <input id="loginPass" name="password" type="password" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" data-i18n-ph="passPh" required>
+                  <button type="button" class="afield__eye" aria-label="Show password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                </div>
+                <p class="afield__err"></p>
+              </div>
+              <div class="auth__row">
+                <button type="button" class="auth__link" data-view-go="forgot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-key"/></svg><span data-i18n="forgotLink">ลืมรหัสผ่าน?</span></button>
+              </div>
+              <button type="submit" class="auth__submit"><span data-i18n="loginBtn">เข้าสู่ระบบ</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg><span class="auth__spin" aria-hidden="true"></span></button>
+              <p class="auth__switch"><span data-i18n="noAccount">ยังไม่มีบัญชีผู้ใช้?</span> <button type="button" class="auth__link auth__link--strong" data-view-go="register" data-i18n="registerLink">ลงทะเบียนใหม่</button></p>
+            </form>
+
+            <!-- Register -->
+            <form class="auth__view" id="registerForm" data-view="register" role="tabpanel" aria-labelledby="tabRegister" novalidate hidden>
+              <div class="auth__head">
+                <h2 data-i18n="regTitle">ลงทะเบียนสมาชิกใหม่</h2>
+                <p data-i18n="regSub">กรอกข้อมูลให้ครบถ้วน ช่องที่มีเครื่องหมาย * จำเป็นต้องกรอก</p>
+              </div>
+              <div class="auth__alert" role="alert" hidden></div>
+
+              <fieldset class="auth__group">
+                <legend><span class="auth__num">1</span><span data-i18n="regGroup1">ข้อมูลสำนักทะเบียน</span></legend>
+                <div class="afield">
+                  <label for="regDistrict"><span data-i18n="districtLabel">รหัสสำนักทะเบียน (จังหวัด/อำเภอ/เทศบาล)</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="combo" id="districtCombo">
+                    <div class="afield__box">
+                      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
+                      <input id="regDistrict" type="text" role="combobox" aria-expanded="false" aria-controls="districtList" aria-autocomplete="list" autocomplete="off" placeholder="พิมพ์รหัสหรือชื่อ เช่น 1003 หรือ บางรัก" data-i18n-ph="districtPh" required>
+                      <button type="button" class="combo__toggle" tabindex="-1" aria-label="Show list"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
+                    </div>
+                    <div class="combo__pop" hidden>
+                      <p class="combo__count" aria-live="polite"></p>
+                      <ul class="combo__list" id="districtList" role="listbox" aria-label="Registration offices"></ul>
+                    </div>
+                  </div>
+                  <p class="afield__hint" id="districtStatus"></p>
+                  <p class="afield__err"></p>
+                </div>
+              </fieldset>
+
+              <fieldset class="auth__group">
+                <legend><span class="auth__num">2</span><span data-i18n="regGroup2">ข้อมูลผู้ลงทะเบียน</span></legend>
+                <div class="afield">
+                  <label for="regName"><span data-i18n="nameLabel">ชื่อ-นามสกุล</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg>
+                    <input id="regName" name="name" type="text" autocomplete="name" maxlength="120" placeholder="กรอกชื่อและนามสกุล" data-i18n-ph="namePh" required>
+                  </div>
+                  <p class="afield__err"></p>
+                </div>
+                <div class="afield-row">
+                  <div class="afield">
+                    <label for="regPhone"><span data-i18n="phoneLabel">เบอร์โทรศัพท์</span><i class="req" aria-hidden="true">*</i></label>
+                    <div class="afield__box">
+                      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone-line"/></svg>
+                      <input id="regPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="15" placeholder="0812345678" required>
+                    </div>
+                    <p class="afield__err"></p>
+                  </div>
+                  <div class="afield">
+                    <label for="regEmail"><span data-i18n="emailLabel">อีเมล</span><i class="req" aria-hidden="true">*</i></label>
+                    <div class="afield__box">
+                      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>
+                      <input id="regEmail" name="email" type="email" autocomplete="email" maxlength="160" placeholder="example@email.com" required>
+                    </div>
+                    <p class="afield__err"></p>
+                  </div>
+                </div>
+                <div class="afield">
+                  <label for="regPass"><span data-i18n="passLabel">รหัสผ่าน</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg>
+                    <input id="regPass" name="password" type="password" autocomplete="new-password" maxlength="64" placeholder="อย่างน้อย 6 ตัวอักษร" data-i18n-ph="newPassPh" required>
+                    <button type="button" class="afield__eye" aria-label="Show password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                  </div>
+                  <div class="meter" id="passMeter" data-level="0" aria-hidden="true"><span></span><span></span><span></span><em></em></div>
+                  <p class="afield__err"></p>
+                </div>
+                <div class="afield">
+                  <label for="regAddress"><span data-i18n="addressLabel">ที่อยู่</span> <small class="opt" data-i18n="optional">(ไม่บังคับ)</small></label>
+                  <div class="afield__box afield__box--area">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg>
+                    <textarea id="regAddress" name="address" rows="2" maxlength="400" autocomplete="street-address" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์" data-i18n-ph="addressPh"></textarea>
+                  </div>
+                  <p class="afield__err"></p>
+                </div>
+              </fieldset>
+
+              <p class="auth__privacy"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="privacy">ข้อมูลส่วนบุคคลของท่านจะถูกใช้เพื่อการให้บริการและติดต่อกลับเท่านั้น</span></p>
+              <button type="submit" class="auth__submit"><span data-i18n="regBtn">ลงทะเบียน</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg><span class="auth__spin" aria-hidden="true"></span></button>
+              <p class="auth__switch"><span data-i18n="haveAccount">มีบัญชีผู้ใช้แล้ว?</span> <button type="button" class="auth__link auth__link--strong" data-view-go="login" data-i18n="loginLink">เข้าสู่ระบบ</button></p>
+            </form>
+
+            <!-- Forgot password -->
+            <form class="auth__view" id="forgotForm" data-view="forgot" novalidate hidden>
+              <button type="button" class="auth__back" data-view-go="login"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-back"/></svg><span data-i18n="backLogin">กลับไปหน้าเข้าสู่ระบบ</span></button>
+              <div class="auth__head">
+                <span class="auth__badge"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-key"/></svg></span>
+                <h2 data-i18n="forgotTitle">ลืมรหัสผ่าน</h2>
+                <p data-i18n="forgotSub">กรอกอีเมลหรือเบอร์โทรศัพท์ที่ลงทะเบียนไว้ ระบบจะแสดงรหัสผ่านของท่าน</p>
+              </div>
+              <div class="auth__alert" role="alert" hidden></div>
+              <div class="afield">
+                <label for="forgotId"><span data-i18n="idLabel">อีเมลหรือเบอร์โทรศัพท์</span><i class="req" aria-hidden="true">*</i></label>
+                <div class="afield__box">
+                  <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg>
+                  <input id="forgotId" name="identifier" type="text" autocomplete="username" inputmode="email" placeholder="example@email.com หรือ 0812345678" data-i18n-ph="idPh" required>
+                </div>
+                <p class="afield__err"></p>
+              </div>
+              <div class="secret" id="forgotResult" hidden>
+                <span class="secret__label" data-i18n="yourPass">รหัสผ่านของท่านคือ</span>
+                <div class="secret__row">
+                  <strong class="secret__value" id="forgotPass"></strong>
+                  <button type="button" class="secret__copy" id="forgotCopy"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span class="secret__copy-label" data-i18n="copy">คัดลอก</span><span class="secret__copied" aria-live="polite"></span></button>
+                </div>
+              </div>
+              <button type="submit" class="auth__submit" id="forgotSubmit"><span data-i18n="forgotBtn">ตรวจสอบข้อมูล</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg><span class="auth__spin" aria-hidden="true"></span></button>
+              <button type="button" class="auth__submit auth__submit--alt" id="forgotToLogin" hidden><span data-i18n="goLogin">ไปหน้าเข้าสู่ระบบ</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </form>
+
+            <div class="auth__done" aria-live="polite">
+              <svg class="auth__check" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M29 52l15 15 28-31"/></svg>
+              <strong data-i18n="loginOk">เข้าสู่ระบบสำเร็จ</strong>
+              <span id="authWelcome"></span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="auth__footer">
+      <div class="auth__wrap auth__footer-inner">
+        <span>© 2026 Signnage Tax Calculator</span>
+        <span data-i18n="authFooter">ผลการคำนวณเป็นการประเมินเบื้องต้นเท่านั้น โปรดตรวจสอบกับหน่วยงานท้องถิ่น</span>
+      </div>
+    </footer>
+  </div>
+
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <a class="skip-link" href="#main" data-i18n="skip">ข้ามเนื้อหาหลัก</a>
 
@@ -107,6 +317,26 @@
       </nav>
 
       <div class="header__actions">
+        <button type="button" class="btn btn--signin" id="signinBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="tabLogin">เข้าสู่ระบบ</span></button>
+        <div class="user" id="user" hidden>
+          <button type="button" class="user__btn" id="userBtn" aria-expanded="false" aria-controls="userPop" aria-haspopup="true">
+            <span class="user__avatar" id="userAvatar" aria-hidden="true"></span>
+            <span class="user__name" id="userName"></span>
+            <svg class="i user__chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg>
+          </button>
+          <div class="user__pop" id="userPop" hidden>
+            <div class="user__head">
+              <span class="user__avatar user__avatar--lg" id="userAvatarLg" aria-hidden="true"></span>
+              <div><strong id="userFull"></strong><small id="userId"></small></div>
+            </div>
+            <dl class="user__info">
+              <div><dt><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg><span class="sr-only" data-i18n="emailLabel">อีเมล</span></dt><dd id="userEmail"></dd></div>
+              <div><dt><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone-line"/></svg><span class="sr-only" data-i18n="phoneLabel">เบอร์โทรศัพท์</span></dt><dd id="userPhone"></dd></div>
+              <div><dt><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span class="sr-only" data-i18n="districtShort">สำนักทะเบียน</span></dt><dd id="userDistrict"></dd></div>
+            </dl>
+            <button type="button" class="user__logout" id="logoutBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-logout"/></svg><span data-i18n="logout">ออกจากระบบ</span></button>
+          </div>
+        </div>
         <div class="lang" role="group" aria-label="Language">
           <button type="button" class="lang__btn" data-lang="th" aria-pressed="true">TH</button>
           <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
@@ -483,6 +713,22 @@
       <symbol id="i-shop" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h30l6 13a5 5 0 0 1-7 4 5 5 0 0 1-7 0 5 5 0 0 1-7 0 5 5 0 0 1-7 0 5 5 0 0 1-7 0 5 5 0 0 1-7-4zM8 24v20h32V24M13 44V29h9v15M27 29h9v9h-9zM16 6v-3h16v3M21 10h6M24 7.500v5"/></g></symbol>
       <symbol id="i-building" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 44h42M6 44V20h14v24M26 44V22a15 15 0 0 1 16 0v22M26 28h16M26 34h16M34 18v26M4 12h12M4 16h16M10 4v8M9 26h8M9 32h8M9 38h8"/></g></symbol>
       <symbol id="i-budget" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 3H10v30M28 3l8 8v8M28 3v8h8M15 12h8M15 18h14M15 24h8"/><rect x="25" y="23" width="19" height="22" rx="2"/><path d="M29 28h11M30 34h.01M35 34h.01M40 34h.01M30 40h.01M35 40h.01M40 40h.01"/><ellipse cx="13" cy="37" rx="8" ry="3"/><path d="M5 37v5c0 1.700 3.600 3 8 3s8-1.300 8-3v-5"/></g></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></g></symbol>
+      <symbol id="i-user-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"/><path d="M2.500 21a7.500 7.500 0 0 1 12.500-5.600M19 14v6M16 17h6"/></g></symbol>
+      <symbol id="i-login" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h4.500A2.500 2.500 0 0 1 21 5.500v13a2.500 2.500 0 0 1-2.500 2.500H14M3 12h12M11 8l4 4-4 4"/></g></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H5.500A2.500 2.500 0 0 0 3 5.500v13A2.500 2.500 0 0 0 5.500 21H10M9 12h12M17 8l4 4-4 4"/></g></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.600-7 10-7 10 7 10 7-3.600 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></g></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.600 5.100A10 10 0 0 1 12 5c6.400 0 10 7 10 7a17 17 0 0 1-3 3.800M6.600 6.600C3.700 8.400 2 12 2 12s3.600 7 10 7a9.800 9.800 0 0 0 5.400-1.600M9.900 9.900a3 3 0 0 0 4.200 4.200M3 3l18 18"/></g></symbol>
+      <symbol id="i-key" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="5"/><path d="M11.500 11.500 20 3M16 7l3 3M18 5l2 2"/></g></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.200-7-12a7 7 0 0 1 14 0c0 5.800-7 12-7 12z"/><circle cx="12" cy="9" r="2.500"/></g></symbol>
+      <symbol id="i-chev-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M14 6l6 6-6 6"/></symbol>
+      <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 12H4M10 6l-6 6 6 6"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></g></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2.500"/><path d="M16 8V5.500A2.500 2.500 0 0 0 13.500 3h-8A2.500 2.500 0 0 0 3 5.500v8A2.500 2.500 0 0 0 5.500 16H8"/></g></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.500 4 5.500v6c0 5 3.400 8.600 8 10 4.600-1.400 8-5 8-10v-6z"/><path d="m8.500 12 2.500 2.500 4.500-5"/></g></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></symbol>
+      <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.500"/><path d="M3 10h18M8 3v4M16 3v4"/></g></symbol>
     </defs>
   </svg>
 
@@ -532,6 +778,8 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/auth-config.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/mobile-app.js"></script>
   <script src="js/scan-voice.js"></script>
   <script src="js/sign-detect.js"></script>

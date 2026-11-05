@@ -327,8 +327,12 @@ html[lang=en] .hero__th{display:none}
 
 html.app{scroll-behavior:auto;scroll-padding-top:70px;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 html.app body{background:#eef3f2;font-size:15.5px;line-height:1.6;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
-html.app [data-screen]:not(.is-current){display:none!important}
-html.app [data-screen].is-current{animation:screenIn .24s ease-out}
+[data-screen]:not(.is-current){display:none!important}
+[data-screen].is-current{animation:screenIn .24s ease-out}
+/* On larger screens the footer belongs to every screen, not just contact. */
+html:not(.app) .footer[data-screen]{display:block!important;animation:none}
+html:not(.app) #main{min-height:calc(100vh - 380px)}
+html:not(.app):not([data-screen=home]) #main{padding-top:26px;padding-bottom:30px}
 @keyframes screenIn{from{opacity:0;transform:translateY(10px)}}
 html.app .app-only{display:block}
 html.app .container,html.app .container--narrow{width:calc(100% - 24px)}

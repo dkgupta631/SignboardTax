@@ -5,8 +5,8 @@
 (function () {
   'use strict';
 
-  var SESSION_KEY = 'signnage-tax-session';
-  var DISTRICT_KEY = 'signnage-tax-districts';
+  var SESSION_KEY = 'signage-tax-session';
+  var DISTRICT_KEY = 'signage-tax-districts';
   var DISTRICT_TTL = 24 * 60 * 60 * 1000;
   var MAX_SHOWN = 60;
   var TIMEOUT = 20000;
@@ -14,7 +14,7 @@
   var root = document.documentElement;
   var $ = function (id) { return document.getElementById(id); };
   var all = function (sel, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); };
-  var config = window.SIGNNAGE_AUTH_CONFIG || {};
+  var config = window.SIGNAGE_AUTH_CONFIG || {};
   var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var finePointer = window.matchMedia && matchMedia('(pointer: fine)').matches;
 

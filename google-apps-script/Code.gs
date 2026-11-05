@@ -1,7 +1,7 @@
 /**
- * Signnage Tax customer API, run as a Google Apps Script web app.
+ * Signage Tax customer API, run as a Google Apps Script web app.
  *
- * Paste this file into Extensions > Apps Script of the "SignnageTax" spreadsheet,
+ * Paste this file into Extensions > Apps Script of the "SignageTax" spreadsheet,
  * then deploy it as a web app (see README.md). The website talks to it with:
  *   GET  ?action=districts                  -> registration office codes
  *   POST {action:'register', ...}           -> new row in the Customer sheet
@@ -23,7 +23,7 @@ function doGet(e) {
   var action = e && e.parameter ? e.parameter.action : '';
   return respond(function () {
     if (action === 'districts') return { ok: true, districts: getDistricts() };
-    return { ok: true, service: 'Signnage Tax customer API' };
+    return { ok: true, service: 'Signage Tax customer API' };
   });
 }
 

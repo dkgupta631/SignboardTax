@@ -1,4 +1,4 @@
-# Signnage Tax Calculator
+# Signage Tax Calculator
 
 A static, bilingual (Thai by default, English on toggle) sign tax calculator. It has no build step and no dependencies, and all images and fonts are served from this repository.
 
@@ -14,15 +14,15 @@ Then open http://localhost:8000. Add `?lang=en` to the URL to open it in English
 
 1. Push this repository to GitHub.
 2. Go to **Settings → Pages**, then under **Build and deployment** choose **Deploy from a branch**, with `main` and `/ (root)`.
-3. The site appears at `https://<account>.github.io/SignnageTax/`.
+3. The site appears at `https://<account>.github.io/SignboardTax/`.
 
 ## Login and registration
 
-Every page can be read without an account, but scanning a sign, calculating the tax and downloading the P.P.1 form need a sign-in. Trying one of them while signed out opens the sign-in screen, and the action continues after signing in. The **Sign in** button in the header opens the login, registration and forgot-password screen as an overlay. Accounts live in the **SignnageTax** Google Sheet: the `District_code` tab supplies the registration offices, and new members are added to the `Customer` tab. A Google Apps Script web app connects the two.
+Every page can be read without an account, but scanning a sign, calculating the tax and downloading the P.P.1 form need a sign-in. Trying one of them while signed out opens the sign-in screen, and the action continues after signing in. The **Sign in** button in the header opens the login, registration and forgot-password screen as an overlay. Accounts live in the **SignageTax** Google Sheet: the `District_code` tab supplies the registration offices, and new members are added to the `Customer` tab. A Google Apps Script web app connects the two.
 
 ### One-time setup
 
-1. Open the SignnageTax spreadsheet and choose **Extensions → Apps Script**.
+1. Open the SignageTax spreadsheet and choose **Extensions → Apps Script**.
 2. Replace the editor's contents with `google-apps-script/Code.gs` and save.
 3. Choose the `setup` function and press **Run**. Approve the permission prompt. This writes the column headings to the `Customer` tab.
 4. Choose **Deploy → New deployment**, pick the type **Web app**, and set:

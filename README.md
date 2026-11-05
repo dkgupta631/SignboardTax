@@ -40,8 +40,12 @@ After changing `Code.gs` later, use **Deploy → Manage deployments → Edit →
 | Register | Checks the district code exists, rejects a duplicate email or phone, and appends a row to `Customer` |
 | Sign in | Matches the email or phone number with the password, and records the time in `Last Login` |
 | Forgot password | Shows the stored password for a registered email or phone number |
+| My profile | Shows and updates the member's office, name, phone, email and address. A duplicate email or phone is rejected |
+| Change password | Checks the current password, saves the new one, and signs out the member's other devices |
 
-`District_code` is read from row 4 down: column B is the code and column C is the office name. The `Customer` columns are Customer ID, Registered At, District Code, District Name, Name, Phone, Email, Password, Address, Last Login.
+Signing in returns a session token, stored in the `Session Token` column. The profile actions only work with a matching token, so nobody can edit another member's details. Changing the password issues a new token.
+
+`District_code` is read from row 4 down: column B is the code and column C is the office name. The `Customer` columns are Customer ID, Registered At, District Code, District Name, Name, Phone, Email, Password, Address, Last Login, Session Token, Updated At. The script adds any missing headings itself.
 
 ### Security limits
 

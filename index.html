@@ -281,6 +281,127 @@
     </footer>
   </div>
 
+  <div class="profile" id="profile" role="dialog" aria-modal="true" aria-labelledby="profileName" hidden>
+    <div class="profile__backdrop" data-profile-close></div>
+    <section class="profile__panel">
+      <header class="profile__head">
+        <span class="profile__avatar" id="profileAvatar" aria-hidden="true"></span>
+        <div class="profile__who">
+          <h2 id="profileName"></h2>
+          <p><span class="profile__id" id="profileId"></span><span class="profile__since" id="profileSince"></span></p>
+        </div>
+        <button type="button" class="profile__close" data-profile-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="profile__tabs" role="tablist">
+        <button type="button" class="profile__tab" role="tab" id="ptabInfo" aria-controls="profileForm" aria-selected="true" data-ptab="info"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="profileTab">ข้อมูลส่วนตัว</span></button>
+        <button type="button" class="profile__tab" role="tab" id="ptabPassword" aria-controls="passwordForm" aria-selected="false" tabindex="-1" data-ptab="password"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-key"/></svg><span data-i18n="passwordTab">เปลี่ยนรหัสผ่าน</span></button>
+      </div>
+      <div class="profile__body">
+        <form class="profile__view" id="profileForm" role="tabpanel" aria-labelledby="ptabInfo" novalidate>
+          <p class="profile__intro" data-i18n="profileIntro">ตรวจสอบและแก้ไขข้อมูลของท่านให้เป็นปัจจุบัน เพื่อให้เราติดต่อกลับได้อย่างถูกต้อง</p>
+          <div class="auth__alert" role="alert" hidden></div>
+          <fieldset class="auth__group">
+            <legend><span class="auth__num">1</span><span data-i18n="regGroup1">ข้อมูลสำนักทะเบียน</span></legend>
+            <div class="afield">
+              <label for="profDistrict"><span data-i18n="districtLabel">รหัสสำนักทะเบียน (จังหวัด/อำเภอ/เทศบาล)</span><i class="req" aria-hidden="true">*</i></label>
+              <div class="combo" id="profDistrictCombo">
+                <div class="afield__box">
+                  <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
+                  <input id="profDistrict" type="text" role="combobox" aria-expanded="false" aria-controls="profDistrictList" aria-autocomplete="list" autocomplete="off" placeholder="พิมพ์รหัสหรือชื่อ เช่น 1003 หรือ บางรัก" data-i18n-ph="districtPh" required>
+                  <button type="button" class="combo__toggle" tabindex="-1" aria-label="Show list"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
+                </div>
+                <div class="combo__pop" hidden>
+                  <p class="combo__count" aria-live="polite"></p>
+                  <ul class="combo__list" id="profDistrictList" role="listbox" aria-label="Registration offices"></ul>
+                </div>
+              </div>
+              <p class="afield__hint" id="profDistrictStatus"></p>
+              <p class="afield__err"></p>
+            </div>
+          </fieldset>
+          <fieldset class="auth__group">
+            <legend><span class="auth__num">2</span><span data-i18n="profGroup2">ข้อมูลติดต่อ</span></legend>
+                <div class="afield">
+                  <label for="profName"><span data-i18n="nameLabel">ชื่อ-นามสกุล</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg>
+                    <input id="profName" name="name" type="text" autocomplete="name" maxlength="120" required>
+                  </div>
+                  <p class="afield__err"></p>
+                </div>
+            <div class="afield-row">
+                <div class="afield">
+                  <label for="profPhone"><span data-i18n="phoneLabel">เบอร์โทรศัพท์</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone-line"/></svg>
+                    <input id="profPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="16" placeholder="0812345678" required>
+                  </div>
+                  <p class="afield__err"></p>
+                </div>
+                <div class="afield">
+                  <label for="profEmail"><span data-i18n="emailLabel">อีเมล</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>
+                    <input id="profEmail" name="email" type="email" autocomplete="email" maxlength="160" placeholder="example@email.com" required>
+                  </div>
+                  <p class="afield__err"></p>
+                </div>
+            </div>
+            <div class="afield">
+              <label for="profAddress"><span data-i18n="addressLabel">ที่อยู่</span> <small class="opt" data-i18n="optional">(ไม่บังคับ)</small></label>
+              <div class="afield__box afield__box--area">
+                <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg>
+                <textarea id="profAddress" name="address" rows="2" maxlength="400" autocomplete="street-address" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์" data-i18n-ph="addressPh"></textarea>
+              </div>
+              <p class="afield__err"></p>
+            </div>
+          </fieldset>
+          <div class="profile__actions">
+            <button type="button" class="profile__cancel" data-profile-close data-i18n="cancel">ยกเลิก</button>
+            <button type="submit" class="auth__submit"><span data-i18n="saveChanges">บันทึกการเปลี่ยนแปลง</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg><span class="auth__spin" aria-hidden="true"></span></button>
+          </div>
+        </form>
+
+        <form class="profile__view" id="passwordForm" role="tabpanel" aria-labelledby="ptabPassword" novalidate hidden>
+          <p class="profile__intro" data-i18n="passIntro">เพื่อความปลอดภัย กรุณายืนยันรหัสผ่านปัจจุบันก่อนตั้งรหัสผ่านใหม่</p>
+          <div class="auth__alert" role="alert" hidden></div>
+                <div class="afield">
+                  <label for="curPass"><span data-i18n="curPassLabel">รหัสผ่านปัจจุบัน</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg>
+                    <input id="curPass" name="current-password" type="password" autocomplete="current-password" maxlength="64" placeholder="กรอกรหัสผ่านปัจจุบัน" data-i18n-ph="curPassPh" required>
+                    <button type="button" class="afield__eye" aria-label="Show password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                  </div>
+                  <p class="afield__err"></p>
+                </div>
+                <div class="afield">
+                  <label for="newPass"><span data-i18n="newPassLabel">รหัสผ่านใหม่</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-key"/></svg>
+                    <input id="newPass" name="new-password" type="password" autocomplete="new-password" maxlength="64" placeholder="อย่างน้อย 6 ตัวอักษร" data-i18n-ph="newPassPh" required>
+                    <button type="button" class="afield__eye" aria-label="Show password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                  </div>
+                  <div class="meter" id="newPassMeter" data-level="0" aria-hidden="true"><span></span><span></span><span></span><em></em></div>
+                  <p class="afield__err"></p>
+                </div>
+                <div class="afield">
+                  <label for="confirmPass"><span data-i18n="confirmPassLabel">ยืนยันรหัสผ่านใหม่</span><i class="req" aria-hidden="true">*</i></label>
+                  <div class="afield__box">
+                    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-key"/></svg>
+                    <input id="confirmPass" name="confirm-password" type="password" autocomplete="new-password" maxlength="64" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง" data-i18n-ph="confirmPassPh" required>
+                    <button type="button" class="afield__eye" aria-label="Show password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                  </div>
+                  <p class="afield__err"></p>
+                </div>
+          <p class="profile__tip"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="passTip">ใช้อย่างน้อย 6 ตัวอักษร ผสมตัวอักษร ตัวเลข และสัญลักษณ์เพื่อความปลอดภัยที่มากขึ้น เมื่อเปลี่ยนรหัสผ่านแล้ว อุปกรณ์อื่นที่เข้าสู่ระบบไว้จะต้องเข้าสู่ระบบใหม่</span></p>
+          <div class="profile__actions">
+            <button type="button" class="profile__cancel" data-profile-close data-i18n="cancel">ยกเลิก</button>
+            <button type="submit" class="auth__submit"><span data-i18n="updatePassBtn">เปลี่ยนรหัสผ่าน</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-key"/></svg><span class="auth__spin" aria-hidden="true"></span></button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <a class="skip-link" href="#main" data-i18n="skip">ข้ามเนื้อหาหลัก</a>
 
@@ -322,6 +443,10 @@
               <div><dt><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone-line"/></svg><span class="sr-only" data-i18n="phoneLabel">เบอร์โทรศัพท์</span></dt><dd id="userPhone"></dd></div>
               <div><dt><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span class="sr-only" data-i18n="districtShort">สำนักทะเบียน</span></dt><dd id="userDistrict"></dd></div>
             </dl>
+            <div class="user__menu">
+              <button type="button" class="user__item" data-profile-open="info"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="myProfile">ข้อมูลส่วนตัว</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
+              <button type="button" class="user__item" data-profile-open="password"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-key"/></svg><span data-i18n="changePassword">เปลี่ยนรหัสผ่าน</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
+            </div>
             <button type="button" class="user__logout" id="logoutBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-logout"/></svg><span data-i18n="logout">ออกจากระบบ</span></button>
           </div>
         </div>

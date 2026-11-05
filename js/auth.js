@@ -1,7 +1,7 @@
-// Member sign in, registration and password lookup, backed by a Google Sheet
-// through the Apps Script web app in google-apps-script/Code.gs. The header's
-// Sign in button opens the screen as an overlay (html.auth-on); the site itself
-// stays open to everyone.
+// Member sign in, registration, password lookup and the signed-in member's
+// profile, backed by a Google Sheet through the Apps Script web app in
+// google-apps-script/Code.gs. The header's Sign in button opens the screen as an
+// overlay (html.auth-on); the site itself stays open to everyone.
 (function () {
   'use strict';
 
@@ -184,12 +184,13 @@
 
   function shake(form) {
     if (reduceMotion) return;
-    card.classList.remove('is-shaking');
-    void card.offsetWidth;
-    card.classList.add('is-shaking');
+    var panel = form.closest('.auth__card, .profile__panel');
+    panel.classList.remove('is-shaking');
+    void panel.offsetWidth;
+    panel.classList.add('is-shaking');
   }
-  card.addEventListener('animationend', function (e) {
-    if (e.animationName === 'authShake') card.classList.remove('is-shaking');
+  document.addEventListener('animationend', function (e) {
+    if (e.animationName === 'authShake') e.target.classList.remove('is-shaking');
   });
 
   // Marks every invalid field, focuses the first one and reports whether all passed.
@@ -213,18 +214,21 @@
     all('button, input, textarea', form).forEach(function (el) { el.disabled = busy; });
   }
 
-  function handleFailure(form, err) {
-    var fieldsByName = { districtCode: $('regDistrict'), name: $('regName'), phone: $('regPhone'), email: $('regEmail'), password: $('regPass') };
-    var keys = { districtCode: 'district', name: 'name', phone: 'phone', email: 'email', password: 'password' };
-    if (err.code === 'email_taken') setError($('regEmail'), 'email_taken');
-    if (err.code === 'phone_taken') setError($('regPhone'), 'phone_taken');
-    (err.fields || []).forEach(function (f) { if (fieldsByName[f]) setError(fieldsByName[f], keys[f]); });
+  // Shows a server error on the form and marks the fields it names. `fields` maps
+  // server field names (districtCode, phone, email, ...) to that form's inputs.
+  var FIELD_KEYS = { districtCode: 'district', name: 'name', phone: 'phone', email: 'email', password: 'password', newPassword: 'password' };
+  var CODE_FIELDS = { email_taken: 'email', phone_taken: 'phone', wrong_password: 'currentPassword', same_password: 'newPassword' };
+  function handleFailure(form, err, fields) {
+    fields = fields || {};
+    var codeField = fields[CODE_FIELDS[err.code]];
+    if (codeField) setError(codeField, err.code);
+    (err.fields || []).forEach(function (f) { if (fields[f]) setError(fields[f], FIELD_KEYS[f]); });
     showAlert(form, 'error', msg()[err.code] ? err.code : 'server');
     shake(form);
   }
 
   // Password visibility toggles.
-  card.addEventListener('click', function (e) {
+  document.addEventListener('click', function (e) {
     var eye = e.target.closest('.afield__eye');
     if (!eye) return;
     var input = eye.parentNode.querySelector('input');
@@ -260,7 +264,7 @@
     if (!ok) return;
     setBusy(loginForm, true);
     api('login', { identifier: id.value.trim(), password: pass.value })
-      .then(function (data) { signIn(data.customer); })
+      .then(function (data) { signIn(data.customer, data.token); })
       .catch(function (err) {
         handleFailure(loginForm, err);
         if (err.code === 'wrong_credentials') { pass.value = ''; }
@@ -274,7 +278,6 @@
   /* ---------- Registration ---------- */
   var regForm = views.register;
   var regPass = $('regPass');
-  var meter = $('passMeter');
 
   function strength(p) {
     if (!p) return 0;
@@ -284,12 +287,19 @@
     if ((/[a-z]/i.test(p) && /\d/.test(p)) || /[^a-z0-9]/i.test(p)) score++;
     return score;
   }
-  function renderMeter() {
-    var level = strength(regPass.value);
-    meter.dataset.level = level;
-    meter.querySelector('em').textContent = msg().strength[level];
+  var meters = [];
+  function bindMeter(input, meter) {
+    var render = function () {
+      var level = strength(input.value);
+      meter.dataset.level = level;
+      meter.querySelector('em').textContent = msg().strength[level];
+    };
+    input.addEventListener('input', render);
+    meters.push(render);
+    return render;
   }
-  regPass.addEventListener('input', renderMeter);
+  function renderMeters() { meters.forEach(function (r) { r(); }); }
+  var renderMeter = bindMeter(regPass, $('passMeter'));
 
   regForm.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -297,7 +307,7 @@
     var name = $('regName'), phone = $('regPhone'), email = $('regEmail'), address = $('regAddress');
     var phoneDigits = normalizePhone(phone.value);
     var ok = check(regForm, [
-      [districtInput, selected ? '' : 'district'],
+      [regCombo.input, regCombo.selected ? '' : 'district'],
       [name, name.value.trim().length >= 2 ? '' : name.value.trim() ? 'name' : 'required'],
       [phone, !phone.value.trim() ? 'required' : isPhone(phoneDigits) ? '' : 'phone'],
       [email, !email.value.trim() ? 'required' : isEmail(email.value.trim()) ? '' : 'email'],
@@ -307,7 +317,7 @@
 
     setBusy(regForm, true);
     api('register', {
-      districtCode: selected[0],
+      districtCode: regCombo.selected[0],
       name: name.value.trim(),
       phone: phoneDigits,
       email: email.value.trim().toLowerCase(),
@@ -322,13 +332,15 @@
         $('loginPass').value = '';
         showAlert(loginForm, 'success', 'registered');
       })
-      .catch(function (err) { handleFailure(regForm, err); })
+      .catch(function (err) {
+        handleFailure(regForm, err, { districtCode: regCombo.input, name: name, phone: phone, email: email, password: regPass });
+      })
       .finally(function () { setBusy(regForm, false); });
   });
 
   function resetRegister() {
     regForm.reset();
-    selectDistrict(null);
+    regCombo.select(null);
     clearAlert(regForm);
     all('.afield', regForm).forEach(function (f) { f.dataset.err = ''; renderField(f); });
     hidePasswords(regForm);
@@ -336,29 +348,21 @@
   }
 
   /* ---------- District search ---------- */
-  var combo = $('districtCombo');
-  var districtInput = $('regDistrict');
-  var pop = combo.querySelector('.combo__pop');
-  var list = $('districtList');
-  var countEl = combo.querySelector('.combo__count');
-  var statusEl = $('districtStatus');
+  // One shared office list feeds every searchable district field (register, profile).
   var districts = null;      // [code, name, lowercase "code · name"]
   var districtState = 'idle';
   var districtError = '';
-  var selected = null;
-  var matches = [];
-  var active = -1;
-  var wantOpen = false;     // the user asked for the list before it had loaded
+  var combos = [];
 
   function labelOf(d) { return d[0] + ' · ' + d[1]; }
 
   function setDistricts(rows) {
     districts = rows.map(function (r) { return [String(r[0]), String(r[1]), (r[0] + ' · ' + r[1]).toLowerCase()]; });
     districtState = 'ready';
-    renderStatus();
-    if (wantOpen && document.activeElement === districtInput) openList();
-    wantOpen = false;
+    combos.forEach(function (c) { c.ready(); });
   }
+
+  function renderStatuses() { combos.forEach(function (c) { c.renderStatus(); }); }
 
   function loadDistricts(force) {
     if (districtState === 'loading' || (districtState === 'ready' && !force)) return;
@@ -366,7 +370,7 @@
     var usable = cached && Array.isArray(cached.list) && cached.list.length;
     if (usable && !force && Date.now() - cached.t < DISTRICT_TTL) { setDistricts(cached.list); return; }
     districtState = 'loading';
-    renderStatus();
+    renderStatuses();
     api('districts')
       .then(function (data) {
         write(DISTRICT_KEY, { t: Date.now(), list: data.districts });
@@ -376,27 +380,9 @@
         if (usable) { setDistricts(cached.list); return; } // an old list beats none
         districtState = 'failed';
         districtError = err.code;
-        renderStatus();
+        renderStatuses();
       });
   }
-
-  function renderStatus() {
-    var m = msg();
-    statusEl.classList.toggle('is-error', districtState === 'failed');
-    if (districtState === 'loading') {
-      statusEl.innerHTML = '<span class="mini-spin" aria-hidden="true"></span>' + escapeHtml(m.districtsLoading);
-    } else if (districtState === 'ready') {
-      statusEl.textContent = m.districtsReady(districts.length);
-    } else if (districtState === 'failed') {
-      statusEl.innerHTML = escapeHtml(districtError === 'not_configured' ? m.not_configured : m.districtsFailed) +
-        (districtError === 'not_configured' ? '' : ' <button type="button" class="auth__link" id="districtRetry">' + escapeHtml(m.retry) + '</button>');
-    } else {
-      statusEl.textContent = '';
-    }
-  }
-  statusEl.addEventListener('click', function (e) {
-    if (e.target.id === 'districtRetry') { districtState = 'idle'; loadDistricts(true); }
-  });
 
   function search(q) {
     q = q.trim().toLowerCase();
@@ -416,114 +402,172 @@
     return escapeHtml(value.slice(0, i)) + '<mark>' + escapeHtml(value.slice(i, i + q.length)) + '</mark>' + escapeHtml(value.slice(i + q.length));
   }
 
-  function renderList() {
-    var q = districtInput.value.trim().toLowerCase();
-    if (selected && districtInput.value === labelOf(selected)) q = '';
-    matches = search(q);
-    var shown = matches.slice(0, MAX_SHOWN);
-    list.innerHTML = shown.length ? shown.map(function (d, i) {
-      var isSel = selected && selected[0] === d[0];
-      return '<li class="combo__opt" role="option" id="dopt-' + i + '" data-i="' + i + '" aria-selected="' + isSel + '">' +
-        '<b>' + mark(d[0], q) + '</b><span>' + mark(d[1], q) + '</span>' +
-        (isSel ? '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>' : '') + '</li>';
-    }).join('') : '<li class="combo__empty">' + escapeHtml(msg().noMatch) + '</li>';
-    countEl.textContent = matches.length ? msg().matches(matches.length, shown.length) : '';
-    var selIndex = selected ? shown.indexOf(selected) : -1;
-    setActive(shown.length ? Math.max(selIndex, 0) : -1);
-    list.scrollTop = 0;
-    if (selIndex > 0) scrollActive();
-  }
+  function districtCombo(combo, statusEl, prefix) {
+    var input = combo.querySelector('input');
+    var pop = combo.querySelector('.combo__pop');
+    var list = combo.querySelector('.combo__list');
+    var countEl = combo.querySelector('.combo__count');
+    var matches = [];
+    var active = -1;
+    var wantOpen = false; // the user asked for the list before it had loaded
+    var self = { input: input, selected: null };
 
-  function setActive(i) {
-    var prev = list.querySelector('.is-active');
-    if (prev) prev.classList.remove('is-active');
-    active = i;
-    var el = i >= 0 ? $('dopt-' + i) : null;
-    if (el) {
-      el.classList.add('is-active');
-      districtInput.setAttribute('aria-activedescendant', el.id);
-    } else {
-      districtInput.removeAttribute('aria-activedescendant');
-    }
-  }
-  function scrollActive() {
-    var el = $('dopt-' + active);
-    if (el) el.scrollIntoView({ block: 'nearest' });
-  }
-
-  function isOpen() { return !pop.hidden; }
-  function openList() {
-    if (districtState !== 'ready') { wantOpen = true; loadDistricts(); return; }
-    renderList();
-    if (isOpen()) return;
-    pop.hidden = false;
-    combo.classList.add('is-open');
-    districtInput.setAttribute('aria-expanded', 'true');
-  }
-  function closeList() {
-    if (!isOpen()) return;
-    pop.hidden = true;
-    combo.classList.remove('is-open');
-    districtInput.setAttribute('aria-expanded', 'false');
-    districtInput.removeAttribute('aria-activedescendant');
-  }
-
-  function selectDistrict(d) {
-    selected = d;
-    combo.classList.toggle('is-selected', !!d);
-    districtInput.value = d ? labelOf(d) : '';
-    if (d) setError(districtInput, '');
-  }
-
-  districtInput.addEventListener('click', openList);
-  districtInput.addEventListener('input', function () {
-    if (selected) { selected = null; combo.classList.remove('is-selected'); }
-    if (isOpen()) renderList(); else openList();
-  });
-  districtInput.addEventListener('keydown', function (e) {
-    var count = Math.min(matches.length, MAX_SHOWN);
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (!isOpen()) { openList(); return; }
-      if (!count) return;
-      setActive((active + (e.key === 'ArrowDown' ? 1 : -1) + count) % count);
-      scrollActive();
-    } else if (e.key === 'Enter' && isOpen()) {
-      e.preventDefault();
-      if (active >= 0 && matches[active]) { selectDistrict(matches[active]); closeList(); }
-    } else if (e.key === 'Escape' && isOpen()) {
-      e.preventDefault();
-      closeList();
-    }
-  });
-  districtInput.addEventListener('blur', function () {
-    setTimeout(function () {
-      if (combo.contains(document.activeElement)) return;
-      closeList();
-      if (!selected && districts) {
-        // A typed code that exactly matches counts as a choice.
-        var typed = districtInput.value.trim();
-        for (var i = 0; i < districts.length; i++) {
-          if (districts[i][0] === typed) { selectDistrict(districts[i]); break; }
-        }
+    function renderStatus() {
+      var m = msg();
+      statusEl.classList.toggle('is-error', districtState === 'failed');
+      if (districtState === 'loading') {
+        statusEl.innerHTML = '<span class="mini-spin" aria-hidden="true"></span>' + escapeHtml(m.districtsLoading);
+      } else if (districtState === 'ready') {
+        statusEl.textContent = m.districtsReady(districts.length);
+      } else if (districtState === 'failed') {
+        statusEl.innerHTML = escapeHtml(districtError === 'not_configured' ? m.not_configured : m.districtsFailed) +
+          (districtError === 'not_configured' ? '' : ' <button type="button" class="auth__link district-retry">' + escapeHtml(m.retry) + '</button>');
+      } else {
+        statusEl.textContent = '';
       }
-    }, 120);
-  });
-  list.addEventListener('mousedown', function (e) { e.preventDefault(); }); // keep focus in the input
-  list.addEventListener('click', function (e) {
-    var opt = e.target.closest('.combo__opt');
-    if (!opt) return;
-    selectDistrict(matches[+opt.dataset.i]);
-    closeList();
-  });
-  list.addEventListener('mousemove', function (e) {
-    var opt = e.target.closest('.combo__opt');
-    if (opt && +opt.dataset.i !== active) setActive(+opt.dataset.i);
-  });
-  combo.querySelector('.combo__toggle').addEventListener('click', function () {
-    if (isOpen()) closeList();
-    else { districtInput.focus(); openList(); }
-  });
+    }
+    statusEl.addEventListener('click', function (e) {
+      if (e.target.closest('.district-retry')) { districtState = 'idle'; loadDistricts(true); }
+    });
+
+    function renderList() {
+      var sel = self.selected;
+      var q = input.value.trim().toLowerCase();
+      if (sel && input.value === labelOf(sel)) q = '';
+      matches = search(q);
+      var shown = matches.slice(0, MAX_SHOWN);
+      list.innerHTML = shown.length ? shown.map(function (d, i) {
+        var isSel = sel && sel[0] === d[0];
+        return '<li class="combo__opt" role="option" id="' + prefix + i + '" data-i="' + i + '" aria-selected="' + isSel + '">' +
+          '<b>' + mark(d[0], q) + '</b><span>' + mark(d[1], q) + '</span>' +
+          (isSel ? '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>' : '') + '</li>';
+      }).join('') : '<li class="combo__empty">' + escapeHtml(msg().noMatch) + '</li>';
+      countEl.textContent = matches.length ? msg().matches(matches.length, shown.length) : '';
+      var selIndex = -1;
+      if (sel) shown.some(function (d, i) { if (d[0] === sel[0]) { selIndex = i; return true; } return false; });
+      setActive(shown.length ? Math.max(selIndex, 0) : -1);
+      list.scrollTop = 0;
+      if (selIndex > 0) scrollActive();
+    }
+
+    function setActive(i) {
+      var prev = list.querySelector('.is-active');
+      if (prev) prev.classList.remove('is-active');
+      active = i;
+      var el = i >= 0 ? $(prefix + i) : null;
+      if (el) {
+        el.classList.add('is-active');
+        input.setAttribute('aria-activedescendant', el.id);
+      } else {
+        input.removeAttribute('aria-activedescendant');
+      }
+    }
+    function scrollActive() {
+      var el = $(prefix + active);
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    }
+
+    function isOpen() { return !pop.hidden; }
+    function openList() {
+      if (districtState !== 'ready') { wantOpen = true; loadDistricts(); return; }
+      renderList();
+      if (isOpen()) return;
+      pop.hidden = false;
+      combo.classList.add('is-open');
+      input.setAttribute('aria-expanded', 'true');
+    }
+    function closeList() {
+      if (!isOpen()) return;
+      pop.hidden = true;
+      combo.classList.remove('is-open');
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+    }
+
+    function select(d) {
+      self.selected = d;
+      combo.classList.toggle('is-selected', !!d);
+      input.value = d ? labelOf(d) : '';
+      if (d) setError(input, '');
+    }
+
+    // Selects by code, even before the office list has loaded (the profile form opens with one).
+    function selectCode(code, name) {
+      if (!code) { select(null); return; }
+      var hit = null;
+      if (districts) districts.some(function (d) { if (d[0] === String(code)) { hit = d; return true; } return false; });
+      select(hit || [String(code), String(name || ''), (code + ' · ' + (name || '')).toLowerCase()]);
+    }
+
+    input.addEventListener('click', openList);
+    input.addEventListener('input', function () {
+      if (self.selected) { self.selected = null; combo.classList.remove('is-selected'); }
+      if (isOpen()) renderList(); else openList();
+    });
+    input.addEventListener('keydown', function (e) {
+      var count = Math.min(matches.length, MAX_SHOWN);
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!isOpen()) { openList(); return; }
+        if (!count) return;
+        setActive((active + (e.key === 'ArrowDown' ? 1 : -1) + count) % count);
+        scrollActive();
+      } else if (e.key === 'Enter' && isOpen()) {
+        e.preventDefault();
+        if (active >= 0 && matches[active]) { select(matches[active]); closeList(); }
+      } else if (e.key === 'Escape' && isOpen()) {
+        e.preventDefault();
+        closeList();
+      }
+    });
+    input.addEventListener('blur', function () {
+      setTimeout(function () {
+        if (combo.contains(document.activeElement)) return;
+        closeList();
+        if (!self.selected && districts) {
+          // A typed code that exactly matches counts as a choice.
+          var typed = input.value.trim();
+          for (var i = 0; i < districts.length; i++) {
+            if (districts[i][0] === typed) { select(districts[i]); break; }
+          }
+        }
+      }, 120);
+    });
+    list.addEventListener('mousedown', function (e) { e.preventDefault(); }); // keep focus in the input
+    list.addEventListener('click', function (e) {
+      var opt = e.target.closest('.combo__opt');
+      if (!opt) return;
+      select(matches[+opt.dataset.i]);
+      closeList();
+    });
+    list.addEventListener('mousemove', function (e) {
+      var opt = e.target.closest('.combo__opt');
+      if (opt && +opt.dataset.i !== active) setActive(+opt.dataset.i);
+    });
+    combo.querySelector('.combo__toggle').addEventListener('click', function () {
+      if (isOpen()) closeList();
+      else { input.focus(); openList(); }
+    });
+
+    self.select = select;
+    self.selectCode = selectCode;
+    self.close = closeList;
+    self.isOpen = isOpen;
+    self.renderList = renderList;
+    self.renderStatus = renderStatus;
+    self.ready = function () {
+      renderStatus();
+      // Swap a placeholder chosen before the list loaded for the real entry.
+      if (self.selected && !isOpen()) selectCode(self.selected[0], self.selected[1]);
+      if (wantOpen && document.activeElement === input) openList();
+      wantOpen = false;
+    };
+    combos.push(self);
+    return self;
+  }
+
+  var regCombo = districtCombo($('districtCombo'), $('districtStatus'), 'dopt-');
+  function closeCombos() { combos.forEach(function (c) { c.close(); }); }
 
   /* ---------- Forgot password ---------- */
   var forgotForm = views.forgot;
@@ -660,7 +704,7 @@
 
   function closeAuth() {
     if (!root.classList.contains('auth-on') || root.classList.contains('auth-leaving')) return;
-    closeList();
+    closeCombos();
     pending = null;
     root.classList.add('auth-leaving');
     setTimeout(function () {
@@ -721,8 +765,8 @@
     if (e.key === 'Escape' && !e.defaultPrevented && root.classList.contains('auth-on')) closeAuth();
   });
 
-  function signIn(customer) {
-    write(SESSION_KEY, { customer: customer, at: Date.now() });
+  function signIn(customer, token) {
+    write(SESSION_KEY, { customer: customer, token: token || '', at: Date.now() });
     renderUser();
     $('authWelcome').textContent = msg().welcome(customer.name);
     var p = pending;
@@ -736,9 +780,10 @@
     }, reduceMotion ? 300 : 1300);
   }
 
-  $('logoutBtn').addEventListener('click', function () {
+  function signOut() {
     write(SESSION_KEY, null);
     toggleMenu(false);
+    closeProfile(true);
     userBox.hidden = true;
     resetRegister();
     forgotForm.reset();
@@ -747,7 +792,232 @@
     clearAlert(loginForm);
     showView('login');
     renderUser();
+  }
+
+  $('logoutBtn').addEventListener('click', function () {
+    signOut();
     signinBtn.focus({ preventScroll: true });
+  });
+
+  // The server no longer accepts this sign-in (password changed elsewhere, or an
+  // older sign-in without a token), so ask for the password again.
+  function sessionExpired() {
+    signOut();
+    clearAlert(loginForm);
+    openAuth('login');
+    showAlert(loginForm, 'info', 'session_expired');
+  }
+
+  /* ---------- Profile: details and password ---------- */
+  var profileEl = $('profile');
+  var profileForm = $('profileForm');
+  var passwordForm = $('passwordForm');
+  var profCombo = districtCombo($('profDistrictCombo'), $('profDistrictStatus'), 'pdopt-');
+  var profFields = { districtCode: profCombo.input, name: $('profName'), phone: $('profPhone'), email: $('profEmail') };
+  var passFields = { currentPassword: $('curPass'), newPassword: $('newPass') };
+  var profTabs = { info: $('ptabInfo'), password: $('ptabPassword') };
+  var profViews = { info: profileForm, password: passwordForm };
+  var profTab = 'info';
+  var profDirty = false;
+  var profCloseTimer = 0;
+  bindMeter($('newPass'), $('newPassMeter'));
+
+  function memberSince(value) {
+    var d = value ? new Date(String(value).replace(' ', 'T')) : null;
+    if (!d || isNaN(d)) return '';
+    return msg().memberSince(d.toLocaleDateString(msg().date, { day: 'numeric', month: 'long', year: 'numeric' }));
+  }
+
+  function renderProfileHead(c) {
+    $('profileAvatar').textContent = initialOf(c.name);
+    $('profileName').textContent = c.name || '';
+    $('profileId').textContent = c.id || '';
+    $('profileSince').textContent = memberSince(c.registeredAt);
+  }
+
+  function fillProfile(c) {
+    renderProfileHead(c);
+    $('profName').value = c.name || '';
+    $('profPhone').value = c.phone || '';
+    $('profEmail').value = c.email || '';
+    $('profAddress').value = c.address || '';
+    profCombo.selectCode(c.districtCode, c.districtName);
+    all('.afield', profileForm).forEach(function (f) { f.dataset.err = ''; renderField(f); });
+    profDirty = false;
+  }
+
+  function resetPasswordForm() {
+    passwordForm.reset();
+    all('.afield', passwordForm).forEach(function (f) { f.dataset.err = ''; renderField(f); });
+    hidePasswords(passwordForm);
+    renderMeters();
+  }
+
+  function showProfileTab(name, focus) {
+    profTab = name;
+    Object.keys(profViews).forEach(function (k) {
+      var on = k === name;
+      profViews[k].hidden = !on;
+      profTabs[k].setAttribute('aria-selected', String(on));
+      profTabs[k].tabIndex = on ? 0 : -1;
+      if (on) {
+        profViews[k].classList.remove('is-in');
+        void profViews[k].offsetWidth;
+        profViews[k].classList.add('is-in');
+      }
+    });
+    profileEl.dataset.tab = name;
+    if (focus && finePointer) {
+      var first = firstInput(profViews[name]);
+      if (first) first.focus({ preventScroll: true });
+    }
+  }
+
+  function saveCustomer(customer, token) {
+    var s = session();
+    if (!s) return;
+    s.customer = Object.assign({}, s.customer, customer);
+    if (token) s.token = token;
+    write(SESSION_KEY, s);
+    renderUser();
+  }
+
+  // An Apps Script deployment older than the profile feature answers bad_request.
+  // The member stays signed in; only a failed save shows a message.
+  function warnOutdated() {
+    if (window.console) console.warn('Signage Tax: the Google Apps Script does not support profile editing yet. Paste the latest google-apps-script/Code.gs and deploy a new version.');
+  }
+  function backendOutdated(form) {
+    warnOutdated();
+    showAlert(form, 'error', 'profile_unavailable');
+  }
+
+  function openProfile(tab) {
+    var s = session();
+    if (!s) return;
+    toggleMenu(false);
+    clearTimeout(profCloseTimer);
+    clearAlert(profileForm);
+    clearAlert(passwordForm);
+    fillProfile(s.customer);
+    resetPasswordForm();
+    profileEl.hidden = false;
+    root.classList.add('profile-on');
+    profileEl.querySelector('.profile__body').scrollTop = 0;
+    requestAnimationFrame(function () { profileEl.classList.add('is-open'); });
+    showProfileTab(tab || 'info', true);
+    loadDistricts();
+    // Refresh from the sheet, in case the details were changed on another device.
+    profileEl.classList.add('is-loading');
+    api('profile', { id: s.customer.id, token: s.token || '' })
+      .then(function (data) {
+        saveCustomer(data.customer);
+        if (!profDirty) fillProfile(data.customer);
+        else renderProfileHead(data.customer);
+      })
+      .catch(function (err) {
+        if (err.code === 'session_expired') sessionExpired();
+        else if (err.code === 'bad_request') warnOutdated(); // the form keeps the saved details
+      })
+      .finally(function () { profileEl.classList.remove('is-loading'); });
+  }
+
+  function closeProfile(now) {
+    if (profileEl.hidden) return;
+    closeCombos();
+    profileEl.classList.remove('is-open');
+    root.classList.remove('profile-on');
+    var done = function () { profileEl.hidden = true; };
+    if (now || reduceMotion) done();
+    else profCloseTimer = setTimeout(done, 300);
+    if (!now && session()) userBtn.focus({ preventScroll: true });
+  }
+
+  document.addEventListener('click', function (e) {
+    var opener = e.target.closest('[data-profile-open]');
+    if (opener) { openProfile(opener.dataset.profileOpen); return; }
+    if (e.target.closest('[data-profile-close]')) closeProfile();
+    var tab = e.target.closest('[data-ptab].profile__tab');
+    if (tab) showProfileTab(tab.dataset.ptab, true);
+  });
+  profileEl.querySelector('.profile__tabs').addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var next = profTab === 'info' ? 'password' : 'info';
+    showProfileTab(next);
+    profTabs[next].focus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !e.defaultPrevented && !profileEl.hidden) closeProfile();
+  });
+  profileForm.addEventListener('input', function () { profDirty = true; });
+
+  profileForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAlert(profileForm);
+    var s = session();
+    if (!s) { sessionExpired(); return; }
+    var name = $('profName'), phone = $('profPhone'), email = $('profEmail'), address = $('profAddress');
+    var phoneDigits = normalizePhone(phone.value);
+    var ok = check(profileForm, [
+      [profCombo.input, profCombo.selected ? '' : 'district'],
+      [name, name.value.trim().length >= 2 ? '' : name.value.trim() ? 'name' : 'required'],
+      [phone, !phone.value.trim() ? 'required' : isPhone(phoneDigits) ? '' : 'phone'],
+      [email, !email.value.trim() ? 'required' : isEmail(email.value.trim()) ? '' : 'email']
+    ]);
+    if (!ok) { showAlert(profileForm, 'error', 'fixFields'); return; }
+    var c = s.customer;
+    var next = {
+      districtCode: profCombo.selected[0],
+      name: name.value.trim(),
+      phone: phoneDigits,
+      email: email.value.trim().toLowerCase(),
+      address: address.value.trim()
+    };
+    var changed = next.districtCode !== String(c.districtCode) || next.name !== c.name || next.phone !== normalizePhone(c.phone) ||
+      next.email !== String(c.email).toLowerCase() || next.address !== String(c.address || '');
+    if (!changed) { showAlert(profileForm, 'info', 'no_changes'); return; }
+
+    setBusy(profileForm, true);
+    api('updateProfile', Object.assign({ id: c.id, token: s.token || '' }, next))
+      .then(function (data) {
+        saveCustomer(data.customer);
+        fillProfile(data.customer);
+        showAlert(profileForm, 'success', 'profile_saved');
+      })
+      .catch(function (err) {
+        if (err.code === 'session_expired') { sessionExpired(); return; }
+        if (err.code === 'bad_request') { backendOutdated(profileForm); return; }
+        handleFailure(profileForm, err, profFields);
+      })
+      .finally(function () { setBusy(profileForm, false); });
+  });
+
+  passwordForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAlert(passwordForm);
+    var s = session();
+    if (!s) { sessionExpired(); return; }
+    var cur = $('curPass'), np = $('newPass'), cp = $('confirmPass');
+    var ok = check(passwordForm, [
+      [cur, cur.value ? '' : 'required'],
+      [np, !np.value ? 'required' : np.value.length < 6 || np.value.length > 64 ? 'password' : np.value === cur.value ? 'same_password' : ''],
+      [cp, !cp.value ? 'required' : cp.value === np.value ? '' : 'mismatch']
+    ]);
+    if (!ok) return;
+    setBusy(passwordForm, true);
+    api('changePassword', { id: s.customer.id, token: s.token || '', currentPassword: cur.value, newPassword: np.value })
+      .then(function (data) {
+        saveCustomer({}, data.token);
+        resetPasswordForm();
+        showAlert(passwordForm, 'success', 'password_changed');
+      })
+      .catch(function (err) {
+        if (err.code === 'session_expired') { sessionExpired(); return; }
+        if (err.code === 'bad_request') { backendOutdated(passwordForm); return; }
+        handleFailure(passwordForm, err, passFields);
+        if (err.code === 'wrong_password') { cur.value = ''; cur.focus(); }
+      })
+      .finally(function () { setBusy(passwordForm, false); });
   });
 
   /* ---------- Language and date ---------- */
@@ -760,16 +1030,16 @@
     all('.afield').forEach(renderField);
     all('.auth__alert').forEach(function (box) { if (!box.hidden && box.dataset.key) renderAlert(box); });
     all('.afield__eye').forEach(renderEye);
-    renderStatus();
-    renderMeter();
-    if (isOpen()) renderList();
+    combos.forEach(function (c) { c.renderStatus(); if (c.isOpen()) c.renderList(); });
+    renderMeters();
     var s = session();
+    if (s && !profileEl.hidden) renderProfileHead(s.customer);
     if (s && card.classList.contains('is-done')) $('authWelcome').textContent = msg().welcome(s.customer.name);
   });
 
   /* ---------- Start ---------- */
   renderDate();
-  renderMeter();
+  renderMeters();
   all('.afield__eye').forEach(renderEye);
   renderUser();
 })();

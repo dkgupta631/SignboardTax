@@ -7,6 +7,11 @@
  *   POST {action:'register', ...}           -> new row in the Customer sheet
  *   POST {action:'login', identifier, password}
  *   POST {action:'forgot', identifier}      -> the stored password
+ *   POST {action:'profile', id, token}      -> the signed-in member's details
+ *   POST {action:'updateProfile', id, token, districtCode, name, phone, email, address}
+ *   POST {action:'changePassword', id, token, currentPassword, newPassword}
+ * Sign in returns a session token, kept in the Customer sheet, that the profile
+ * actions must send back. Changing the password issues a new one.
  * POST bodies are sent as plain text JSON so the browser skips the CORS preflight.
  */
 
@@ -15,9 +20,9 @@ var DISTRICT_FIRST_ROW = 4;       // rows 1-3 are the title and the column headi
 var CUSTOMER_SHEET = 'Customer';
 var TIME_ZONE = 'Asia/Bangkok';
 var HEADERS = ['Customer ID', 'Registered At', 'District Code', 'District Name', 'Name',
-  'Phone', 'Email', 'Password', 'Address', 'Last Login'];
+  'Phone', 'Email', 'Password', 'Address', 'Last Login', 'Session Token', 'Updated At'];
 var COL = { id: 0, registered: 1, districtCode: 2, districtName: 3, name: 4,
-  phone: 5, email: 6, password: 7, address: 8, lastLogin: 9 };
+  phone: 5, email: 6, password: 7, address: 8, lastLogin: 9, token: 10, updated: 11 };
 
 function doGet(e) {
   var action = e && e.parameter ? e.parameter.action : '';
@@ -38,6 +43,9 @@ function doPost(e) {
     if (body.action === 'register') return register(body);
     if (body.action === 'login') return login(body);
     if (body.action === 'forgot') return forgot(body);
+    if (body.action === 'profile') return profile(body);
+    if (body.action === 'updateProfile') return updateProfile(body);
+    if (body.action === 'changePassword') return changePassword(body);
     if (body.action === 'districts') return { ok: true, districts: getDistricts() };
     return fail('bad_request');
   });
@@ -51,34 +59,50 @@ function setup() {
 
 /* ---------- Actions ---------- */
 
-function register(body) {
+/** Cleans and checks the details shared by registration and profile updates. */
+function readDetails(body) {
   var data = {
     districtCode: clean(body.districtCode, 20),
     name: clean(body.name, 120),
     phone: normalizePhone(body.phone),
     email: clean(body.email, 160).toLowerCase(),
-    password: String(body.password || ''),
     address: clean(body.address, 400)
   };
+  data.district = findDistrict(data.districtCode);
+  data.invalid = [];
+  if (!data.district) data.invalid.push('districtCode');
+  if (data.name.length < 2) data.invalid.push('name');
+  if (!isPhone(data.phone)) data.invalid.push('phone');
+  if (!isEmail(data.email)) data.invalid.push('email');
+  return data;
+}
 
-  var invalid = [];
-  var district = findDistrict(data.districtCode);
-  if (!district) invalid.push('districtCode');
-  if (data.name.length < 2) invalid.push('name');
-  if (!isPhone(data.phone)) invalid.push('phone');
-  if (!isEmail(data.email)) invalid.push('email');
-  if (data.password.length < 6 || data.password.length > 64) invalid.push('password');
-  if (invalid.length) return fail('invalid', { fields: invalid });
+function isPassword(value) { return value.length >= 6 && value.length <= 64; }
+
+/** Returns 'email_taken' or 'phone_taken' when another row already uses them. */
+function duplicateOf(rows, data, skipIndex) {
+  for (var i = 0; i < rows.length; i++) {
+    if (i === skipIndex) continue;
+    if (String(rows[i][COL.email]).toLowerCase() === data.email) return 'email_taken';
+    if (normalizePhone(rows[i][COL.phone]) === data.phone) return 'phone_taken';
+  }
+  return '';
+}
+
+function register(body) {
+  var data = readDetails(body);
+  data.password = String(body.password || '');
+  if (!isPassword(data.password)) data.invalid.push('password');
+  if (data.invalid.length) return fail('invalid', { fields: data.invalid });
+  var district = data.district;
 
   var lock = LockService.getScriptLock();
   lock.waitLock(15000);
   try {
     var sheet = customerSheet();
     var rows = customerRows(sheet);
-    for (var i = 0; i < rows.length; i++) {
-      if (String(rows[i][COL.email]).toLowerCase() === data.email) return fail('email_taken');
-      if (normalizePhone(rows[i][COL.phone]) === data.phone) return fail('phone_taken');
-    }
+    var taken = duplicateOf(rows, data, -1);
+    if (taken) return fail(taken);
 
     var row = [];
     row[COL.id] = 'C' + ('00000' + (rows.length + 1)).slice(-6);
@@ -91,6 +115,8 @@ function register(body) {
     row[COL.password] = data.password;
     row[COL.address] = data.address;
     row[COL.lastLogin] = '';
+    row[COL.token] = '';
+    row[COL.updated] = '';
 
     // Plain text keeps the phone's leading 0 and stops Sheets reading input as formulas.
     var target = sheet.getRange(sheet.getLastRow() + 1, 1, 1, HEADERS.length);
@@ -106,8 +132,58 @@ function login(body) {
   var password = String(body.password || '');
   var match = findCustomer(body.identifier);
   if (!match || String(match.row[COL.password]) !== password) return fail('wrong_credentials');
-  match.sheet.getRange(match.rowNumber, COL.lastLogin + 1).setNumberFormat('@').setValue(now());
+  // One token per member, shared by their devices until the password changes.
+  var token = String(match.row[COL.token] || '');
+  if (!token) {
+    token = Utilities.getUuid();
+    setCell(match, COL.token, token);
+  }
+  setCell(match, COL.lastLogin, now());
+  return { ok: true, customer: publicCustomer(match.row), token: token };
+}
+
+function profile(body) {
+  var match = authorize(body);
+  if (!match) return fail('session_expired');
   return { ok: true, customer: publicCustomer(match.row) };
+}
+
+function updateProfile(body) {
+  var data = readDetails(body);
+  if (data.invalid.length) return fail('invalid', { fields: data.invalid });
+  var lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    var match = authorize(body);
+    if (!match) return fail('session_expired');
+    var taken = duplicateOf(match.rows, data, match.rowNumber - 2);
+    if (taken) return fail(taken);
+    setCell(match, COL.districtCode, data.district.code);
+    setCell(match, COL.districtName, data.district.name);
+    setCell(match, COL.name, data.name);
+    setCell(match, COL.phone, data.phone);
+    setCell(match, COL.email, data.email);
+    setCell(match, COL.address, data.address);
+    setCell(match, COL.updated, now());
+    return { ok: true, customer: publicCustomer(match.row) };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function changePassword(body) {
+  var current = String(body.currentPassword || '');
+  var next = String(body.newPassword || '');
+  var match = authorize(body);
+  if (!match) return fail('session_expired');
+  if (String(match.row[COL.password]) !== current) return fail('wrong_password');
+  if (!isPassword(next)) return fail('invalid', { fields: ['newPassword'] });
+  if (next === current) return fail('same_password');
+  var token = Utilities.getUuid(); // signs out the member's other devices
+  setCell(match, COL.password, next);
+  setCell(match, COL.token, token);
+  setCell(match, COL.updated, now());
+  return { ok: true, token: token };
 }
 
 function forgot(body) {
@@ -141,11 +217,35 @@ function customerSheet() {
   var book = SpreadsheetApp.getActive();
   var sheet = book.getSheetByName(CUSTOMER_SHEET) || book.insertSheet(CUSTOMER_SHEET);
   var first = sheet.getRange(1, 1, 1, HEADERS.length);
-  if (!String(first.getValues()[0][0]).trim()) {
+  var current = first.getValues()[0];
+  // Writes any missing headings, including columns added after the sheet was made.
+  var missing = HEADERS.some(function (h, i) { return !String(current[i]).trim(); });
+  if (missing) {
     first.setValues([HEADERS]).setFontWeight('bold').setBackground('#0a2a5e').setFontColor('#ffffff');
     sheet.setFrozenRows(1);
   }
   return sheet;
+}
+
+/** The member whose id and session token match, or null. */
+function authorize(body) {
+  var id = clean(body.id, 20);
+  var token = String(body.token || '');
+  if (!id || !token) return null;
+  var sheet = customerSheet();
+  var rows = customerRows(sheet);
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i][COL.id]) === id) {
+      return String(rows[i][COL.token]) === token ? { sheet: sheet, row: rows[i], rowNumber: i + 2, rows: rows } : null;
+    }
+  }
+  return null;
+}
+
+/** Writes one cell as plain text and keeps the in-memory row in step. */
+function setCell(match, col, value) {
+  match.sheet.getRange(match.rowNumber, col + 1).setNumberFormat('@').setValue(asText(value));
+  match.row[col] = String(value);
 }
 
 function customerRows(sheet) {
@@ -177,8 +277,9 @@ function findCustomer(identifier) {
 
 function publicCustomer(row) {
   return {
-    id: row[COL.id], name: row[COL.name], phone: row[COL.phone], email: row[COL.email],
-    districtCode: row[COL.districtCode], districtName: row[COL.districtName]
+    id: row[COL.id], name: row[COL.name], phone: normalizePhone(row[COL.phone]), email: row[COL.email],
+    districtCode: row[COL.districtCode], districtName: row[COL.districtName],
+    address: row[COL.address] || '', registeredAt: row[COL.registered] || ''
   };
 }
 

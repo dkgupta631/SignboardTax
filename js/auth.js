@@ -48,8 +48,11 @@
     value = value.trim();
     return value.indexOf('@') !== -1 ? isEmail(value) : isPhone(normalizePhone(value));
   }
+  // Shown in international form: 0812345678 -> +66 81 234 5678, 021234567 -> +66 2 123 4567.
   function formatPhone(digits) {
-    return digits.length === 10 ? digits.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3') : digits;
+    if (digits.length === 10 && digits.charAt(0) === '0') return '+66 ' + digits.slice(1, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6);
+    if (digits.length === 9 && digits.charAt(0) === '0') return '+66 ' + digits.slice(1, 2) + ' ' + digits.slice(2, 5) + ' ' + digits.slice(5);
+    return digits;
   }
 
   /* ---------- Google Apps Script API ---------- */

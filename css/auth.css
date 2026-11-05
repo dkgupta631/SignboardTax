@@ -31,6 +31,8 @@ html.loading .auth *,html.loading .auth *::before,html.loading .auth *::after{an
 .auth__top-right{display:flex;align-items:center;gap:16px}
 .auth__hotline{color:#fff;text-decoration:none;font-weight:500}
 .auth__hotline:hover{color:var(--gov-gold)}
+.auth__hotline--2{position:relative;padding-left:14px}
+.auth__hotline--2::before{content:"";position:absolute;left:0;top:50%;width:1px;height:12px;margin-top:-6px;background:rgba(255,255,255,.3)}
 .auth .lang{background:rgba(255,255,255,.12)}
 .auth .lang__btn{color:#fff;font-size:12px;padding:3px 10px}
 .auth .lang__btn[aria-pressed=true]{background:#fff;color:var(--gov-navy)}
@@ -43,11 +45,8 @@ html.loading .auth *,html.loading .auth *::before,html.loading .auth *::after{an
 .auth__close .i{width:18px;height:18px;transition:transform .25s}
 .auth__close:hover{background:var(--teal);border-color:var(--teal);color:#fff}
 .auth__close:hover .i{transform:rotate(90deg)}
-.auth__header img{width:56px;height:56px;border-radius:14px;box-shadow:0 4px 12px rgba(34,82,90,.2)}
-.auth__brand{display:flex;flex-direction:column;line-height:1.25}
-.auth__brand strong{color:var(--teal);font-size:24px;font-weight:700}
-.auth__brand em{color:var(--green);font-style:normal}
-.auth__brand span{color:var(--muted);font-size:14px}
+.auth__logo{display:block;height:58px;width:auto}
+.auth__portal{padding-left:16px;border-left:1.5px solid #dbe5e8;color:var(--muted);font-size:14px;line-height:1.4;max-width:260px}
 
 /* Main area */
 .auth__main{position:relative;flex:1;padding:44px 0 52px;background:
@@ -255,7 +254,7 @@ html.signed-out .lock-badge{display:inline-block}
 .btn--signin{background:#fff;color:var(--teal);border:1.5px solid var(--teal);padding:8px 18px 8px 14px;font-size:15px;white-space:nowrap}
 .btn--signin .i{width:19px;height:19px}
 .btn--signin:hover{background:var(--teal);color:#fff;box-shadow:0 4px 12px rgba(34,82,90,.25)}
-@media (max-width:1180px){.btn--signin span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.btn--signin{padding:8px 10px}}
+@media (max-width:1280px){.btn--signin span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.btn--signin{padding:8px 10px}}
 html.app .btn--signin{background:rgba(255,255,255,.16);border-color:transparent;color:#fff;padding:7px}
 html.app .btn--signin .i{width:20px;height:20px}
 .user{position:relative;flex:none}
@@ -302,12 +301,12 @@ html.app .user__pop{position:fixed;top:calc(62px + env(safe-area-inset-top));rig
   .auth__date{min-width:0;overflow:hidden}
   .auth__date span{overflow:hidden;text-overflow:ellipsis}
   .auth__top-right{gap:10px;flex:none}
+  .auth__hotline--2{display:none}
   .auth__hotline{font-size:0;gap:0;width:30px;height:30px;justify-content:center;border-radius:50%;background:rgba(255,255,255,.1)}
   .auth__hotline .i{width:16px;height:16px}
   .auth__header-inner{min-height:66px;gap:11px}
-  .auth__header img{width:44px;height:44px;border-radius:12px}
-  .auth__brand strong{font-size:19px}
-  .auth__brand span{font-size:12px}
+  .auth__logo{height:42px}
+  .auth__portal{display:none}
   .auth__close{font-size:0;gap:0;padding:9px}
   .auth__main{padding:16px 0 24px}
   .auth__grid{border-radius:22px}

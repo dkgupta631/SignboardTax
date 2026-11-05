@@ -70,8 +70,11 @@ button,input,select{font:inherit}
 .header.is-stuck{box-shadow:0 6px 22px rgba(34,82,90,.14)}
 .header__inner{display:flex;align-items:center;gap:20px;min-height:76px}
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex:none}
-.brand img{display:block;width:52px;height:52px;border-radius:13px;transition:transform .3s}
-.brand:hover img{transform:rotate(-5deg) scale(1.05)}
+.header .container{width:min(1280px,100% - 40px)}
+.brand__logo{display:block;height:52px;width:auto;transition:transform .3s}
+.brand:hover .brand__logo{transform:scale(1.03)}
+/* Large screens show the full logo; the phone app bar uses the icon with white text. */
+.brand .brand__mark,.brand .brand__text{display:none}
 .brand__text{display:flex;flex-direction:column;line-height:1.15}
 .brand strong{color:var(--teal);font-size:19px;font-weight:700;white-space:nowrap}
 .brand em{color:var(--green);font-style:normal}
@@ -99,7 +102,7 @@ html[lang=en] .hero__th{display:none}
 
 /* Intro */
 .intro__top{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
-.intro__photo{border-radius:22px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:1054/620}
+.intro__photo{border-radius:22px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:1606/979}
 .intro__photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:left top;transition:transform .6s}
 .intro__photo:hover img{transform:scale(1.04)}
 .intro__title{color:var(--teal);font-size:clamp(28px,3vw,36px);font-weight:700;line-height:1.3;margin-bottom:12px}
@@ -205,14 +208,20 @@ html[lang=en] .hero__th{display:none}
 .guide .lead-green{color:var(--teal);font-weight:600;margin-top:18px}
 
 /* Consult card */
-.consult-card{position:relative;display:grid;grid-template-columns:30% 1fr 23%;align-items:center;gap:12px;aspect-ratio:1849/623;max-width:1100px;margin-inline:auto;background:url(../assets/img/contact-card.png) center/100% 100% no-repeat}
-.consult-card__mascot{justify-self:center;width:88%;margin-top:-4%;transition:transform .4s}
-.consult-card:hover .consult-card__mascot{transform:translateY(-6px) rotate(-2deg)}
-.consult-card__body{grid-column:2;text-align:center;padding-right:9%}
+.consult-card{position:relative;isolation:isolate;display:grid;grid-template-columns:42% minmax(0,1fr);align-items:center;min-height:470px;max-width:1100px;margin-inline:auto;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(115deg,#ecfaef 0%,#f6fdf7 50%,#fff 100%);box-shadow:var(--shadow)}
+.consult-card__art{position:absolute;z-index:-1;left:0;top:0;width:auto;height:100%;max-width:none;-webkit-mask-image:linear-gradient(90deg,#000 62%,transparent 98%);mask-image:linear-gradient(90deg,#000 62%,transparent 98%);transform-origin:left center;transition:transform .6s ease}
+.consult-card:hover .consult-card__art{transform:scale(1.025)}
+.consult-card__body{grid-column:2;display:flex;flex-direction:column;align-items:center;text-align:center;padding:34px 34px 38px 0}
+.line-ids{display:grid;grid-template-columns:repeat(2,minmax(0,210px));justify-content:center;gap:22px;margin-top:22px;width:100%}
+.line-id{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 14px 16px;border-radius:20px;background:#fff;border:1px solid #d5eedb;box-shadow:0 10px 24px rgba(30,120,60,.12);color:inherit;text-decoration:none;transition:transform .25s,box-shadow .25s}
+.line-id:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(30,120,60,.2)}
+.line-id__qr{display:block;width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#fff}
+.line-id__qr img{display:block;width:100%;height:100%;object-fit:contain}
+.line-id__name{display:block;width:100%;color:var(--line-green);font-size:clamp(18px,1.8vw,22px);font-weight:700;line-height:1.2}
+.line-id__add{display:block;width:100%;padding:8px 10px;border-radius:999px;background:var(--line-green);color:#fff;font-size:14px;font-weight:500;line-height:1.3;box-shadow:0 6px 14px rgba(58,199,10,.28);transition:background .2s}
+.line-id:hover .line-id__add{background:#2fb006}
 .consult-card__body h2{color:var(--teal);font-size:clamp(26px,3.4vw,44px);font-weight:700;line-height:1.2;margin-bottom:12px}
 .consult-card__body p{color:var(--green);font-size:clamp(14px,1.4vw,17px)}
-.consult-card__id{display:block;color:var(--line-green);font-size:clamp(20px,2vw,26px);font-weight:700;margin-top:10px}
-.consult-card__qr{display:none}
 
 /* Contact band */
 .contact-band{background:#fff url(../assets/img/pharmacy-bg.jpg) center/cover no-repeat;padding-block:24px 44px}
@@ -226,26 +235,26 @@ html[lang=en] .hero__th{display:none}
 
 /* Footer */
 .footer{background:linear-gradient(160deg,var(--teal),var(--teal-900));color:#fff;font-size:15px}
-.footer__grid{display:grid;grid-template-columns:1.5fr .8fr 1fr 1.5fr;gap:44px;padding-block:52px 44px}
+.footer__grid{display:grid;grid-template-columns:1.3fr .7fr 2fr;gap:44px;padding-block:52px 44px}
 .footer h3{position:relative;font-size:17px;font-weight:600;padding-bottom:12px;margin-bottom:16px}
 .footer h3::after{content:"";position:absolute;left:0;bottom:0;width:30px;height:3px;border-radius:2px;background:#8fe3cb}
 .footer ul{list-style:none;display:grid;gap:10px}
 .footer__logo{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.footer__logo img{width:48px;height:48px;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.75)}
+.footer__logo img{width:52px;height:52px;padding:5px;border-radius:13px;background:#fff;object-fit:contain;box-shadow:0 4px 12px rgba(0,0,0,.15)}
 .footer__logo strong{font-size:21px;font-weight:700}
 .footer__logo em{color:#8fe3cb;font-style:normal}
 .footer__brand p{max-width:300px;line-height:1.7;color:rgba(255,255,255,.82);font-size:14.5px}
 .footer__menu a,.footer__menu button{display:inline-block;border:0;background:none;padding:0;font:inherit;color:rgba(255,255,255,.82);text-decoration:none;cursor:pointer;transition:color .2s,transform .2s}
 .footer__menu a:hover,.footer__menu button:hover{color:#fff;transform:translateX(4px)}
-.footer__services li{color:rgba(255,255,255,.82)}
-.footer__reach{display:flex;align-items:flex-start;gap:16px}
+.footer__reach{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 .footer__links{display:grid;gap:12px;flex:1;min-width:0}
 .footer__links a{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;text-decoration:none;white-space:nowrap}
 .footer__links a:hover{color:#8fe3cb}
 .footer__links img,.footer__links .i{width:20px;height:20px;flex:none}
-.footer__scan{flex:none;margin:0;text-align:center}
-.footer__scan figcaption{margin-top:7px;font-size:12.5px;color:rgba(255,255,255,.82)}
-.footer__qr{display:block;width:112px;height:112px;background:#fff;padding:6px;border-radius:10px}
+.footer__scan-row{display:flex;flex-wrap:wrap;gap:16px}
+.footer__scan{display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:13.5px;font-weight:600;text-decoration:none;transition:transform .2s}
+.footer__scan:hover{transform:translateY(-3px);color:#8fe3cb}
+.footer__qr{display:block;width:104px;height:104px;background:#fff;padding:5px;border-radius:10px}
 .footer__bottom{border-top:1px solid rgba(255,255,255,.16);font-size:13px;color:rgba(255,255,255,.75)}
 .footer__bottom-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 24px;padding-block:16px}
 .floating{transition:opacity .2s}
@@ -263,15 +272,25 @@ html[lang=en] .hero__th{display:none}
 .anim .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .anim .reveal.is-in{opacity:1;transform:none}
 
-@media (max-width:1100px){
+@media (max-width:1200px){
   .topnav__item .i{display:none}
   .topnav__item{padding-inline:11px}
 }
-@media (max-width:940px){
+@media (max-width:1040px){
   .btn--sales{display:none}
+}
+@media (max-width:900px){
+  .brand__logo{height:42px}
+  .topnav{gap:0}
+  .topnav__item{padding-inline:8px}
+  .header__actions{gap:8px}
 }
 @media (max-width:1100px){
   .footer__grid{grid-template-columns:1fr 1fr;gap:36px}
+  .footer__contact{grid-column:1/-1}
+}
+@media (max-width:640px){
+  .footer__reach{grid-template-columns:1fr}
 }
 @media (max-width:820px){
   .intro__top,.formula__grid{grid-template-columns:1fr}
@@ -280,17 +299,16 @@ html[lang=en] .hero__th{display:none}
   .contact-grid a:nth-child(3),  .contact-grid .link-off:nth-child(3){border-left:0}
   .contact-grid a,  .contact-grid .link-off{min-height:160px}
   .contact-grid a .i,.contact-grid .link-off .i{width:72px;height:72px}
-  .consult-card{grid-template-columns:1fr;aspect-ratio:auto;justify-items:center;background:var(--green-soft);border:1px solid var(--line);border-radius:22px;padding:24px 20px}
-  .consult-card__mascot{width:150px;margin:0}
-  .consult-card__body{grid-column:auto;padding:0}
-  .consult-card__qr{display:block;width:170px;height:170px;background:#fff;padding:8px;border-radius:12px;margin-top:8px}
+  .consult-card{grid-template-columns:1fr;min-height:0;max-width:640px}
+  .consult-card__art{position:static;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:0 18%;-webkit-mask-image:linear-gradient(180deg,#000 75%,transparent);mask-image:linear-gradient(180deg,#000 75%,transparent)}
+  .consult-card__body{grid-column:auto;padding:0 20px 26px;margin-top:-14px}
 }
 @media (max-width:640px){
   body{font-size:16px}
   .container,.container--narrow{width:calc(100% - 32px)}
   .brand__text small{display:none}
   .brand strong{font-size:16px}
-  .brand img{width:44px;height:44px}
+  .brand__logo{height:46px}
   .header__inner{gap:8px;min-height:64px}
   .btn--sales{display:none}
   .hero p{max-width:none}
@@ -347,7 +365,9 @@ html.app .header{z-index:70;background:var(--teal);padding-top:env(safe-area-ins
 html.app .floating,html.app .hero__wave,html.app .topnav{display:none}
 html.app .header__inner{width:calc(100% - 24px);min-height:56px;gap:8px}
 html.app .brand{min-width:0;flex:1;gap:9px}
-html.app .brand img{width:36px;height:36px;border-radius:10px;box-shadow:0 0 0 1.5px rgba(255,255,255,.75)}
+html.app .brand__logo{display:none}
+html.app .brand__mark{display:block;width:38px;height:38px;padding:3px;border-radius:10px;background:#fff;object-fit:contain}
+html.app .brand__text{display:flex}
 html.app .brand__text small{display:none}
 html.app .brand strong{color:#fff;font-size:17px}
 html.app .brand em{color:#8fe3cb}
@@ -464,11 +484,13 @@ html.app .quick.is-current{display:grid;grid-template-columns:repeat(2,1fr);gap:
 .quick a{display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:16px;padding:12px 4px;color:#fff;text-decoration:none;font-size:13.5px;font-weight:500;background:var(--teal);transition:transform .15s}
 .quick a:nth-child(2){background:var(--line-green)}
 .quick .i,.quick img{width:26px;height:26px}
-html.app .consult-card{grid-template-columns:1fr;aspect-ratio:auto;justify-items:center;background:#fff;border:0;border-radius:20px;padding:16px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
-html.app .consult-card__mascot{width:110px;margin:0}
-html.app .consult-card__body{grid-column:auto;padding:0}
+html.app .consult-card{grid-template-columns:1fr;min-height:0;border:0;border-radius:20px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
+html.app .consult-card__body{grid-column:auto;padding:0 14px 18px;margin-top:-10px}
 html.app .consult-card__body h2{font-size:24px;margin-bottom:4px}
-html.app .consult-card__qr{display:block;width:150px;height:150px;margin-top:6px}
+html.app .line-ids{gap:12px;margin-top:14px}
+html.app .line-id{padding:10px 10px 12px;gap:8px;border-radius:16px}
+html.app .line-id__name{font-size:16px}
+html.app .line-id__add{font-size:13px;padding:7px 8px}
 html.app .contact-band{background:none;padding-block:6px}
 html.app .contact-band__title{font-size:15px;margin-bottom:8px}
 html.app .contact-grid{grid-template-columns:1fr 1fr;gap:10px;background:none;border:0;padding:0}
@@ -520,8 +542,7 @@ html.app .contact-grid a .i,html.app .contact-grid .link-off .i{width:52px;heigh
 /* Footer on phones: the tab bar is the menu and the contact screen has the QR */
 html.app .footer{margin:6px 12px 0;border-radius:20px;overflow:hidden}
 html.app .footer__grid{grid-template-columns:1fr;width:calc(100% - 36px);gap:24px;padding-block:24px 20px}
-html.app .footer__menu,html.app .footer__scan{display:none}
-html.app .footer__services ul{grid-template-columns:1fr 1fr;gap:9px 14px;font-size:14px}
+html.app .footer__menu,html.app .footer__scans{display:none}
 html.app .footer__bottom-inner{width:calc(100% - 36px);flex-direction:column;align-items:center;text-align:center;font-size:11.5px;padding-block:12px}
 
 /* Contact moved out of the tab bar, into the app bar */

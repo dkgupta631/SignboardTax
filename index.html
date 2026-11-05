@@ -6,7 +6,7 @@
   <title>โปรแกรมคำนวณภาษีป้ายออนไลน์ | Signnage Tax Calculator</title>
   <meta name="description" content="เครื่องมือช่วยคำนวณภาษีป้ายเบื้องต้น สำหรับร้านขายยาและธุรกิจหน้าร้าน ที่ต้องการวางแผนค่าใช้จ่ายก่อนติดตั้งป้ายจริง">
   <meta name="theme-color" content="#2a5d63">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/img/icons/apple-touch-icon.png">
   <meta name="mobile-web-app-capable" content="yes">
@@ -23,7 +23,7 @@
     html.loader-on:not(.loading) .loader{opacity:0;pointer-events:none}
     .loader__inner{animation:loaderIn .4s ease .3s backwards}
     .loader__mark{position:relative;display:grid;place-items:center;width:112px;height:112px;margin:0 auto 20px}
-    .loader__mark svg{width:64px;height:64px;animation:loaderBreathe 1.8s ease-in-out infinite}
+    .loader__mark img{width:64px;height:64px;object-fit:contain;animation:loaderBreathe 1.8s ease-in-out infinite}
     .loader__mark::before{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid #d9f1e9;border-top-color:#35ad8e;border-right-color:#22525a;animation:loaderSpin 1s linear infinite}
     .loader__name{display:block;font-size:22px;font-weight:700;line-height:1.3}
     .loader__name em{color:#35ad8e;font-style:normal}
@@ -66,19 +66,7 @@
   <div class="loader" id="loader" role="status" aria-live="polite">
     <div class="loader__inner">
       <span class="loader__mark">
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <defs><linearGradient id="loaderMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22525a"/><stop offset="1" stop-color="#35b08f"/></linearGradient></defs>
-          <rect width="64" height="64" rx="15" fill="url(#loaderMark)"/>
-          <rect x="17" y="40" width="4.5" height="15" rx="1.5" fill="#d6efe7"/>
-          <rect x="42.5" y="40" width="4.5" height="15" rx="1.5" fill="#d6efe7"/>
-          <rect x="9" y="14" width="46" height="29" rx="6" fill="#fff"/>
-          <g fill="none" stroke="#22525a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M26 21h7.5a3.8 3.8 0 0 1 0 7.5H26m0 0h8.5a3.9 3.9 0 0 1 0 7.8H26zM26 21v15.3"/>
-            <path d="M31 17.8v21.5" stroke-width="2.2"/>
-          </g>
-          <circle cx="51" cy="15" r="9.5" fill="#f28c38" stroke="#fff" stroke-width="2.5"/>
-          <path d="M46.8 12.6h8.4M46.8 17.4h8.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
-        </svg>
+        <img src="assets/img/logo-mark.png" alt="" width="64" height="64">
       </span>
       <strong class="loader__name">Signnage <em>Tax</em></strong>
       <span class="loader__text"><span class="loader__th">กำลังโหลด กรุณารอสักครู่</span><span class="loader__en">Loading, please wait</span></span>
@@ -90,7 +78,8 @@
       <div class="auth__wrap auth__topbar-inner">
         <span class="auth__date"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cal"/></svg><span id="authDate"></span></span>
         <div class="auth__top-right">
-          <a class="auth__hotline" href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="authHotline">สายด่วน</span> 089-2012641</a>
+          <a class="auth__hotline" href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="authHotline">สายด่วน</span> +66 89 201 2641</a>
+          <a class="auth__hotline auth__hotline--2" href="tel:+66954962554">+66 95 496 2554</a>
           <div class="lang" role="group" aria-label="Language">
             <button type="button" class="lang__btn" data-lang="th" aria-pressed="true">TH</button>
             <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
@@ -101,11 +90,8 @@
 
     <header class="auth__header">
       <div class="auth__wrap auth__header-inner">
-        <img src="assets/img/logo-mark.svg" alt="" width="56" height="56">
-        <div class="auth__brand">
-          <strong>Signnage <em>Tax</em></strong>
-          <span data-i18n="authPortal">ระบบบริการสมาชิกออนไลน์ โปรแกรมคำนวณภาษีป้าย</span>
-        </div>
+        <img class="auth__logo" src="assets/img/logo.png" alt="Signage Tax โปรแกรมคำนวณภาษีป้าย" width="900" height="205">
+        <span class="auth__portal" data-i18n="authPortal">ระบบบริการสมาชิกออนไลน์ โปรแกรมคำนวณภาษีป้าย</span>
         <button type="button" class="auth__close" id="authClose"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg><span data-i18n="backHome">กลับหน้าหลัก</span></button>
       </div>
     </header>
@@ -301,7 +287,8 @@
   <header class="header" id="header">
     <div class="container header__inner">
       <a class="brand" href="#top" aria-label="Signnage Tax Calculator">
-        <img src="assets/img/logo-mark.svg" alt="" width="52" height="52">
+        <img class="brand__logo" src="assets/img/logo.png" alt="" width="900" height="205">
+        <img class="brand__mark" src="assets/img/logo-mark.png" alt="" width="52" height="52">
         <span class="brand__text">
           <strong>Signnage <em>Tax</em></strong>
           <small data-i18n="brandSub">โปรแกรมคำนวณภาษีป้าย</small>
@@ -368,7 +355,7 @@
 
     <section class="app-only container" data-screen="home">
       <div class="install" id="installCard" hidden>
-        <img src="assets/img/logo-mark.svg" alt="" width="44" height="44">
+        <img src="assets/img/logo-mark.png" alt="" width="44" height="44">
         <p id="installText"></p>
         <button type="button" class="install__go" id="installGo" data-i18n="installBtn">ติดตั้ง</button>
         <button type="button" class="install__close" id="installClose" aria-label="Close">✕</button>
@@ -383,7 +370,7 @@
     <section class="section intro container container--narrow" data-screen="home">
       <div class="intro__top reveal">
         <figure class="intro__photo">
-          <img src="assets/img/signboard-photo.jpg" alt="ป้ายร้านยาพร้อมเส้นบอกความกว้างและความยาว" data-i18n-alt="photoAlt" width="1054" height="643" loading="lazy">
+          <img src="assets/img/signboard-photo.jpg" alt="ป้ายร้านพร้อมเส้นบอกความกว้าง 7.5 ม. และความสูง 5 ม." data-i18n-alt="photoAlt" width="1606" height="979" loading="lazy">
         </figure>
         <div>
           <h2 class="intro__title"><span data-i18n="introTitleA">รู้จัก</span> <em data-i18n="introTitleB">“ภาษีป้าย”</em></h2>
@@ -612,18 +599,24 @@
 
     <section class="section container" data-screen="contact">
       <div class="consult-card reveal">
-        <img class="consult-card__mascot" src="assets/img/mascot.png" alt="" width="344" height="421" loading="lazy">
+        <img class="consult-card__art" src="assets/img/contact-mascot.jpg" alt="" width="1535" height="1024" loading="lazy">
         <div class="consult-card__body">
           <h2 data-i18n="consultTitle">ปรึกษาเราได้เลย!</h2>
           <p data-i18n="consultA">ทีมผู้เชี่ยวชาญพร้อมให้คำแนะนำ</p>
           <p data-i18n="consultB">ฟรี! ไม่มีค่าใช้จ่าย</p>
-          <a class="btn btn--line" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener">
-            <img src="assets/img/social/line.png" alt="" width="26" height="26">
-            <span data-i18n="addLine">เพิ่มเพื่อนในไลน์</span>
-          </a>
-          <strong class="consult-card__id">@sbangpa</strong>
+          <div class="line-ids">
+            <a class="line-id" href="https://line.me/ti/p/voxO0Betpu" target="_blank" rel="noopener">
+              <span class="line-id__qr"><img src="assets/img/line-qr-2.png" alt="LINE QR code @af2506" width="300" height="300" loading="lazy"></span>
+              <strong class="line-id__name">@af2506</strong>
+              <span class="line-id__add" data-i18n="addFriend">เพิ่มเพื่อน</span>
+            </a>
+            <a class="line-id" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener">
+              <span class="line-id__qr"><img src="assets/img/line-qr.png" alt="LINE QR code @sbangpa" width="536" height="536" loading="lazy"></span>
+              <strong class="line-id__name">@sbangpa</strong>
+              <span class="line-id__add" data-i18n="addFriend">เพิ่มเพื่อน</span>
+            </a>
+          </div>
         </div>
-        <img class="consult-card__qr" src="assets/img/line-qr.png" alt="LINE QR code" width="540" height="540" loading="lazy">
       </div>
     </section>
 
@@ -644,7 +637,7 @@
     <div class="container footer__grid reveal">
       <div class="footer__brand">
         <div class="footer__logo">
-          <img src="assets/img/logo-mark.svg" alt="" width="48" height="48" loading="lazy">
+          <img src="assets/img/logo-mark.png" alt="" width="48" height="48" loading="lazy">
           <strong>Signnage <em>Tax</em></strong>
         </div>
         <p data-i18n="fAbout">เครื่องมือคำนวณภาษีป้ายเบื้องต้น ช่วยให้ร้านขายยาและธุรกิจหน้าร้านวางแผนค่าใช้จ่ายได้ง่ายและรวดเร็ว</p>
@@ -659,28 +652,30 @@
           <li><a href="assets/docs/sign-tax-form-pp1.pdf" target="_blank" rel="noopener" data-auth="download" data-i18n="fForm">แบบฟอร์ม ภ.ป.1</a></li>
         </ul>
       </nav>
-      <div class="footer__services">
-        <h3 data-i18n="fServices">บริการของเรา</h3>
-        <ul>
-          <li data-i18n="fs1">ออกแบบร้านขายยา</li>
-          <li data-i18n="fs2">ตกแต่งร้านขายยา</li>
-          <li data-i18n="fs3">ออกแบบโลโก้</li>
-          <li data-i18n="fs4">ขออนุญาตเปิดร้านขายยา</li>
-          <li data-i18n="fs5">ต่ออายุใบอนุญาต</li>
-          <li data-i18n="fs6">ทำความสะอาดร้านขายยา</li>
-        </ul>
-      </div>
       <div class="footer__contact">
-        <h3 data-i18n="fContact">ติดต่อเรา</h3>
         <div class="footer__reach">
-          <div class="footer__links">
-            <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>089-2012641</a>
-            <a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="18" height="18">@sbangpa</a>
+          <div>
+            <h3 data-i18n="fContact">ติดต่อเรา</h3>
+            <div class="footer__links">
+              <a href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>+66 89 201 2641</a>
+              <a href="tel:+66954962554"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>+66 95 496 2554</a>
+              <a href="https://line.me/ti/p/voxO0Betpu" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="18" height="18">@af2506</a>
+              <a href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener"><img src="assets/img/social/line.png" alt="" width="18" height="18">@sbangpa</a>
+            </div>
           </div>
-          <figure class="footer__scan">
-            <img class="footer__qr" src="assets/img/line-qr.png" alt="LINE QR code" width="96" height="96" loading="lazy">
-            <figcaption data-i18n="fScan">สแกนเพื่อแชต</figcaption>
-          </figure>
+          <div class="footer__scans">
+            <h3 data-i18n="fScan">สแกนเพื่อแชต</h3>
+            <div class="footer__scan-row">
+              <a class="footer__scan" href="https://line.me/ti/p/voxO0Betpu" target="_blank" rel="noopener">
+                <img class="footer__qr" src="assets/img/line-qr-2.png" alt="LINE QR code @af2506" width="104" height="104" loading="lazy">
+                <span>@af2506</span>
+              </a>
+              <a class="footer__scan" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener">
+                <img class="footer__qr" src="assets/img/line-qr.png" alt="LINE QR code @sbangpa" width="104" height="104" loading="lazy">
+                <span>@sbangpa</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

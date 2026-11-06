@@ -3,8 +3,8 @@
 // The sign is a rectangle, so its four corners alone fix its shape (width to
 // length) even in a photo taken at an angle: the way its sides converge gives
 // the perspective, using the method of Zhang and He (2007) for photographed
-// rectangles. The scale then comes from one real side the customer knows, or
-// from an item of known size on the sign. This keeps small errors in marking that item from being
+// rectangles. The item of known size on the sign (A4 paper, a card) then only
+// supplies the scale. This keeps small errors in marking that item from being
 // stretched across the whole sign, which is what happens when the perspective
 // is worked out from the small item alone.
 (function (root) {
@@ -117,15 +117,7 @@
     return { width: width, length: length, mismatch: mismatch };
   }
 
-  // The sign's width divided by its length, from its corners alone. With one real
-  // side known, this gives the other side without any reference item.
-  function shape(sign, imageW, imageH) {
-    if (!isConvex(sign)) return null;
-    var cx = imageW / 2, cy = imageH / 2, scale = Math.max(imageW, imageH);
-    return aspectRatio(sign.map(function (p) { return [(p[0] - cx) / scale, (p[1] - cy) / scale]; }));
-  }
-
-  var api = { measure: measure, shape: shape, isConvex: isConvex, homography: homography };
+  var api = { measure: measure, isConvex: isConvex, homography: homography };
   root.ScanMeasure = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

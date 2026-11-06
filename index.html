@@ -891,18 +891,16 @@
         <button type="button" class="btn btn--primary" id="scanNext" data-i18n="scanNext">ถัดไป</button>
       </div>
       <div class="scan__controls scan__controls--ref">
-        <div class="scan__modes" role="radiogroup" aria-label="Size">
-          <label class="scan__mode"><input type="radio" name="scanMode" value="width" checked><span data-i18n="scanModeWidth">ทราบความกว้าง</span></label>
-          <label class="scan__mode"><input type="radio" name="scanMode" value="length"><span data-i18n="scanModeLength">ทราบความยาว</span></label>
-          <label class="scan__mode"><input type="radio" name="scanMode" value="object"><span data-i18n="scanModeObject">มีวัตถุที่ทราบขนาด</span></label>
-        </div>
-        <div class="scan__known" id="scanKnownBox">
-          <input id="scanKnown" type="text" inputmode="decimal" autocomplete="off" aria-label="cm">
-          <span data-i18n="scanCm">ซม.</span>
-        </div>
+        <label class="scan__ref-label" hidden><span data-i18n="scanRefLabel">วัตถุอ้างอิง</span>
+          <select id="scanRefType">
+            <option value="a4" data-i18n="scanRefA4">กระดาษ A4 (21 x 29.7 ซม.)</option>
+            <option value="card" data-i18n="scanRefCard">บัตรประชาชนหรือบัตรเครดิต (5.4 x 8.6 ซม.)</option>
+            <option value="custom" data-i18n="scanRefCustom">กำหนดขนาดเอง</option>
+          </select>
+        </label>
         <div class="scan__custom" id="scanCustom" hidden>
-          <input id="scanRefW" type="text" inputmode="decimal" placeholder="ความกว้างของวัตถุ (ซม.)" data-i18n-ph="scanRefW" aria-label="Width">
-          <input id="scanRefH" type="text" inputmode="decimal" placeholder="ความยาวของวัตถุ (ซม.)" data-i18n-ph="scanRefH" aria-label="Length">
+          <input id="scanRefW" type="text" inputmode="decimal" placeholder="กว้าง (ซม.)" data-i18n-ph="scanRefW" aria-label="Width">
+          <input id="scanRefH" type="text" inputmode="decimal" placeholder="ยาว (ซม.)" data-i18n-ph="scanRefH" aria-label="Length">
         </div>
         <div class="scan__row">
           <button type="button" class="btn btn--ghost" id="scanBack" data-i18n="scanBack">ย้อนกลับ</button>

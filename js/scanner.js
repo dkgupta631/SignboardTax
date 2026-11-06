@@ -1,12 +1,14 @@
 // Measures a sign from a camera photo. The sign's outline is found automatically
 // where possible, snapped onto its real edges, and can be corrected with a
-// magnifier. The corners give the sign's true shape, even at an angle
-// (js/scan-measure.js). One photo cannot give real size on its own, so the
-// customer then types one real side (width or length) and the other is worked
-// out, or marks an object of known size stuck on the sign.
+// magnifier. One photo cannot give real size on its own, so the customer also
+// marks an item of known size stuck on the sign. js/scan-measure.js turns the
+// marks into centimetres: the sign's own corners give the perspective and the
+// item gives the scale, which stays accurate for photos taken at an angle.
 (function () {
   'use strict';
 
+  // Real size in cm, short side then long side.
+  var REFERENCES = { a4: [21, 29.7], card: [5.398, 8.56] };
   var SUCCESS_MS = 3200;
   var LIVE_MS = 250;
   var SNAP_SHIFT = 12;       // after a drag, corners may move this far onto a clear edge
@@ -23,7 +25,7 @@
   var liveOutline = $('scanLive');
   var text = $('scanText');
   var errorBox = $('scanError');
-  var known = $('scanKnown');
+  var refType = $('scanRefType');
   var refW = $('scanRefW');
   var refH = $('scanRefH');
 
@@ -143,7 +145,7 @@
       trackSign();
     }
     if (next === 'sign') setText(msg().scanSign);
-    if (next === 'ref') renderMode();
+    if (next === 'ref') setText(msg().scanRef);
     if (next === 'sign' || next === 'ref') drawPhoto();
   }
 
@@ -167,9 +169,7 @@
     pic.textContent = '';
     pic.appendChild(node('image', { href: photo, width: size.w, height: size.h }));
     pic.appendChild(outline(signPts, 'scan__sign'));
-    var marking = step === 'ref' && mode() === 'object';
-    if (marking) pic.appendChild(outline(refPts, 'scan__ref'));
-    if (step === 'ref' && !marking) return; // only a typed size is needed
+    if (step === 'ref') pic.appendChild(outline(refPts, 'scan__ref'));
     var active = step === 'ref' ? refPts : signPts;
     var scale = size.w / (pic.getBoundingClientRect().width || size.w);
     var fit = Math.max(scale, size.h / (pic.getBoundingClientRect().height || size.h));
@@ -268,44 +268,13 @@
   pic.addEventListener('pointercancel', endDrag);
 
   /* ---------- Measuring ---------- */
-  function mode() {
-    var picked = document.querySelector('input[name="scanMode"]:checked');
-    return picked ? picked.value : 'width';
-  }
-
-  function number(input) {
-    var n = parseFloat(String(input.value).replace(/,/g, ''));
-    return n > 0 ? n : NaN;
-  }
-
-  function renderMode() {
-    var m = mode();
-    var object = m === 'object';
-    $('scanKnownBox').hidden = object;
-    $('scanCustom').hidden = !object;
-    known.placeholder = m === 'length' ? msg().scanKnownLengthPh : msg().scanKnownWidthPh;
-    if (step === 'ref') {
-      setText(object ? msg().scanRef : msg().scanKnown);
-      drawPhoto();
+  function referenceSize() {
+    if (refType.value === 'custom') {
+      var w = parseFloat(refW.value);
+      var h = parseFloat(refH.value);
+      return w > 0 && h > 0 ? [w, h] : null;
     }
-  }
-
-  // Width and length in cm from the marks and what the customer typed, or a message key.
-  function compute() {
-    var m = mode();
-    if (m === 'object') {
-      var w = number(refW), h = number(refH);
-      if (!(w && h)) return 'scanRefMissing';
-      var r = window.ScanMeasure.measure(signPts, refPts, [w, h], size.w, size.h);
-      return r || 'scanBadMarks';
-    }
-    var side = number(known);
-    if (!side) return 'scanKnownMissing';
-    var ratio = window.ScanMeasure.shape(signPts, size.w, size.h);
-    if (!ratio) return 'scanBadMarks';
-    return m === 'width'
-      ? { width: side, length: side / ratio, mismatch: 0 }
-      : { width: side * ratio, length: side, mismatch: 0 };
+    return REFERENCES[refType.value];
   }
 
   function fill(id, value) {
@@ -363,10 +332,12 @@
   }
 
   function finish() {
-    var result = compute();
-    if (typeof result === 'string') { setText(msg()[result], true); return; }
+    var ref = referenceSize();
+    if (!ref) { setText(msg().scanRefMissing, true); return; }
+    var result = window.ScanMeasure.measure(signPts, refPts, ref, size.w, size.h);
+    if (!result) { setText(msg().scanBadMarks, true); return; }
     // A reference whose marked shape is clearly off usually means a misplaced corner.
-    var marks = JSON.stringify([signPts, refPts, refW.value, refH.value]);
+    var marks = JSON.stringify([signPts, refPts, ref]);
     if (result.mismatch > CHECK_MISMATCH && confirmedMarks !== marks) {
       confirmedMarks = marks;
       setText(msg().scanCheckRef, true);
@@ -402,17 +373,9 @@
   $('scanNext').addEventListener('click', function () { setStep('ref'); });
   $('scanBack').addEventListener('click', function () { setStep('sign'); });
   $('scanMeasure').addEventListener('click', finish);
-  [known, refW, refH].forEach(function (input) {
-    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); finish(); } });
+  refType.addEventListener('change', function () {
+    $('scanCustom').hidden = refType.value !== 'custom';
   });
-  Array.prototype.forEach.call(document.querySelectorAll('input[name="scanMode"]'), function (r) {
-    r.addEventListener('change', function () {
-      renderMode();
-      (mode() === 'object' ? refW : known).focus({ preventScroll: true });
-    });
-  });
-  document.addEventListener('langchange', renderMode);
-  renderMode();
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && step !== 'closed') close();
   });

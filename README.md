@@ -71,14 +71,19 @@ Signing in returns a session token, stored in the `Session Token` column. The pr
 
 ## Sign scanner accuracy
 
-The scanner measures a sign from one photo. The sign's four corners give the perspective, and an A4 sheet or card stuck on the sign gives the scale. Corners snap onto clear edges, and a magnifier appears while dragging a point.
+A single photo shows a sign's shape but not its real size: a small sign close up and a big banner far away can look the same. The scanner reads the sign's true shape from its four corners, even at an angle, and then needs one real size to work out the rest. The customer chooses one of three options:
+
+| Option | What to enter | Best for |
+| --- | --- | --- |
+| I know the width | The sign's real width | Big banners and signs out of reach |
+| I know the length | The sign's real length | Big banners and signs out of reach |
+| Object of known size | The size of an object stuck on the sign, and its four corners | Signs within reach |
 
 For accurate results:
 
-- Stick the A4 sheet or card flat on the sign. Do not hold it in front of the sign.
-- Fill as much of the screen as possible with the whole sign. A bigger reference in the photo gives a more accurate scale.
-- Check that the orange points sit exactly on the sign's corners and the green points on the paper's corners.
-- If the scanner says the reference looks out of shape, re-check the points before measuring again.
+- Show the whole sign with all four corners, as large as possible in the photo.
+- Check that the orange points sit exactly on the sign's corners. A magnifier appears while dragging, and points snap onto clear edges.
+- With an object of known size, stick it flat on the sign rather than holding it in front.
 
 ## Calculation
 

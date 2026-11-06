@@ -523,10 +523,18 @@ html.app .contact-grid a .i,html.app .contact-grid .link-off .i{width:52px;heigh
 .scan__controls .btn--ghost{padding-inline:26px}
 .scan__controls .btn--primary{padding-inline:34px;font-size:16px}
 .scan__shutter{border:4px solid #fff;border-radius:999px;background:var(--orange);color:#fff;font:inherit;font-size:16px;font-weight:600;padding:13px 40px;cursor:pointer}
-.scan__ref-label{display:flex;flex-direction:column;gap:5px;width:100%;max-width:440px;font-size:14px}
+.scan__modes{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;flex-basis:100%}
+.scan__mode{position:relative;flex:0 1 180px;cursor:pointer}
+.scan__mode input{position:absolute;opacity:0;pointer-events:none}
+.scan__mode span{display:block;padding:10px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,.35);text-align:center;font-size:14.5px;font-weight:500;transition:background .2s,border-color .2s,color .2s}
+.scan__mode input:checked+span{background:#fff;border-color:#fff;color:var(--teal);font-weight:600}
+.scan__mode input:focus-visible+span{outline:3px solid var(--orange);outline-offset:2px}
+.scan__known{display:flex;align-items:center;gap:10px;width:100%;max-width:440px}
+.scan__known input{flex:1;min-width:0;border:0;border-radius:10px;font:inherit;font-size:18px;font-weight:600;color:var(--ink);background:#fff;padding:11px 14px}
+.scan__known span{font-size:16px;font-weight:500}
 .scan__custom{display:flex;gap:10px;width:100%;max-width:440px}
 .scan__custom input{flex:1;min-width:0}
-.scan__ref-label select,.scan__custom input{border:0;border-radius:10px;font:inherit;font-size:16px;color:var(--ink);background:#fff;padding:10px 12px}
+.scan__custom input{border:0;border-radius:10px;font:inherit;font-size:16px;color:var(--ink);background:#fff;padding:10px 12px}
 .scan__row{display:flex;justify-content:center;gap:12px;width:100%}
 .scan__done{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;background:#10272b}
 .scan__done strong{color:#8fe3cb;font-size:30px;font-weight:700}

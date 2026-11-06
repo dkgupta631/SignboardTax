@@ -192,6 +192,121 @@
     return top && top.q;
   }
 
+  /* ---------- Refinement at full resolution ---------- */
+  // The outline above comes from a small copy of the photo, so its corners can be
+  // a dozen pixels out. Each side is moved onto the strongest colour edge near it
+  // in the full photo, a straight line is fitted through those edge points, and
+  // the corners become the crossings of neighbouring lines.
+  var SEARCH = 26;        // pixels either side of the rough side to look for the edge
+  var SAMPLES = 48;       // edge points per side
+  var MAX_SHIFT = 45;     // a refined corner further than this is not trusted
+
+  var full = document.createElement('canvas');
+  var fullContext = null;
+
+  function lineThrough(points) {
+    var n = points.length, mx = 0, my = 0, sxx = 0, syy = 0, sxy = 0, i;
+    for (i = 0; i < n; i++) { mx += points[i][0]; my += points[i][1]; }
+    mx /= n; my /= n;
+    for (i = 0; i < n; i++) {
+      var dx = points[i][0] - mx, dy = points[i][1] - my;
+      sxx += dx * dx; syy += dy * dy; sxy += dx * dy;
+    }
+    var angle = 0.5 * Math.atan2(2 * sxy, sxx - syy); // direction of the best-fit line
+    return { x: mx, y: my, dx: Math.cos(angle), dy: Math.sin(angle) };
+  }
+
+  function offLine(line, p) { return Math.abs((p[0] - line.x) * line.dy - (p[1] - line.y) * line.dx); }
+
+  function crossing(a, b) {
+    var det = a.dx * b.dy - a.dy * b.dx;
+    if (Math.abs(det) < 1e-6) return null;
+    var t = ((b.x - a.x) * b.dy - (b.y - a.y) * b.dx) / det;
+    return [a.x + t * a.dx, a.y + t * a.dy];
+  }
+
+  function refine(data, w, h, quad, search, maxShift) {
+    function colour(x, y, out) {
+      var xi = Math.max(0, Math.min(w - 1, Math.round(x)));
+      var yi = Math.max(0, Math.min(h - 1, Math.round(y)));
+      var p = (yi * w + xi) * 4;
+      out[0] = data[p]; out[1] = data[p + 1]; out[2] = data[p + 2];
+    }
+    var a = [0, 0, 0], b = [0, 0, 0];
+    var lines = [];
+    for (var side = 0; side < 4; side++) {
+      var p0 = quad[side], p1 = quad[(side + 1) % 4];
+      var len = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
+      if (len < 20) return null;
+      var ux = (p1[0] - p0[0]) / len, uy = (p1[1] - p0[1]) / len;
+      var nx = -uy, ny = ux; // normal to the side
+      var found = [];
+      for (var k = 0; k < SAMPLES; k++) {
+        var f = 0.1 + 0.8 * k / (SAMPLES - 1); // keep clear of the rounded corners
+        var cx = p0[0] + (p1[0] - p0[0]) * f, cy = p0[1] + (p1[1] - p0[1]) * f;
+        var best = 0, bestT = 0, strength = [];
+        for (var t = -search; t <= search; t++) {
+          colour(cx + nx * (t - 1.5), cy + ny * (t - 1.5), a);
+          colour(cx + nx * (t + 1.5), cy + ny * (t + 1.5), b);
+          var g = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
+          strength.push(g);
+          if (g > best) { best = g; bestT = t; }
+        }
+        if (best < 45) continue; // no clear edge here (something in front, or a soft edge)
+        var i0 = bestT + search;
+        var l = strength[i0 - 1], r = strength[i0 + 1];
+        var sub = (l !== undefined && r !== undefined && l + r - 2 * best !== 0) ? 0.5 * (l - r) / (l + r - 2 * best) : 0;
+        var tt = bestT + Math.max(-0.5, Math.min(0.5, sub));
+        found.push([cx + nx * tt, cy + ny * tt]);
+      }
+      if (found.length < SAMPLES * 0.4) return null;
+      // Fit, drop points that disagree (text, a hand, a pole), fit again.
+      var line = lineThrough(found);
+      for (var pass = 0; pass < 2; pass++) {
+        var dists = found.map(function (p) { return offLine(line, p); }).sort(function (x, y) { return x - y; });
+        var limit = Math.max(1.5, dists[Math.floor(dists.length / 2)] * 2.5);
+        var kept = found.filter(function (p) { return offLine(line, p) <= limit; });
+        if (kept.length < SAMPLES * 0.3) return null;
+        found = kept;
+        line = lineThrough(found);
+      }
+      lines.push(line);
+    }
+    var corners = [];
+    for (var c = 0; c < 4; c++) {
+      var at = crossing(lines[(c + 3) % 4], lines[c]); // side before the corner meets side after it
+      if (!at || Math.hypot(at[0] - quad[c][0], at[1] - quad[c][1]) > maxShift) return null;
+      corners.push(at);
+    }
+    return corners;
+  }
+
+  var cache = { source: null, data: null };
+
+  // Moves an outline onto the real edges of a sign or paper in the full-size photo.
+  // options.search: how far from each side to look (pixels); options.maxShift: the
+  // furthest a corner may move. Returns the original outline when the edges are not
+  // clear enough, so a doubtful snap never replaces the customer's own marks.
+  window.refineSign = function (source, sourceW, sourceH, quad, options) {
+    if (!quad || !sourceW || !sourceH) return quad;
+    options = options || {};
+    if (cache.source !== source || !cache.data || full.width !== sourceW || full.height !== sourceH) {
+      full.width = sourceW;
+      full.height = sourceH;
+      fullContext = fullContext || full.getContext('2d', { willReadFrequently: true });
+      fullContext.drawImage(source, 0, 0, sourceW, sourceH);
+      cache = { source: source, data: fullContext.getImageData(0, 0, sourceW, sourceH).data };
+    }
+    var shortest = Math.min.apply(null, quad.map(function (p, i) {
+      var n = quad[(i + 1) % 4];
+      return Math.hypot(n[0] - p[0], n[1] - p[1]);
+    }));
+    // Never search further than a third of the shortest side, or a small paper could
+    // snap to its own opposite edge.
+    var search = Math.max(4, Math.min(options.search || SEARCH, Math.floor(shortest / 3)));
+    return refine(cache.data, sourceW, sourceH, quad, search, options.maxShift || MAX_SHIFT) || quad;
+  };
+
   window.detectSign = function (source, sourceW, sourceH) {
     if (!sourceW || !sourceH) return null;
     var w = Math.min(WORK_WIDTH, sourceW);

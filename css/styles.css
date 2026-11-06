@@ -514,6 +514,10 @@ html.app .contact-grid a .i,html.app .contact-grid .link-off .i{width:52px;heigh
 .scan__ref{fill:rgba(53,173,142,.3);stroke:#5fe0bd;stroke-width:3}
 .scan__handle{fill:var(--orange);fill-opacity:.85;stroke:#fff;stroke-width:3;cursor:grab}
 .scan__handle--ref{fill:var(--green)}
+.scan__handle{fill-opacity:.35}
+.scan__dot{fill:#fff;stroke:#10272b;stroke-width:1;vector-effect:non-scaling-stroke;pointer-events:none}
+.scan__loupe{position:absolute;top:12px;left:12px;z-index:3;border-radius:50%;border:3px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
+.scan__loupe.is-right{left:auto;right:12px}
 .scan__bottom{background:#10272b;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
 .scan__controls{display:none;flex-wrap:wrap;justify-content:center;gap:12px}
 .scan__controls .btn--ghost{padding-inline:26px}

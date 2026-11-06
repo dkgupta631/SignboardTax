@@ -65,9 +65,20 @@ Signing in returns a session token, stored in the `Session Token` column. The pr
 | `js/auth-config.js` | The Apps Script web app URL |
 | `google-apps-script/Code.gs` | Backend that reads and writes the Google Sheet |
 | `js/mobile-app.js` | Screen switching for the header menu and phone tab bar, install prompt |
-| `js/scanner.js`, `js/sign-detect.js` | Sign scanner: camera, automatic outline, corner marking, size measurement |
+| `js/scanner.js`, `js/sign-detect.js`, `js/scan-measure.js` | Sign scanner: camera, automatic outline and edge snapping, corner marking with a magnifier, size measurement |
 | `sw.js`, `manifest.webmanifest` | Offline support and home-screen install |
 | `assets/` | Images, logo, fonts, and the P.P.1 form PDF |
+
+## Sign scanner accuracy
+
+The scanner measures a sign from one photo. The sign's four corners give the perspective, and an A4 sheet or card stuck on the sign gives the scale. Corners snap onto clear edges, and a magnifier appears while dragging a point.
+
+For accurate results:
+
+- Stick the A4 sheet or card flat on the sign. Do not hold it in front of the sign.
+- Fill as much of the screen as possible with the whole sign. A bigger reference in the photo gives a more accurate scale.
+- Check that the orange points sit exactly on the sign's corners and the green points on the paper's corners.
+- If the scanner says the reference looks out of shape, re-check the points before measuring again.
 
 ## Calculation
 

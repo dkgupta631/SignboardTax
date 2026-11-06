@@ -1,15 +1,19 @@
 // Measures a sign from a camera photo. The sign's outline is found automatically
-// where possible, and can be corrected. One photo cannot give real size on its
-// own, so the customer also marks an item of known size on the same surface. A perspective transform from that item gives the sign's size in cm,
-// including for photos taken at an angle.
+// where possible, snapped onto its real edges, and can be corrected with a
+// magnifier. One photo cannot give real size on its own, so the customer also
+// marks an item of known size stuck on the sign. js/scan-measure.js turns the
+// marks into centimetres: the sign's own corners give the perspective and the
+// item gives the scale, which stays accurate for photos taken at an angle.
 (function () {
   'use strict';
 
   // Real size in cm, short side then long side.
   var REFERENCES = { a4: [21, 29.7], card: [5.398, 8.56] };
   var SUCCESS_MS = 3200;
-  var MAX_CM = 100000;
   var LIVE_MS = 250;
+  var SNAP_SHIFT = 12;       // after a drag, corners may move this far onto a clear edge
+  var CHECK_MISMATCH = 0.15; // reference shape off by more than this: ask to check the marks
+  var LOUPE_ZOOM = 4;
   var VOICE_TEXT = 'สแกนสำเร็จ'; // spoken in Thai in both page languages
 
   var $ = function (id) { return document.getElementById(id); };
@@ -29,8 +33,10 @@
   var step = 'closed';
   var size = null; // photo size in pixels
   var photo = '';
+  var photoCanvas = null;
   var signPts = [];
   var refPts = [];
+  var confirmedMarks = ''; // marks the customer chose to measure despite the warning
   var closeTimer = 0;
   var liveTimer = 0;
 
@@ -109,10 +115,14 @@
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     photo = canvas.toDataURL('image/jpeg', 0.9);
+    photoCanvas = canvas;
     size = { w: canvas.width, h: canvas.height };
     stopCamera();
     var found = window.detectSign(canvas, canvas.width, canvas.height);
+    // The rough outline comes from a small copy of the photo; move it onto the real edges.
+    if (found) found = window.refineSign(canvas, canvas.width, canvas.height, found);
     signPts = found || rect(0.15, 0.2, 0.85, 0.8);
+    confirmedMarks = '';
     refPts = rect(0.42, 0.38, 0.58, 0.62);
     setStep('sign');
     if (found) setText(msg().scanSignFound);
@@ -164,13 +174,59 @@
     var scale = size.w / (pic.getBoundingClientRect().width || size.w);
     var fit = Math.max(scale, size.h / (pic.getBoundingClientRect().height || size.h));
     active.forEach(function (p, i) {
-      var handle = node('circle', {
+      pic.appendChild(node('circle', {
         'class': 'scan__handle ' + (step === 'ref' ? 'scan__handle--ref' : ''),
         'vector-effect': 'non-scaling-stroke',
-        cx: p[0], cy: p[1], r: 15 * fit, 'data-i': i
-      });
-      pic.appendChild(handle);
+        cx: p[0], cy: p[1], r: 18 * fit, 'data-i': i
+      }));
+      pic.appendChild(node('circle', { 'class': 'scan__dot', cx: p[0], cy: p[1], r: 3 * fit }));
     });
+  }
+
+  /* ---------- Magnifier ---------- */
+  // A finger hides the corner it drags, so a zoomed view shows where the point is.
+  var loupe = document.createElement('canvas');
+  loupe.className = 'scan__loupe';
+  loupe.hidden = true;
+  loupe.setAttribute('aria-hidden', 'true');
+  pic.parentNode.appendChild(loupe);
+
+  function drawLoupe(p, clientX) {
+    var stage = pic.parentNode.getBoundingClientRect();
+    var view = pic.getBoundingClientRect();
+    var shown = Math.min(view.width / size.w, view.height / size.h); // screen px per photo px
+    var css = Math.round(Math.min(150, stage.width * 0.36));
+    var dpr = window.devicePixelRatio || 1;
+    loupe.style.width = loupe.style.height = css + 'px';
+    loupe.width = loupe.height = Math.round(css * dpr);
+    // Keep the magnifier away from the finger.
+    loupe.classList.toggle('is-right', clientX - stage.left < stage.width / 2);
+    var ctx = loupe.getContext('2d');
+    var k = (LOUPE_ZOOM * shown) * dpr; // canvas px per photo px
+    var half = loupe.width / 2;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#10272b';
+    ctx.fillRect(0, 0, loupe.width, loupe.height);
+    ctx.imageSmoothingEnabled = k < 3;
+    ctx.setTransform(k, 0, 0, k, half - p[0] * k, half - p[1] * k);
+    ctx.drawImage(photoCanvas, 0, 0);
+    var pts = step === 'ref' ? refPts : signPts;
+    ctx.beginPath();
+    pts.forEach(function (q, i) { if (i) ctx.lineTo(q[0], q[1]); else ctx.moveTo(q[0], q[1]); });
+    ctx.closePath();
+    ctx.lineWidth = 1.5 * dpr / k;
+    ctx.strokeStyle = step === 'ref' ? '#5fe0bd' : '#f28c38';
+    ctx.stroke();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5 * dpr;
+    ctx.beginPath();
+    ctx.moveTo(half, half - 14 * dpr); ctx.lineTo(half, half - 4 * dpr);
+    ctx.moveTo(half, half + 4 * dpr); ctx.lineTo(half, half + 14 * dpr);
+    ctx.moveTo(half - 14 * dpr, half); ctx.lineTo(half - 4 * dpr, half);
+    ctx.moveTo(half + 4 * dpr, half); ctx.lineTo(half + 14 * dpr, half);
+    ctx.stroke();
+    loupe.hidden = false;
   }
 
   function toPhoto(e) {
@@ -187,83 +243,38 @@
     dragging = Number(e.target.dataset.i);
     pic.setPointerCapture(e.pointerId);
     e.preventDefault();
+    drawLoupe((step === 'ref' ? refPts : signPts)[dragging], e.clientX);
   });
   pic.addEventListener('pointermove', function (e) {
     if (dragging < 0) return;
-    (step === 'ref' ? refPts : signPts)[dragging] = toPhoto(e);
+    var p = toPhoto(e);
+    (step === 'ref' ? refPts : signPts)[dragging] = p;
     drawPhoto();
+    drawLoupe(p, e.clientX);
   });
-  function endDrag() { dragging = -1; }
+  function endDrag() {
+    if (dragging < 0) return;
+    dragging = -1;
+    loupe.hidden = true;
+    // Small corrections onto a clear edge only; a deliberate mark further away stays.
+    var pts = step === 'ref' ? refPts : signPts;
+    var snapped = window.refineSign(photoCanvas, size.w, size.h, pts, { search: 20, maxShift: SNAP_SHIFT });
+    if (snapped !== pts && window.ScanMeasure.isConvex(snapped)) {
+      if (step === 'ref') refPts = snapped; else signPts = snapped;
+    }
+    drawPhoto();
+  }
   pic.addEventListener('pointerup', endDrag);
   pic.addEventListener('pointercancel', endDrag);
 
   /* ---------- Measuring ---------- */
-  function dist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
-
-  // Corners must run clockwise around a shape with no dents or crossings.
-  function isConvex(q) {
-    return q.every(function (p, i) {
-      var a = q[(i + 1) % 4];
-      var b = q[(i + 2) % 4];
-      return (a[0] - p[0]) * (b[1] - a[1]) - (a[1] - p[1]) * (b[0] - a[0]) > 0;
-    });
-  }
-
-  function solve(m) {
-    var n = m.length;
-    for (var c = 0; c < n; c++) {
-      var pivot = c;
-      for (var r = c + 1; r < n; r++) if (Math.abs(m[r][c]) > Math.abs(m[pivot][c])) pivot = r;
-      var swap = m[c]; m[c] = m[pivot]; m[pivot] = swap;
-      if (Math.abs(m[c][c]) < 1e-10) return null;
-      for (var k = 0; k < n; k++) {
-        if (k === c) continue;
-        var f = m[k][c] / m[c][c];
-        for (var j = c; j <= n; j++) m[k][j] -= f * m[c][j];
-      }
-    }
-    return m.map(function (row, i) { return row[n] / row[i]; });
-  }
-
-  // Perspective transform taking four photo points to four real points.
-  function homography(from, to) {
-    var rows = [];
-    from.forEach(function (p, i) {
-      var x = p[0], y = p[1], u = to[i][0], v = to[i][1];
-      rows.push([x, y, 1, 0, 0, 0, -u * x, -u * y, u]);
-      rows.push([0, 0, 0, x, y, 1, -v * x, -v * y, v]);
-    });
-    return solve(rows);
-  }
-
   function referenceSize() {
     if (refType.value === 'custom') {
       var w = parseFloat(refW.value);
       var h = parseFloat(refH.value);
       return w > 0 && h > 0 ? [w, h] : null;
     }
-    // A4 and cards can be held either way round, so match what was marked.
-    var known = REFERENCES[refType.value];
-    var across = (dist(refPts[0], refPts[1]) + dist(refPts[3], refPts[2])) / 2;
-    var down = (dist(refPts[0], refPts[3]) + dist(refPts[1], refPts[2])) / 2;
-    return across > down ? [known[1], known[0]] : known;
-  }
-
-  // Returns { width, length } in cm, or null if the marks cannot be measured.
-  function measure(ref) {
-    if (!isConvex(signPts) || !isConvex(refPts)) return null;
-    var h = homography(refPts, [[0, 0], [ref[0], 0], [ref[0], ref[1]], [0, ref[1]]]);
-    if (!h) return null;
-    var real = [];
-    for (var i = 0; i < 4; i++) {
-      var p = signPts[i];
-      var d = h[6] * p[0] + h[7] * p[1] + 1;
-      if (d <= 0) return null; // the point lies beyond the vanishing line
-      real.push([(h[0] * p[0] + h[1] * p[1] + h[2]) / d, (h[3] * p[0] + h[4] * p[1] + h[5]) / d]);
-    }
-    var width = Math.round((dist(real[0], real[1]) + dist(real[3], real[2])) / 2);
-    var length = Math.round((dist(real[0], real[3]) + dist(real[1], real[2])) / 2);
-    return width >= 1 && length >= 1 && width <= MAX_CM && length <= MAX_CM ? { width: width, length: length } : null;
+    return REFERENCES[refType.value];
   }
 
   function fill(id, value) {
@@ -323,11 +334,20 @@
   function finish() {
     var ref = referenceSize();
     if (!ref) { setText(msg().scanRefMissing, true); return; }
-    var result = measure(ref);
+    var result = window.ScanMeasure.measure(signPts, refPts, ref, size.w, size.h);
     if (!result) { setText(msg().scanBadMarks, true); return; }
-    fill('width', result.width);
-    fill('length', result.length);
-    $('scanResult').textContent = msg().scanResult(result.width.toLocaleString('en-US'), result.length.toLocaleString('en-US'));
+    // A reference whose marked shape is clearly off usually means a misplaced corner.
+    var marks = JSON.stringify([signPts, refPts, ref]);
+    if (result.mismatch > CHECK_MISMATCH && confirmedMarks !== marks) {
+      confirmedMarks = marks;
+      setText(msg().scanCheckRef, true);
+      return;
+    }
+    var width = Math.round(result.width);
+    var length = Math.round(result.length);
+    fill('width', width);
+    fill('length', length);
+    $('scanResult').textContent = msg().scanResult(width.toLocaleString('en-US'), length.toLocaleString('en-US'));
     setStep('done');
     announce();
     if (navigator.vibrate) navigator.vibrate([60, 40, 60]);

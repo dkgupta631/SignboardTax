@@ -738,7 +738,7 @@
     }
   }
 
-  // Capture phase, so these run before app.js, scanner.js and mobile-app.js see the event.
+  // Capture phase, so these run before app.js, ar-measure.js and mobile-app.js see the event.
   document.addEventListener('click', function (e) {
     var opener = e.target.closest('[data-auth-open]');
     if (opener) { openAuth(opener.dataset.authOpen); return; }

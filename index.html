@@ -589,7 +589,7 @@
         </div>
 
         <div class="scan-entry">
-          <button type="button" class="btn btn--scan needs-auth" id="scanBtn" data-auth="scan"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scanBtn">สแกนป้าย</span><svg class="i lock-badge" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></button>
+          <button type="button" class="btn btn--scan needs-auth" id="scanBtn" data-auth="scan"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scanBtn">วัดขนาดป้าย</span><svg class="i lock-badge" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></button>
           <p class="scan-entry__or" data-i18n="scanOr">หรือกรอกความกว้างและความยาวด้วยตนเองด้านล่าง</p>
           <p class="calc__error" id="scanError" role="alert" hidden></p>
         </div>
@@ -866,47 +866,26 @@
     </defs>
   </svg>
 
-  <div class="scan" id="scan" role="dialog" aria-modal="true" aria-label="Scan" data-step="live" hidden>
-    <div class="scan__top">
-      <p class="scan__text" id="scanText" aria-live="polite"></p>
-      <button type="button" class="scan__close" id="scanClose" data-i18n="scanClose">ปิด</button>
+  <div class="arm" id="arm" role="dialog" aria-modal="true" aria-label="Measure" hidden>
+    <div class="arm__top">
+      <p class="arm__text" id="armText" aria-live="polite"></p>
+      <button type="button" class="arm__close" id="armClose" data-i18n="scanClose">ปิด</button>
     </div>
-    <div class="scan__stage">
-      <video class="scan__video" id="scanVideo" playsinline muted></video>
-      <div class="scan__guide" aria-hidden="true"></div>
-      <svg class="scan__live" id="scanLive" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
-      <svg class="scan__pic" id="scanPic" preserveAspectRatio="xMidYMid meet"></svg>
-      <div class="scan__done">
-        <svg class="scan__check" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M29 52l15 15 28-31"/></svg>
-        <strong data-i18n="scanSuccess">สแกนสำเร็จ</strong>
-        <span id="scanResult"></span>
+    <svg class="arm__svg" id="armSvg" aria-hidden="true"></svg>
+    <div class="arm__reticle" id="armReticle" aria-hidden="true"></div>
+    <p class="arm__live" id="armLive" hidden></p>
+    <div class="arm__bottom">
+      <div class="arm__steps" aria-hidden="true"><span class="arm__step"></span><span class="arm__step"></span><span class="arm__step"></span><span class="arm__step"></span></div>
+      <div class="arm__row">
+        <button type="button" class="arm__undo" id="armUndo" data-i18n="arUndo">ย้อนกลับ</button>
+        <button type="button" class="arm__add" id="armAdd" aria-label="Add point"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+        <span class="arm__spacer" aria-hidden="true"></span>
       </div>
     </div>
-    <div class="scan__bottom">
-      <div class="scan__controls scan__controls--live">
-        <button type="button" class="scan__shutter" id="scanCapture"><span data-i18n="scanCapture">ถ่ายภาพ</span></button>
-      </div>
-      <div class="scan__controls scan__controls--sign">
-        <button type="button" class="btn btn--ghost" id="scanRetake" data-i18n="scanRetake">ถ่ายใหม่</button>
-        <button type="button" class="btn btn--primary" id="scanNext" data-i18n="scanNext">ถัดไป</button>
-      </div>
-      <div class="scan__controls scan__controls--ref">
-        <label class="scan__ref-label" hidden><span data-i18n="scanRefLabel">วัตถุอ้างอิง</span>
-          <select id="scanRefType">
-            <option value="a4" data-i18n="scanRefA4">กระดาษ A4 (21 x 29.7 ซม.)</option>
-            <option value="card" data-i18n="scanRefCard">บัตรประชาชนหรือบัตรเครดิต (5.4 x 8.6 ซม.)</option>
-            <option value="custom" data-i18n="scanRefCustom">กำหนดขนาดเอง</option>
-          </select>
-        </label>
-        <div class="scan__custom" id="scanCustom" hidden>
-          <input id="scanRefW" type="text" inputmode="decimal" placeholder="กว้าง (ซม.)" data-i18n-ph="scanRefW" aria-label="Width">
-          <input id="scanRefH" type="text" inputmode="decimal" placeholder="ยาว (ซม.)" data-i18n-ph="scanRefH" aria-label="Length">
-        </div>
-        <div class="scan__row">
-          <button type="button" class="btn btn--ghost" id="scanBack" data-i18n="scanBack">ย้อนกลับ</button>
-          <button type="button" class="btn btn--primary" id="scanMeasure" data-i18n="scanMeasure">วัดขนาด</button>
-        </div>
-      </div>
+    <div class="arm__done">
+      <svg class="arm__check" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M29 52l15 15 28-31"/></svg>
+      <strong data-i18n="scanSuccess">สแกนสำเร็จ</strong>
+      <span id="armResult"></span>
     </div>
   </div>
 
@@ -916,8 +895,6 @@
   <script src="js/auth.js"></script>
   <script src="js/mobile-app.js"></script>
   <script src="js/scan-voice.js"></script>
-  <script src="js/sign-detect.js"></script>
-  <script src="js/scan-measure.js"></script>
-  <script src="js/scanner.js"></script>
+  <script src="js/ar-measure.js"></script>
 </body>
 </html>

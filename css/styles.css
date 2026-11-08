@@ -341,7 +341,7 @@ html[lang=en] .hero__th{display:none}
 /* ==========================================================================
    Phone app mode: js/mobile-app.js sets html.app at 760px and below
    ========================================================================== */
-.app-only,.tabbar,.brand__screen,.rate__tag,.header__contact{display:none}
+.app-only,.tabbar,.brand__screen,.rate__tag{display:none}
 
 html.app{scroll-behavior:auto;scroll-padding-top:70px;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 html.app body{background:#eef3f2;font-size:15.5px;line-height:1.6;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
@@ -379,6 +379,19 @@ html.app .btn--sales{display:none}
 html.app .lang{background:rgba(255,255,255,.16)}
 html.app .lang__btn{color:#fff;font-size:12px;padding:5px 10px}
 html.app .lang__btn[aria-pressed=true]{background:#fff;color:var(--teal)}
+/* Keep the app bar on one line at any phone width: the title shortens, never overlaps. */
+html.app .brand__text{min-width:0;overflow:hidden}
+html.app .brand strong{overflow:hidden;text-overflow:ellipsis}
+html.app .header__actions{flex:none;gap:6px}
+@media (max-width:380px){
+  html.app .header__inner{gap:6px}
+  html.app .brand{column-gap:7px}
+  html.app .brand__mark{width:34px;height:34px}
+  html.app .brand strong{font-size:15.5px}
+  html.app .brand__screen{font-size:16px}
+  html.app .lang__btn{padding:5px 8px}
+  html.app .header__actions{gap:4px}
+}
 
 
 /* Tab bar */
@@ -399,7 +412,7 @@ html.app .hero__content{width:100%;min-height:0;padding:186px 18px 20px}
 html.app .hero h1{font-size:25px}
 html.app .hero p{max-width:none;margin-block:8px 16px;font-size:14.5px;line-height:1.55}
 html.app .btn--cta{width:100%;min-height:52px;padding:10px 16px;border-radius:15px;border:0}
-html.app .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+html.app .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
 .tiles button{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;border:0;border-radius:16px;background:#fff;color:var(--teal);padding:13px 4px;font-size:13px;font-weight:500;line-height:1.25;box-shadow:0 2px 8px rgba(34,82,90,.08);cursor:pointer;transition:transform .15s}
 .tiles .i{width:30px;height:30px;padding:0;color:var(--green)}
 .install{display:flex;align-items:center;gap:10px;margin-top:12px;background:#fff;border-radius:16px;padding:10px 12px;box-shadow:0 2px 8px rgba(34,82,90,.08)}
@@ -550,9 +563,6 @@ html.app .footer__menu,html.app .footer__scans{display:none}
 html.app .footer__bottom-inner{width:calc(100% - 36px);flex-direction:column;align-items:center;text-align:center;font-size:11.5px;padding-block:12px}
 
 /* Contact moved out of the tab bar, into the app bar */
-html.app .header__contact{display:flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;margin-left:4px;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;cursor:pointer}
-html.app .header__contact .i{width:20px;height:20px}
-html[data-screen="contact"].app .header__contact{background:#fff;color:var(--teal)}
 
 /* ==========================================================================
    Motion. Entrances fill backwards only, so hover transforms still work once

@@ -664,6 +664,7 @@
     signinBtn.hidden = !!s;
     root.classList.toggle('signed-in', !!s);
     root.classList.toggle('signed-out', !s);
+    renderOffice(s && s.customer);
     if (!s) return;
     var c = s.customer;
     var initial = initialOf(c.name);
@@ -675,6 +676,15 @@
     $('userEmail').textContent = c.email || '';
     $('userPhone').textContent = formatPhone(String(c.phone || ''));
     $('userDistrict').textContent = c.districtCode ? c.districtCode + ' · ' + (c.districtName || '') : '';
+  }
+
+  // The member's registration office, shown in the header on every screen.
+  function renderOffice(c) {
+    var text = c && c.districtCode ? c.districtCode + (c.districtName ? ' · ' + c.districtName : '') : '';
+    document.querySelectorAll('[data-office]').forEach(function (el) { el.textContent = text; });
+    $('officeChip').hidden = !text;
+    $('officeChip').title = text;
+    document.querySelector('.brand__office').hidden = !text;
   }
 
   function toggleMenu(open) {

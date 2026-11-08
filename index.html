@@ -415,6 +415,7 @@
           <small data-i18n="brandSub">โปรแกรมคำนวณภาษีป้าย</small>
         </span>
         <span class="brand__screen" id="screenTitle"></span>
+        <span class="brand__office" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span class="sr-only" data-i18n="districtShort">สำนักทะเบียน</span><span data-office></span></span>
       </a>
 
       <nav class="topnav" id="topnav" aria-label="Main">
@@ -427,6 +428,10 @@
 
       <div class="header__actions">
         <button type="button" class="btn btn--signin" id="signinBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="tabLogin">เข้าสู่ระบบ</span></button>
+        <button type="button" class="office" id="officeChip" data-profile-open="info" hidden>
+          <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
+          <span class="office__text"><small data-i18n="districtShort">สำนักทะเบียน</small><strong data-office></strong></span>
+        </button>
         <div class="user" id="user" hidden>
           <button type="button" class="user__btn" id="userBtn" aria-expanded="false" aria-controls="userPop" aria-haspopup="true">
             <span class="user__avatar" id="userAvatar" aria-hidden="true"></span>
@@ -454,11 +459,10 @@
           <button type="button" class="lang__btn" data-lang="th" aria-pressed="true">TH</button>
           <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a class="btn btn--sales" href="tel:+66892012641">
+        <a class="btn btn--sales" href="tel:+66892012641" title="+66 89 201 2641">
           <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
           <span data-i18n="sales">ติดต่อฝ่ายขาย</span>
         </a>
-        <button type="button" class="header__contact" data-go="contact" aria-label="Contact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span class="tabbar__label" data-i18n="tabContact" hidden>ติดต่อ</span></button>
       </div>
     </div>
   </header>
@@ -489,6 +493,7 @@
         <button type="button" data-go="calc"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg><span data-i18n="tabCalc">คำนวณ</span></button>
         <button type="button" data-go="rates"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg><span data-i18n="tabRates">อัตราภาษี</span></button>
         <button type="button" data-go="guide"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span data-i18n="tabGuide">วิธีเสียภาษี</span></button>
+        <button type="button" data-go="contact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="tabContact">ติดต่อ</span></button>
       </div>
     </section>
 

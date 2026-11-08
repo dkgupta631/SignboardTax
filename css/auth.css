@@ -257,6 +257,41 @@ html.signed-out .lock-badge{display:inline-block}
 @media (max-width:1280px){.btn--signin span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.btn--signin{padding:8px 10px}}
 html.app .btn--signin{background:rgba(255,255,255,.16);border-color:transparent;color:#fff;padding:7px}
 html.app .btn--signin .i{width:20px;height:20px}
+/* Registration office: a chip beside the account button, and a second line under the app bar title on phones */
+.office{display:flex;align-items:center;gap:8px;flex:0 1 auto;min-width:0;max-width:210px;border:1.5px solid #cfe7df;background:var(--green-soft);color:var(--teal);padding:4px 13px 4px 9px;border-radius:12px;font:inherit;text-align:left;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s}
+.office[hidden],.brand__office[hidden]{display:none!important}
+.office:hover{background:#dff3ec;border-color:var(--green);box-shadow:0 4px 12px rgba(34,82,90,.12)}
+.office .i{flex:none;width:20px;height:20px;color:var(--green)}
+.office__text{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.office__text small{color:var(--muted);font-size:11px;font-weight:500;white-space:nowrap}
+.office__text strong{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand__office{display:none}
+/* Signed in, the header holds the office chip too, so other items give up some room. */
+html.signed-in .header__actions{flex:0 1 auto;min-width:0}
+html.signed-in .office{min-width:112px}
+html.signed-in .btn--sales{width:44px;height:44px;padding:0;flex:none}
+html.signed-in .btn--sales span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:1280px){
+  html.signed-in .topnav__item .i{display:none}
+  html.signed-in .topnav__item{padding-inline:11px}
+}
+/* Tablets: no room for the chip, so the office sits on a line under the logo. */
+@media (max-width:900px){
+  html.signed-in .topnav__item{padding-inline:8px}
+  html:not(.app) .office{display:none}
+  html:not(.app) .brand{flex-direction:column;align-items:flex-start;gap:3px}
+  html:not(.app) .brand__office{display:flex;align-items:center;gap:4px;max-width:200px;color:var(--teal);font-size:12px;font-weight:600;line-height:1.2}
+  html:not(.app) .brand__office .i{flex:none;width:14px;height:14px;color:var(--green)}
+  html:not(.app) .brand__office [data-office]{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+html.app .office{display:none}
+html.app .brand{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:9px;align-items:center}
+html.app .brand__mark{grid-row:1/3}
+html.app .brand__text,html.app .brand__screen{grid-column:2;grid-row:1;min-width:0}
+html.app .brand:not(:has(.brand__office:not([hidden]))) .brand__mark{grid-row:1}
+html.app .brand__office{display:flex;grid-column:2;grid-row:2;align-items:center;gap:3px;min-width:0;margin-top:1px;color:#d5f3e8;font-size:12px;font-weight:500;line-height:1.25}
+html.app .brand__office .i{flex:none;width:13px;height:13px;color:#8fe3cb}
+html.app .brand__office [data-office]{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .user{position:relative;flex:none}
 .user__btn{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;color:var(--teal);font-size:14px;font-weight:500;padding:3px 12px 3px 3px;border-radius:999px;cursor:pointer;transition:background .2s,box-shadow .2s}
 .user__btn:hover,.user.is-open .user__btn{background:var(--green-soft);box-shadow:0 4px 12px rgba(34,82,90,.12)}

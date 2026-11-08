@@ -498,44 +498,50 @@ html.app .contact-grid a,html.app .contact-grid a:nth-child(3),html.app .contact
 html.app .contact-grid a .i,html.app .contact-grid .link-off .i{width:52px;height:52px}
 
 /* Sign scanner */
-/* Real-time sign measuring (js/ar-measure.js). Shown over the live camera in AR. */
-.arm{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;justify-content:space-between;color:#fff;background:transparent;pointer-events:none}
-.arm>*{pointer-events:auto}
-.arm__top{display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;background:linear-gradient(180deg,rgba(16,39,43,.85),rgba(16,39,43,.55))}
-.arm__text{flex:1;font-size:16px;font-weight:500;line-height:1.45;text-shadow:0 1px 3px rgba(0,0,0,.5)}
-.arm__close{flex:none;border:1.5px solid #fff;border-radius:999px;background:rgba(0,0,0,.2);color:#fff;font:inherit;font-size:15px;padding:7px 18px;cursor:pointer}
-.arm__svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.arm__line{stroke:#fff;stroke-width:3;stroke-linecap:round;filter:drop-shadow(0 0 3px rgba(0,0,0,.6))}
-.arm__line--live{stroke:#ffd34d;stroke-dasharray:8 7}
-.arm__point{fill:var(--orange);stroke:#fff;stroke-width:3}
-.arm__reticle{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border:3px solid rgba(255,255,255,.7);border-radius:50%;pointer-events:none;transition:border-color .2s,transform .2s}
-.arm__reticle::before,.arm__reticle::after{content:"";position:absolute;left:50%;top:50%;background:currentColor;color:rgba(255,255,255,.9)}
-.arm__reticle::before{width:2px;height:16px;margin:-8px 0 0 -1px}
-.arm__reticle::after{width:16px;height:2px;margin:-1px 0 0 -8px}
-.arm__reticle.is-locked{border-color:#4cd29f;transform:scale(.85);box-shadow:0 0 0 4px rgba(76,210,159,.25)}
-.arm__live{position:absolute;left:50%;top:calc(50% + 40px);transform:translateX(-50%);padding:5px 14px;border-radius:999px;background:rgba(16,39,43,.82);font-size:15px;font-weight:600;white-space:nowrap;pointer-events:none}
-.arm__bottom{padding:14px 16px calc(18px + env(safe-area-inset-bottom));background:linear-gradient(0deg,rgba(16,39,43,.85),rgba(16,39,43,.4))}
-.arm__steps{display:flex;justify-content:center;gap:10px;margin-bottom:12px}
-.arm__step{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.75)}
-.arm__step.is-now{border-color:#ffd34d;box-shadow:0 0 0 3px rgba(255,211,77,.3)}
-.arm__step.is-done{background:var(--orange);border-color:var(--orange)}
-.arm__row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;max-width:420px;margin-inline:auto}
-.arm__undo{justify-self:start;border:1.5px solid rgba(255,255,255,.8);border-radius:999px;background:rgba(0,0,0,.2);color:#fff;font:inherit;font-size:15px;padding:9px 18px;cursor:pointer}
-.arm__undo:disabled{opacity:.4}
-.arm__add{display:grid;place-items:center;width:74px;height:74px;border:5px solid #fff;border-radius:50%;background:var(--orange);color:#fff;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);transition:transform .15s,opacity .2s}
-.arm__add .i{width:34px;height:34px}
-.arm__add:active{transform:scale(.92)}
-.arm__add:disabled{opacity:.45}
-.arm__done{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;background:rgba(16,39,43,.94)}
-.arm.is-done .arm__done{display:flex}
-.arm__done strong{color:#8fe3cb;font-size:30px;font-weight:700}
-.arm__done span{font-size:19px}
-.arm__check{width:130px;height:130px;fill:none;stroke:#4cd29f;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;animation:scanPop .45s ease-out}
-.arm__check circle{stroke-dasharray:277;animation:scanDraw .6s ease-out}
-.arm__check path{stroke-width:8;stroke-dasharray:70;animation:scanTick .4s .45s ease-out backwards}
+.scan{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;background:#10272b;color:#fff}
+.scan__top{display:flex;align-items:center;gap:12px;background:var(--teal);padding:calc(12px + env(safe-area-inset-top)) 16px 12px}
+.scan__text{flex:1;font-size:16px;line-height:1.45}
+.scan__text.is-error{color:#ffd0c4;font-weight:600}
+.scan__close{flex:none;border:1.5px solid #fff;border-radius:999px;background:none;color:#fff;font:inherit;font-size:15px;padding:7px 18px;cursor:pointer}
+.scan__stage{position:relative;flex:1;min-height:0;overflow:hidden}
+.scan__video,.scan__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.scan__pic{touch-action:none}
+.scan__guide{position:absolute;inset:14%;border:3px dashed rgba(255,255,255,.85);border-radius:12px;pointer-events:none}
+.scan__live{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.scan__lock{fill:rgba(63,232,222,.14);stroke:#3fe8de;stroke-width:4;filter:drop-shadow(0 0 7px #3fe8de);transition:all .2s}
+.scan.is-locked .scan__guide{display:none}
+.scan__sign{fill:rgba(242,140,56,.22);stroke:var(--orange);stroke-width:3}
+.scan__ref{fill:rgba(53,173,142,.3);stroke:#5fe0bd;stroke-width:3}
+.scan__handle{fill:var(--orange);fill-opacity:.85;stroke:#fff;stroke-width:3;cursor:grab}
+.scan__handle--ref{fill:var(--green)}
+.scan__handle{fill-opacity:.35}
+.scan__dot{fill:#fff;stroke:#10272b;stroke-width:1;vector-effect:non-scaling-stroke;pointer-events:none}
+.scan__loupe{position:absolute;top:12px;left:12px;z-index:3;border-radius:50%;border:3px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
+.scan__loupe.is-right{left:auto;right:12px}
+.scan__bottom{background:#10272b;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
+.scan__controls{display:none;flex-wrap:wrap;justify-content:center;gap:12px}
+.scan__controls .btn--ghost{padding-inline:26px}
+.scan__controls .btn--primary{padding-inline:34px;font-size:16px}
+.scan__shutter{border:4px solid #fff;border-radius:999px;background:var(--orange);color:#fff;font:inherit;font-size:16px;font-weight:600;padding:13px 40px;cursor:pointer}
+.scan__ref-label{display:flex;flex-direction:column;gap:5px;width:100%;max-width:440px;font-size:14px}
+.scan__custom{display:flex;gap:10px;width:100%;max-width:440px}
+.scan__custom input{flex:1;min-width:0}
+.scan__ref-label select,.scan__custom input{border:0;border-radius:10px;font:inherit;font-size:16px;color:var(--ink);background:#fff;padding:10px 12px}
+.scan__row{display:flex;justify-content:center;gap:12px;width:100%}
+.scan__done{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;background:#10272b}
+.scan__done strong{color:#8fe3cb;font-size:30px;font-weight:700}
+.scan__done span{font-size:19px}
+.scan__check{width:130px;height:130px;fill:none;stroke:#4cd29f;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;animation:scanPop .45s ease-out}
+.scan__check circle{stroke-dasharray:277;animation:scanDraw .6s ease-out}
+.scan__check path{stroke-width:8;stroke-dasharray:70;animation:scanTick .4s .45s ease-out backwards}
 @keyframes scanDraw{from{stroke-dashoffset:277}to{stroke-dashoffset:0}}
 @keyframes scanTick{from{stroke-dashoffset:70}to{stroke-dashoffset:0}}
 @keyframes scanPop{from{transform:scale(.7)}to{transform:none}}
+.scan[data-step="live"] .scan__controls--live,.scan[data-step="sign"] .scan__controls--sign,.scan[data-step="ref"] .scan__controls--ref{display:flex}
+.scan:not([data-step="live"]) .scan__video,.scan:not([data-step="live"]) .scan__guide,.scan:not([data-step="live"]) .scan__live{display:none}
+.scan[data-step="live"] .scan__pic{display:none}
+.scan[data-step="done"] .scan__done{display:flex}
+.scan[data-step="done"] .scan__bottom,.scan[data-step="done"] .scan__text{visibility:hidden}
 
 /* Footer on phones: the tab bar is the menu and the contact screen has the QR */
 html.app .footer{margin:6px 12px 0;border-radius:20px;overflow:hidden}

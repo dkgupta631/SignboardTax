@@ -65,21 +65,19 @@ Signing in returns a session token, stored in the `Session Token` column. The pr
 | `js/auth-config.js` | The Apps Script web app URL |
 | `google-apps-script/Code.gs` | Backend that reads and writes the Google Sheet |
 | `js/mobile-app.js` | Screen switching for the header menu and phone tab bar, install prompt |
-| `js/ar-measure.js`, `js/scan-voice.js` | Real-time sign measuring with AR, and the success voice clip |
+| `js/scanner.js`, `js/sign-detect.js`, `js/scan-measure.js` | Sign scanner: camera, automatic outline and edge snapping, corner marking with a magnifier, size measurement |
 | `sw.js`, `manifest.webmanifest` | Offline support and home-screen install |
 | `assets/` | Images, logo, fonts, and the P.P.1 form PDF |
 
-## Measuring a sign in real time
+## Sign scanner
 
-The "Measure the sign" button uses augmented reality (WebXR), like Google's Measure app. The phone tracks real distances in 3D, so no reference item is needed:
+The scanner measures a sign's width and length from one photo, in one step. After the photo it finds the sign's four corners (orange) and the A4 sheet stuck on it (green) by itself, and the customer only presses Measure. The sign's corners give its shape and perspective, and the A4 sheet gives the real size. If either is not found, the customer drags those points onto the corners on the same screen; a magnifier appears while dragging and points snap onto clear edges. Without an A4 sheet the scanner will not give a result, because one photo cannot show real size on its own.
 
-1. Move the phone slowly until the centre circle turns green. The screen shows the distance to the sign.
-2. Aim the circle at the sign's top left, top right, bottom right and bottom left corners, tapping + at each one. The length of each side shows as you go.
-3. The width and length are filled in automatically.
+For accurate results:
 
-It works only in **Chrome on Android phones that support Google Play Services for AR**, and only over https (the GitHub Pages address, not a file opened on a computer). The list of supported phones is at https://developers.google.com/ar/devices. iPhones and computers show a message asking for the size to be typed instead.
-
-For accurate results, stand 1 to 4 m from the sign, move the phone slowly at the start so it can find the wall, and aim exactly at each corner. Figures for tax filing should still be checked with a tape measure.
+- Stick a plain white A4 sheet flat on the sign. Do not hold it in front of the sign.
+- Show the whole sign with all four corners, as large as possible on the screen.
+- Check that the orange points sit on the sign's corners and the green points on the paper's corners.
 
 ## Calculation
 

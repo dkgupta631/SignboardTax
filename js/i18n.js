@@ -216,6 +216,26 @@ window.I18N_EN = {
   pinNotePh: 'e.g. Good Health Pharmacy, front of the building',
   pinCancel: 'Cancel',
   pinConfirm: 'Confirm location',
+  consultTitle: 'CONSULT CONTACT',
+  fCopy: '© 2026 Signage Tax Calculator. All rights reserved.',
+  logoAlt: 'Signage Tax Calculator',
+  qrAlt1: 'LINE QR code @af2506',
+  qrAlt2: 'LINE QR code @sbangpa',
+  // Screen reader labels
+  ariaAccount: 'Account',
+  ariaShowList: 'Show list',
+  ariaOffices: 'Registration offices',
+  ariaClose: 'Close',
+  ariaMain: 'Main',
+  ariaLang: 'Language',
+  ariaFooter: 'Footer',
+  ariaApp: 'App',
+  ariaPhone: 'Phone',
+  ariaMyLocation: 'My location',
+  ariaScan: 'Scan',
+  ariaWidth: 'Width',
+  ariaLength: 'Length',
+  ariaBrand: 'Signage Tax Calculator',
 };
 
 // Strings built at runtime by the calculator, in both languages.

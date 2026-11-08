@@ -31,7 +31,8 @@
   var thai = {
     text: all('[data-i18n]').map(function (el) { return [el, el.innerHTML]; }),
     ph: all('[data-i18n-ph]').map(function (el) { return [el, el.placeholder]; }),
-    alt: all('[data-i18n-alt]').map(function (el) { return [el, el.alt]; })
+    alt: all('[data-i18n-alt]').map(function (el) { return [el, el.alt]; }),
+    aria: all('[data-i18n-aria]').map(function (el) { return [el, el.getAttribute('aria-label')]; })
   };
 
   function storedLang() {
@@ -55,6 +56,11 @@
     });
     thai.ph.forEach(function (p) { p[0].placeholder = isEn ? en[p[0].dataset.i18nPh] : p[1]; });
     thai.alt.forEach(function (p) { p[0].alt = isEn ? en[p[0].dataset.i18nAlt] : p[1]; });
+    thai.aria.forEach(function (p) {
+      var label = isEn ? en[p[0].dataset.i18nAria] : p[1];
+      p[0].setAttribute('aria-label', label);
+      if (p[0].hasAttribute('title')) p[0].title = label;
+    });
     document.documentElement.lang = next;
     document.title = window.I18N_MESSAGES[next].title;
     all('.lang__btn').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === next)); });

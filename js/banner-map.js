@@ -41,8 +41,23 @@
     var c = auth() && auth().customer();
     return {
       customerId: c ? c.id : '', id: '', source: source, scanW: width || 0, scanL: length || 0, photo: photo || '',
-      lat: null, lng: null, address: '', note: '', calc: null, savedKey: '', status: ''
+      lat: null, lng: null, address: { th: '', en: '' }, note: '', calc: null, savedKey: '', status: ''
     };
+  }
+
+  function lang() { return root.lang === 'en' ? 'en' : 'th'; }
+
+  // The pinned address in the page's language; the other language's copy is fetched if missing.
+  function addressText(r) {
+    var l = lang();
+    r.asked = r.asked || {};
+    if (!r.address[l] && !r.asked[l]) {
+      r.asked[l] = true; // once per language, so an empty answer cannot loop
+      addressFor({ lat: r.lat, lng: r.lng }, l).then(function (text) {
+        if (text && !r.address[l]) { r.address[l] = text; if (record === r) render(); }
+      });
+    }
+    return r.address[l];
   }
 
   function round6(n) { return Math.round(n * 1e6) / 1e6; }
@@ -57,7 +72,7 @@
     var r = record;
     var pinned = !!(r && r.lat != null);
     card.dataset.state = pinned ? 'pinned' : r && r.source === 'scan' ? 'needed' : 'empty';
-    $('pinText').textContent = pinned ? (r.address || coordText(r.lat, r.lng)) : r && r.source === 'scan' ? m.needed : m.empty;
+    $('pinText').textContent = pinned ? (addressText(r) || coordText(r.lat, r.lng)) : r && r.source === 'scan' ? m.needed : m.empty;
     $('pinCoords').hidden = !pinned;
     $('pinCoords').textContent = pinned ? coordText(r.lat, r.lng) + (r.note ? ' · ' + r.note : '') : '';
     $('pinGmaps').hidden = !pinned;
@@ -103,7 +118,7 @@
       measuredBy: r.source === 'scan' ? (w === r.scanW && l === r.scanL ? 'scan' : 'scan_edited') : 'manual',
       lat: r.lat == null ? '' : r.lat,
       lng: r.lng == null ? '' : r.lng,
-      address: r.address,
+      address: r.address.th || r.address.en, // the sheet is read by Thai staff
       note: r.note
     };
   }
@@ -232,12 +247,14 @@
 
   function addrKey(c) { return c.lat.toFixed(5) + ',' + c.lng.toFixed(5); }
 
-  // Street address of a point, from OpenStreetMap's Nominatim (in Thai, for the sheet).
-  function addressFor(c) {
-    var key = addrKey(c);
+  // Street address of a point from OpenStreetMap's Nominatim, in Thai or English only.
+  // Thai falls back to English where a place has no Thai name, rather than to the local
+  // language (Khmer, Lao, ...) near the borders.
+  function addressFor(c, l) {
+    var key = l + ':' + addrKey(c);
     if (addrCache[key]) return addrCache[key];
-    var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&accept-language=th&lat=' +
-      c.lat.toFixed(6) + '&lon=' + c.lng.toFixed(6);
+    var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&accept-language=' +
+      (l === 'en' ? 'en' : 'th,en') + '&lat=' + c.lat.toFixed(6) + '&lon=' + c.lng.toFixed(6);
     addrCache[key] = fetch(url, { headers: { Accept: 'application/json' } })
       .then(function (res) { return res.ok ? res.json() : {}; })
       .then(function (j) { return (j && j.display_name) || ''; })
@@ -262,7 +279,7 @@
     addr.className = 'is-loading';
     var key = addrKey(c);
     addrTimer = setTimeout(function () {
-      addressFor(c).then(function (text) {
+      addressFor(c, lang()).then(function (text) {
         if (!map || addrKey(map.getCenter()) !== key) return;
         addr.textContent = text || m.addrNone;
         addr.className = text ? '' : 'is-hint';
@@ -327,12 +344,13 @@
     var button = $('pinConfirm');
     button.disabled = true;
     // Wait briefly for the address, but never hold the pin back for it.
-    Promise.race([addressFor(c), new Promise(function (ok) { setTimeout(function () { ok(''); }, ADDRESS_WAIT); })])
+    var both = Promise.all([addressFor(c, 'th'), addressFor(c, 'en')]);
+    Promise.race([both, new Promise(function (ok) { setTimeout(function () { ok(['', '']); }, ADDRESS_WAIT); })])
       .then(function (address) {
         button.disabled = false;
         r.lat = round6(c.lat);
         r.lng = round6(c.lng);
-        r.address = address || '';
+        r.address = { th: address[0] || '', en: address[1] || '' };
         r.note = $('pinNote').value.replace(/\s+/g, ' ').trim().slice(0, 200);
         lastView = { center: [r.lat, r.lng], zoom: map.getZoom() };
         closeMap();

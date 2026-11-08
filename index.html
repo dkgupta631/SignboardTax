@@ -81,7 +81,7 @@
         <div class="auth__top-right">
           <a class="auth__hotline" href="tel:+66892012641"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="authHotline">สายด่วน</span> +66 89 201 2641</a>
           <a class="auth__hotline auth__hotline--2" href="tel:+66954962554">+66 95 496 2554</a>
-          <div class="lang" role="group" aria-label="Language">
+          <div class="lang" role="group" aria-label="เลือกภาษา" data-i18n-aria="ariaLang">
             <button type="button" class="lang__btn" data-lang="th" aria-pressed="true">TH</button>
             <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
           </div>
@@ -91,7 +91,7 @@
 
     <header class="auth__header">
       <div class="auth__wrap auth__header-inner">
-        <img class="auth__logo" src="assets/img/logo.png" alt="Signage Tax โปรแกรมคำนวณภาษีป้าย" width="900" height="205">
+        <img class="auth__logo" src="assets/img/logo.png" alt="Signage Tax โปรแกรมคำนวณภาษีป้าย" data-i18n-alt="logoAlt" width="900" height="205">
         <span class="auth__portal" data-i18n="authPortal">ระบบบริการสมาชิกออนไลน์ โปรแกรมคำนวณภาษีป้าย</span>
         <button type="button" class="auth__close" id="authClose"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg><span data-i18n="backHome">กลับหน้าหลัก</span></button>
       </div>
@@ -115,7 +115,7 @@
           </ol>
         </section>
 
-        <section class="auth__card" id="authCard" data-view="login" aria-label="Account">
+        <section class="auth__card" id="authCard" data-view="login" aria-label="บัญชีผู้ใช้" data-i18n-aria="ariaAccount">
           <div class="auth__tabs" role="tablist">
             <button type="button" class="auth__tab" role="tab" id="tabLogin" aria-controls="loginForm" aria-selected="true" data-view-go="login"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-login"/></svg><span data-i18n="tabLogin">เข้าสู่ระบบ</span></button>
             <button type="button" class="auth__tab" role="tab" id="tabRegister" aria-controls="registerForm" aria-selected="false" tabindex="-1" data-view-go="register"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user-plus"/></svg><span data-i18n="tabRegister">ลงทะเบียน</span></button>
@@ -170,11 +170,11 @@
                     <div class="afield__box">
                       <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
                       <input id="regDistrict" type="text" role="combobox" aria-expanded="false" aria-controls="districtList" aria-autocomplete="list" autocomplete="off" placeholder="พิมพ์รหัสหรือชื่อ เช่น 1003 หรือ บางรัก" data-i18n-ph="districtPh" required>
-                      <button type="button" class="combo__toggle" tabindex="-1" aria-label="Show list"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
+                      <button type="button" class="combo__toggle" tabindex="-1" aria-label="แสดงรายการ" data-i18n-aria="ariaShowList"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
                     </div>
                     <div class="combo__pop" hidden>
                       <p class="combo__count" aria-live="polite"></p>
-                      <ul class="combo__list" id="districtList" role="listbox" aria-label="Registration offices"></ul>
+                      <ul class="combo__list" id="districtList" role="listbox" aria-label="รายการสำนักทะเบียน" data-i18n-aria="ariaOffices"></ul>
                     </div>
                   </div>
                   <p class="afield__hint" id="districtStatus"></p>
@@ -291,7 +291,7 @@
           <h2 id="profileName"></h2>
           <p><span class="profile__id" id="profileId"></span><span class="profile__since" id="profileSince"></span></p>
         </div>
-        <button type="button" class="profile__close" data-profile-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
+        <button type="button" class="profile__close" data-profile-close aria-label="ปิด" data-i18n-aria="ariaClose"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
       </header>
       <div class="profile__tabs" role="tablist">
         <button type="button" class="profile__tab" role="tab" id="ptabInfo" aria-controls="profileForm" aria-selected="true" data-ptab="info"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="profileTab">ข้อมูลส่วนตัว</span></button>
@@ -309,11 +309,11 @@
                 <div class="afield__box">
                   <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
                   <input id="profDistrict" type="text" role="combobox" aria-expanded="false" aria-controls="profDistrictList" aria-autocomplete="list" autocomplete="off" placeholder="พิมพ์รหัสหรือชื่อ เช่น 1003 หรือ บางรัก" data-i18n-ph="districtPh" required>
-                  <button type="button" class="combo__toggle" tabindex="-1" aria-label="Show list"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
+                  <button type="button" class="combo__toggle" tabindex="-1" aria-label="แสดงรายการ" data-i18n-aria="ariaShowList"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev-down"/></svg></button>
                 </div>
                 <div class="combo__pop" hidden>
                   <p class="combo__count" aria-live="polite"></p>
-                  <ul class="combo__list" id="profDistrictList" role="listbox" aria-label="Registration offices"></ul>
+                  <ul class="combo__list" id="profDistrictList" role="listbox" aria-label="รายการสำนักทะเบียน" data-i18n-aria="ariaOffices"></ul>
                 </div>
               </div>
               <p class="afield__hint" id="profDistrictStatus"></p>
@@ -408,7 +408,7 @@
 
   <header class="header" id="header">
     <div class="container header__inner">
-      <a class="brand" href="#top" aria-label="Signage Tax Calculator">
+      <a class="brand" href="#top" aria-label="Signage Tax โปรแกรมคำนวณภาษีป้าย" data-i18n-aria="ariaBrand">
         <img class="brand__logo" src="assets/img/logo.png" alt="" width="900" height="205">
         <img class="brand__mark" src="assets/img/logo-mark.png" alt="" width="52" height="52">
         <span class="brand__text">
@@ -419,7 +419,7 @@
         <span class="brand__office" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span class="sr-only" data-i18n="districtShort">สำนักทะเบียน</span><span data-office></span></span>
       </a>
 
-      <nav class="topnav" id="topnav" aria-label="Main">
+      <nav class="topnav" id="topnav" aria-label="เมนูหลัก" data-i18n-aria="ariaMain">
         <button type="button" class="topnav__item" data-go="home"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg><span data-i18n="tabHome">หน้าหลัก</span></button>
         <button type="button" class="topnav__item" data-go="rates"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg><span data-i18n="tabRates">อัตราภาษี</span></button>
         <button type="button" class="topnav__item" data-go="calc"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg><span data-i18n="tabCalc">คำนวณ</span></button>
@@ -456,7 +456,7 @@
             <button type="button" class="user__logout" id="logoutBtn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-logout"/></svg><span data-i18n="logout">ออกจากระบบ</span></button>
           </div>
         </div>
-        <div class="lang" role="group" aria-label="Language">
+        <div class="lang" role="group" aria-label="เลือกภาษา" data-i18n-aria="ariaLang">
           <button type="button" class="lang__btn" data-lang="th" aria-pressed="true">TH</button>
           <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
         </div>
@@ -488,7 +488,7 @@
         <img src="assets/img/logo-mark.png" alt="" width="44" height="44">
         <p id="installText"></p>
         <button type="button" class="install__go" id="installGo" data-i18n="installBtn">ติดตั้ง</button>
-        <button type="button" class="install__close" id="installClose" aria-label="Close">✕</button>
+        <button type="button" class="install__close" id="installClose" aria-label="ปิด" data-i18n-aria="ariaClose">✕</button>
       </div>
       <div class="tiles">
         <button type="button" data-go="calc"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calc"/></svg><span data-i18n="tabCalc">คำนวณ</span></button>
@@ -751,12 +751,12 @@
           <p data-i18n="consultB">ฟรี! ไม่มีค่าใช้จ่าย</p>
           <div class="line-ids">
             <a class="line-id" href="https://line.me/ti/p/voxO0Betpu" target="_blank" rel="noopener">
-              <span class="line-id__qr"><img src="assets/img/line-qr-2.png" alt="LINE QR code @af2506" width="300" height="300" loading="lazy"></span>
+              <span class="line-id__qr"><img src="assets/img/line-qr-2.png" alt="คิวอาร์โค้ด LINE @af2506" data-i18n-alt="qrAlt1" width="300" height="300" loading="lazy"></span>
               <strong class="line-id__name">@af2506</strong>
               <span class="line-id__add" data-i18n="addFriend">เพิ่มเพื่อน</span>
             </a>
             <a class="line-id" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener">
-              <span class="line-id__qr"><img src="assets/img/line-qr.png" alt="LINE QR code @sbangpa" width="536" height="536" loading="lazy"></span>
+              <span class="line-id__qr"><img src="assets/img/line-qr.png" alt="คิวอาร์โค้ด LINE @sbangpa" data-i18n-alt="qrAlt2" width="536" height="536" loading="lazy"></span>
               <strong class="line-id__name">@sbangpa</strong>
               <span class="line-id__add" data-i18n="addFriend">เพิ่มเพื่อน</span>
             </a>
@@ -767,7 +767,7 @@
 
     <section class="contact-band" data-screen="contact">
       <div class="container">
-        <h2 class="contact-band__title reveal"><span>CONSULT CONTACT</span></h2>
+        <h2 class="contact-band__title reveal"><span data-i18n="consultTitle">ติดต่อขอคำปรึกษา</span></h2>
         <div class="contact-grid reveal">
           <span class="link-off"><svg class="i" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-shop"/></svg><span data-i18n="c1">บริการออกแบบฟาซาด</span></span>
           <span class="link-off"><svg class="i" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-building"/></svg><span data-i18n="c2">บริการตกแต่งฟาซาด</span></span>
@@ -787,7 +787,7 @@
         </div>
         <p data-i18n="fAbout">เครื่องมือคำนวณภาษีป้ายเบื้องต้น ช่วยให้ร้านขายยาและธุรกิจหน้าร้านวางแผนค่าใช้จ่ายได้ง่ายและรวดเร็ว</p>
       </div>
-      <nav class="footer__menu" aria-label="Footer">
+      <nav class="footer__menu" aria-label="ลิงก์ส่วนท้าย" data-i18n-aria="ariaFooter">
         <h3 data-i18n="fMenu">เมนู</h3>
         <ul>
           <li><button type="button" data-go="home" data-i18n="tabHome">หน้าหลัก</button></li>
@@ -812,11 +812,11 @@
             <h3 data-i18n="fScan">สแกนเพื่อแชต</h3>
             <div class="footer__scan-row">
               <a class="footer__scan" href="https://line.me/ti/p/voxO0Betpu" target="_blank" rel="noopener">
-                <img class="footer__qr" src="assets/img/line-qr-2.png" alt="LINE QR code @af2506" width="104" height="104" loading="lazy">
+                <img class="footer__qr" src="assets/img/line-qr-2.png" alt="คิวอาร์โค้ด LINE @af2506" data-i18n-alt="qrAlt1" width="104" height="104" loading="lazy">
                 <span>@af2506</span>
               </a>
               <a class="footer__scan" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener">
-                <img class="footer__qr" src="assets/img/line-qr.png" alt="LINE QR code @sbangpa" width="104" height="104" loading="lazy">
+                <img class="footer__qr" src="assets/img/line-qr.png" alt="คิวอาร์โค้ด LINE @sbangpa" data-i18n-alt="qrAlt2" width="104" height="104" loading="lazy">
                 <span>@sbangpa</span>
               </a>
             </div>
@@ -826,13 +826,13 @@
     </div>
     <div class="footer__bottom">
       <div class="container footer__bottom-inner">
-        <span>© 2026 Signage Tax Calculator. All rights reserved.</span>
+        <span data-i18n="fCopy">© 2026 Signage Tax Calculator สงวนลิขสิทธิ์</span>
         <span data-i18n="fNote">ผลการคำนวณเป็นการประเมินเบื้องต้นเท่านั้น</span>
       </div>
     </div>
   </footer>
 
-  <nav class="tabbar" id="tabbar" aria-label="App">
+  <nav class="tabbar" id="tabbar" aria-label="เมนูแอป" data-i18n-aria="ariaApp">
     <button type="button" class="tabbar__item" data-go="home"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg></span><span class="tabbar__label" data-i18n="tabHome">หน้าหลัก</span></button>
     <button type="button" class="tabbar__item" data-go="rates"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-table"/></svg></span><span class="tabbar__label" data-i18n="tabRates">อัตราภาษี</span></button>
     <button type="button" class="tabbar__item tabbar__item--main" id="tabScan" data-auth="scan"><span class="tabbar__icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scan"/></svg></span><span class="tabbar__label" data-i18n="tabScan">สแกน</span></button>
@@ -841,7 +841,7 @@
   </nav>
 
   <div class="floating">
-    <a class="floating__btn floating__btn--phone" href="tel:+66892012641" aria-label="Phone"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></a>
+    <a class="floating__btn floating__btn--phone" href="tel:+66892012641" aria-label="โทรศัพท์" data-i18n-aria="ariaPhone"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <a class="floating__btn floating__btn--line" href="https://line.me/ti/p/si_Ur5P3lV" target="_blank" rel="noopener" aria-label="LINE"><img src="assets/img/social/line.png" alt="" width="36" height="36"></a>
   </div>
 
@@ -898,14 +898,14 @@
           <h2 id="pinMapTitle" data-i18n="pinMapTitle">ปักหมุดตำแหน่งป้าย</h2>
           <p data-i18n="pinMapSub">เลื่อนแผนที่ให้หมุดอยู่ตรงตำแหน่งป้ายพอดี</p>
         </div>
-        <button type="button" class="pinmap__close" data-pin-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
+        <button type="button" class="pinmap__close" data-pin-close aria-label="ปิด" data-i18n-aria="ariaClose"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
       </header>
       <div class="pinmap__stage">
         <div class="pinmap__map" id="pinMapCanvas"></div>
         <div class="pinmap__pin" aria-hidden="true"><svg viewBox="0 0 40 52"><path d="M20 50S4 32.500 4 19a16 16 0 0 1 32 0c0 13.500-16 31-16 31z"/><circle cx="20" cy="19" r="6.500"/></svg><span></span></div>
         <div class="pinmap__tools">
           <button type="button" class="pinmap__tool" id="pinLayer" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-layers"/></svg><span data-i18n="pinSat">ดาวเทียม</span></button>
-          <button type="button" class="pinmap__tool pinmap__tool--round" id="pinLocate" aria-label="My location" title="My location"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-locate"/></svg></button>
+          <button type="button" class="pinmap__tool pinmap__tool--round" id="pinLocate" aria-label="ตำแหน่งของฉัน" data-i18n-aria="ariaMyLocation" title="ตำแหน่งของฉัน"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-locate"/></svg></button>
         </div>
         <p class="pinmap__toast" id="pinToast" role="status" hidden></p>
       </div>
@@ -924,7 +924,7 @@
     </section>
   </div>
 
-  <div class="scan" id="scan" role="dialog" aria-modal="true" aria-label="Scan" data-step="live" hidden>
+  <div class="scan" id="scan" role="dialog" aria-modal="true" aria-label="สแกนป้าย" data-i18n-aria="ariaScan" data-step="live" hidden>
     <div class="scan__top">
       <p class="scan__text" id="scanText" aria-live="polite"></p>
       <button type="button" class="scan__close" id="scanClose" data-i18n="scanClose">ปิด</button>
@@ -958,8 +958,8 @@
           </select>
         </label>
         <div class="scan__custom" id="scanCustom" hidden>
-          <input id="scanRefW" type="text" inputmode="decimal" placeholder="กว้าง (ซม.)" data-i18n-ph="scanRefW" aria-label="Width">
-          <input id="scanRefH" type="text" inputmode="decimal" placeholder="ยาว (ซม.)" data-i18n-ph="scanRefH" aria-label="Length">
+          <input id="scanRefW" type="text" inputmode="decimal" placeholder="กว้าง (ซม.)" data-i18n-ph="scanRefW" aria-label="ความกว้าง" data-i18n-aria="ariaWidth">
+          <input id="scanRefH" type="text" inputmode="decimal" placeholder="ยาว (ซม.)" data-i18n-ph="scanRefH" aria-label="ความยาว" data-i18n-aria="ariaLength">
         </div>
       </div>
     </div>

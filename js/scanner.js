@@ -9,7 +9,7 @@
 
   // Real size in cm, short side then long side.
   var REFERENCES = { a4: [21, 29.7], card: [5.398, 8.56] };
-  var SUCCESS_MS = 3200;
+  var SUCCESS_MS = 2600;
   var LIVE_MS = 250;
   var SNAP_SHIFT = 12;       // after a drag, corners may move this far onto a clear edge
   var CHECK_MISMATCH = 0.15; // reference shape off by more than this: ask to check the marks
@@ -41,6 +41,7 @@
   var paperFound = false;
   var paperMoved = false;   // the customer placed the green points themselves
   var closeTimer = 0;
+  var scanned = null;       // a finished measurement, handed on when the scanner closes
   var liveTimer = 0;
 
   function msg() { return window.I18N_MESSAGES[document.documentElement.lang === 'en' ? 'en' : 'th']; }
@@ -109,6 +110,13 @@
     document.body.style.overflow = '';
     step = 'closed';
     $('scanBtn').focus();
+    // Also when the success screen is closed early: js/banner-map.js saves the
+    // sign and asks for its location next.
+    if (scanned) {
+      var detail = scanned;
+      scanned = null;
+      document.dispatchEvent(new CustomEvent('scandone', { detail: detail }));
+    }
   }
 
   function capture() {
@@ -391,7 +399,23 @@
     setStep('done');
     announce();
     if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+    scanned = { width: width, length: length, photo: smallPhoto() };
     closeTimer = setTimeout(close, SUCCESS_MS);
+  }
+
+  // A copy of the photo small enough to send with the record (longest side 1280 px).
+  function smallPhoto() {
+    if (!photoCanvas) return '';
+    try {
+      var k = Math.min(1, 1280 / Math.max(photoCanvas.width, photoCanvas.height));
+      var c = document.createElement('canvas');
+      c.width = Math.round(photoCanvas.width * k);
+      c.height = Math.round(photoCanvas.height * k);
+      c.getContext('2d').drawImage(photoCanvas, 0, 0, c.width, c.height);
+      return c.toDataURL('image/jpeg', 0.72);
+    } catch (e) {
+      return '';
+    }
   }
 
   /* ---------- Controls ---------- */

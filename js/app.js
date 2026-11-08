@@ -148,6 +148,11 @@
     resultBox.classList.remove('is-done');
     void resultBox.offsetWidth; // restart the pulse animation
     resultBox.classList.add('is-done');
+    // js/banner-map.js saves the calculation to the member's records.
+    document.dispatchEvent(new CustomEvent('taxcalculated', { detail: {
+      width: width, length: length, signType: fields.signType.value, fontType: fields.fontType.value,
+      area: area, rate: rate, tax: tax
+    } }));
   });
 
   form.addEventListener('reset', function () {

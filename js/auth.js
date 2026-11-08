@@ -63,10 +63,10 @@
     return e;
   }
 
-  function api(action, payload) {
+  function api(action, payload, timeout) {
     if (!config.scriptUrl) return Promise.reject(failure('not_configured'));
     var ctrl = window.AbortController ? new AbortController() : null;
-    var timer = ctrl && setTimeout(function () { ctrl.abort(); }, TIMEOUT);
+    var timer = ctrl && setTimeout(function () { ctrl.abort(); }, timeout || TIMEOUT);
     var url = config.scriptUrl;
     var options = { redirect: 'follow', signal: ctrl ? ctrl.signal : undefined };
     if (action === 'districts') {
@@ -817,6 +817,20 @@
     openAuth('login');
     showAlert(loginForm, 'info', 'session_expired');
   }
+
+  // For other scripts (js/banner-map.js): calls that act as the signed-in member.
+  window.SignageAuth = {
+    customer: function () { var s = session(); return s ? s.customer : null; },
+    call: function (action, payload, timeout) {
+      var s = session();
+      if (!s || !s.token) return Promise.reject(failure(s ? 'bad_request' : 'session_expired'));
+      return api(action, Object.assign({ id: s.customer.id, token: s.token }, payload), timeout)
+        .catch(function (err) {
+          if (err.code === 'session_expired') sessionExpired();
+          throw err;
+        });
+    }
+  };
 
   /* ---------- Profile: details and password ---------- */
   var profileEl = $('profile');

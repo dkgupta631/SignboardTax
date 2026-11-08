@@ -24,14 +24,14 @@ Every page can be read without an account, but scanning a sign, calculating the 
 
 1. Open the SignageTax spreadsheet and choose **Extensions → Apps Script**.
 2. Replace the editor's contents with `google-apps-script/Code.gs` and save.
-3. Choose the `setup` function and press **Run**. Approve the permission prompt. This writes the column headings to the `Customer` tab.
+3. Choose the `setup` function and press **Run**. Approve the permission prompt, which asks for Sheets and Drive. This writes the column headings to the `Customer` and `banners` tabs and creates the Drive folder for scan photos.
 4. Choose **Deploy → New deployment**, pick the type **Web app**, and set:
    - **Execute as:** Me
    - **Who has access:** Anyone
 5. Press **Deploy** and copy the web app URL that ends in `/exec`.
 6. Paste that URL into `scriptUrl` in `js/auth-config.js`, then commit and push.
 
-After changing `Code.gs` later, use **Deploy → Manage deployments → Edit → Version: New version**. This keeps the same URL.
+After changing `Code.gs` later, use **Deploy → Manage deployments → Edit → Version: New version**. This keeps the same URL. If the new code uses a Google service the old one did not (sign records added Drive), run `setup` once more first and approve the new permission.
 
 ### How it works
 
@@ -42,6 +42,7 @@ After changing `Code.gs` later, use **Deploy → Manage deployments → Edit →
 | Forgot password | Shows the stored password for a registered email or phone number |
 | My profile | Shows and updates the member's office, name, phone, email and address. A duplicate email or phone is rejected |
 | Change password | Checks the current password, saves the new one, and signs out the member's other devices |
+| Save sign | Adds a row to `banners` for the member's sign, or updates their own earlier row. See [Sign records](#sign-records) |
 
 Signing in returns a session token, stored in the `Session Token` column. The profile actions only work with a matching token, so nobody can edit another member's details. Changing the password issues a new token.
 
@@ -52,6 +53,20 @@ Signing in returns a session token, stored in the `Session Token` column. The pr
 - Passwords are stored as plain text in the sheet, because the forgot-password screen has to show them. Anyone with access to the sheet can read them.
 - Anyone who knows a member's email or phone number can see that member's password on the forgot-password screen.
 - The members-only lock runs in the browser. Someone who knows the PDF's direct address, or edits the page in developer tools, can still get past it.
+
+## Sign records
+
+Every sign a member measures is saved to the `banners` tab with their Customer ID.
+
+1. After a successful scan, the record is saved at once with the size and the scan photo, and a map opens. It starts at the phone's GPS position.
+2. The member moves the map until the fixed pin sits on the sign, adds a shop name or note if they like, and presses **Confirm location**. The same row gets the latitude, longitude, a Google Maps link and the street address.
+3. When they press **Calculate**, the row gets the sign type, font type, rate and tax.
+
+A sign typed in by hand is saved when it is calculated, and can be pinned from the **Sign location** card above the form. Typing a different width or length starts a new row; **Start again** also starts a new one. The location must be pinned at street level (zoom 16 or closer).
+
+The `banners` columns are Banner ID, Saved At, Updated At, Customer ID, Customer Name, Phone, District Code, District Name, Width (cm), Length (cm), Area (sq cm), Sign Type, Font Type, Rate (baht / 500 sq cm), Tax (baht / year), Measured By (Scan, Scan (edited) or Typed in), Latitude, Longitude, Google Maps, Address, Note, Photo. Sizes, rate and tax are stored as numbers. The script works out the tax itself rather than trusting the browser. Photos go to the **Signage Tax banner photos** folder in the Drive of the account that deployed the script, and stay private to that account.
+
+The map is Esri's World Street Map, with Esri satellite imagery, shown with Leaflet (`assets/vendor/leaflet`, loaded only when the map opens). Addresses come from OpenStreetMap's Nominatim, in Thai. Neither needs an API key. An in-page Google map would need a Google Maps API key with billing turned on.
 
 ## Project layout
 
@@ -66,6 +81,7 @@ Signing in returns a session token, stored in the `Session Token` column. The pr
 | `google-apps-script/Code.gs` | Backend that reads and writes the Google Sheet |
 | `js/mobile-app.js` | Screen switching for the header menu and phone tab bar, install prompt |
 | `js/scanner.js`, `js/sign-detect.js`, `js/scan-measure.js` | Sign scanner: camera, automatic outline and edge snapping, corner marking with a magnifier, size measurement |
+| `js/banner-map.js`, `css/banner-map.css` | Sign location map and the sign records saved to the `banners` tab |
 | `sw.js`, `manifest.webmanifest` | Offline support and home-screen install |
 | `assets/` | Images, logo, fonts, and the P.P.1 form PDF |
 

@@ -1,0 +1,126 @@
+/* Sign location: the card above the calculator and the map dialog (js/banner-map.js). */
+
+/* ---------- Card ---------- */
+.pin-card{display:flex;align-items:center;gap:14px;margin:0 0 22px;padding:14px 16px;border-radius:16px;background:#f6fbf9;border:1.5px dashed var(--line);transition:background .25s,border-color .25s}
+.pin-card__icon{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:13px;background:#fff;color:var(--teal-500);box-shadow:0 2px 8px rgba(34,82,90,.08)}
+.pin-card__icon .i{width:24px;height:24px}
+.pin-card__body{flex:1;min-width:0;line-height:1.45}
+.pin-card__body strong{display:block;color:var(--teal);font-size:15px;font-weight:600}
+.pin-card__text{color:var(--muted);font-size:14px;word-break:break-word}
+.pin-card__coords{display:block;color:#7c8c8e;font-size:12.5px;font-variant-numeric:tabular-nums;word-break:break-word}
+.pin-card__status{margin-top:4px;font-size:13px;font-weight:500;line-height:1.45}
+.pin-card__status::before{content:"";display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:currentColor;vertical-align:1px}
+.pin-card__status.is-saving{color:var(--blue)}
+.pin-card__status.is-saving::before{animation:pinPulse 1s ease-in-out infinite}
+.pin-card__status.is-saved{color:#1f8a6c}
+.pin-card__status.is-failed{color:#b13030}
+.pin-card__retry{margin-left:10px;border:0;background:none;padding:0;color:inherit;font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
+.pin-card__actions{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px 12px;flex:none}
+.pin-card__btn{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--teal);background:#fff;color:var(--teal);padding:8px 16px 8px 12px;border-radius:999px;font-size:14.5px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.pin-card__btn .i{width:18px;height:18px}
+.pin-card__btn:hover{background:var(--teal);color:#fff;box-shadow:0 6px 14px rgba(34,82,90,.22)}
+.pin-card__link{display:inline-flex;align-items:center;gap:5px;color:var(--blue);font-size:13.5px;font-weight:500;text-decoration:none;white-space:nowrap}
+.pin-card__link .i{width:15px;height:15px}
+.pin-card__link:hover{text-decoration:underline}
+/* A scanned sign still waiting for its location */
+.pin-card[data-state=needed]{background:#fff8ef;border-color:#f5c48f;border-style:solid}
+.pin-card[data-state=needed] .pin-card__icon{color:var(--orange)}
+.pin-card[data-state=needed] .pin-card__text{color:#9a5714;font-weight:500}
+.pin-card[data-state=needed] .pin-card__btn{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 6px 14px rgba(242,140,56,.3);animation:pinNudge 2.4s ease-in-out infinite}
+.pin-card[data-state=pinned]{background:#f1faf6;border-style:solid;border-color:#bfe5d6}
+.pin-card[data-state=pinned] .pin-card__icon{background:var(--green);color:#fff}
+.pin-card[data-state=pinned] .pin-card__text{color:var(--ink)}
+@media (max-width:640px){
+  .pin-card{flex-wrap:wrap;gap:10px 12px;padding:12px}
+  .pin-card__icon{width:40px;height:40px}
+  .pin-card__actions{width:100%;justify-content:space-between}
+  .pin-card__btn{flex:1;justify-content:center}
+}
+
+/* Scanner success screen: what happens next */
+.scan__next{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.1);color:#d5f3e8;font-size:14px}
+.scan__next .i{width:17px;height:17px;color:#8fe3cb}
+
+/* ---------- Map dialog ---------- */
+.pinmap{position:fixed;inset:0;z-index:8400;display:grid;place-items:center;padding:24px}
+.pinmap[hidden]{display:none}
+.pinmap__backdrop{position:absolute;inset:0;background:rgba(7,31,71,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s}
+.pinmap.is-open .pinmap__backdrop{opacity:1}
+.pinmap__panel{position:relative;display:flex;flex-direction:column;width:min(900px,100%);height:min(720px,calc(100vh - 48px));height:min(720px,calc(100dvh - 48px));border-radius:24px;background:#fff;box-shadow:0 30px 80px rgba(7,31,71,.35);overflow:hidden;opacity:0;transform:translateY(26px) scale(.98);transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.pinmap.is-open .pinmap__panel{opacity:1;transform:none}
+.pinmap__panel:focus{outline:0}
+.pinmap__panel.is-shaking{animation:authShake .45s ease}
+.pinmap__head{position:relative;isolation:isolate;display:flex;align-items:center;gap:14px;padding:18px 64px 18px 22px;color:#fff;background:linear-gradient(120deg,var(--gov-navy) 0%,var(--gov-navy-2) 50%,var(--teal-900) 100%);overflow:hidden}
+.pinmap__head::before{content:"";position:absolute;z-index:-1;width:240px;height:240px;right:-70px;top:-130px;border-radius:50%;border:38px solid rgba(255,255,255,.06);box-shadow:0 0 0 26px rgba(224,172,31,.07)}
+.pinmap__badge{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--gov-gold),#f2c94c);color:var(--gov-navy);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.pinmap__badge .i{width:24px;height:24px}
+.pinmap__heading{min-width:0}
+.pinmap__heading h2{font-size:20px;font-weight:700;line-height:1.3}
+.pinmap__heading p{color:#c9d6ea;font-size:13.5px;line-height:1.45}
+.pinmap__close{position:absolute;top:50%;right:14px;display:grid;place-items:center;width:38px;height:38px;margin-top:-19px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;transition:background .2s,transform .25s}
+.pinmap__close .i{width:20px;height:20px}
+.pinmap__close:hover{background:rgba(255,255,255,.24);transform:rotate(90deg)}
+
+.pinmap__stage{position:relative;flex:1;min-height:200px;background:#dfe9e6}
+.pinmap__map{position:absolute;inset:0}
+.pinmap .leaflet-container{font:inherit;background:#dfe9e6}
+/* Tiles overlap by half a pixel so no hairline seams show between them on sharp screens. */
+.pinmap .leaflet-container img.leaflet-tile{mix-blend-mode:normal;width:256.5px!important;height:256.5px!important}
+.pinmap .leaflet-control-attribution{font-size:10.5px;line-height:1.5}
+.pinmap .leaflet-bar{border:0;box-shadow:0 4px 14px rgba(16,40,60,.22);border-radius:12px;overflow:hidden}
+.pinmap .leaflet-bar a{width:40px;height:40px;line-height:40px;font-size:20px;color:var(--teal)}
+/* The pin stays in the middle; the member moves the map under it. */
+.pinmap__pin{position:absolute;left:50%;top:50%;z-index:500;width:40px;height:52px;margin:-52px 0 0 -20px;pointer-events:none;transition:transform .2s ease}
+.pinmap__pin svg{display:block;width:100%;height:100%;filter:drop-shadow(0 4px 5px rgba(0,0,0,.35))}
+.pinmap__pin path{fill:#e5483b;stroke:#fff;stroke-width:2.5}
+.pinmap__pin circle{fill:#fff}
+.pinmap__pin span{position:absolute;left:50%;bottom:-5px;width:12px;height:5px;margin-left:-6px;border-radius:50%;background:rgba(0,0,0,.35);transition:transform .2s,opacity .2s}
+.pinmap__stage.is-moving .pinmap__pin{transform:translateY(-12px)}
+.pinmap__stage.is-moving .pinmap__pin span{transform:translateY(12px) scale(.7);opacity:.6}
+.pinmap__tools{position:absolute;top:12px;right:12px;z-index:600;display:flex;gap:8px}
+.pinmap__tool{display:inline-flex;align-items:center;gap:6px;height:40px;border:0;border-radius:12px;background:#fff;color:var(--teal);padding:0 14px 0 11px;font-size:14px;font-weight:600;box-shadow:0 4px 14px rgba(16,40,60,.22);cursor:pointer;transition:background .2s,color .2s}
+.pinmap__tool .i{width:20px;height:20px}
+.pinmap__tool--round{width:40px;padding:0;justify-content:center;border-radius:50%;color:#1a73e8}
+.pinmap__tool[aria-pressed=true]{background:var(--teal);color:#fff}
+.pinmap__toast{position:absolute;left:50%;top:12px;z-index:600;max-width:calc(100% - 140px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:12px;background:rgba(16,39,43,.9);color:#fff;font-size:13.5px;line-height:1.4;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.pinmap__toast.is-busy::before{content:"";flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:pinSpin .8s linear infinite}
+
+.pinmap__foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 18px;align-items:end;padding:16px 22px 18px;border-top:1px solid #e3ecee;background:#fff}
+.pinmap__place{display:flex;align-items:flex-start;gap:10px;grid-column:1/-1;min-width:0}
+.pinmap__place>.i{width:22px;height:22px;margin-top:1px;color:#e5483b}
+.pinmap__place div{min-width:0}
+.pinmap__place strong{display:block;font-size:14.5px;font-weight:600;line-height:1.45;color:var(--ink);word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pinmap__place strong.is-loading{color:var(--muted);font-weight:500}
+.pinmap__place strong.is-hint{color:#9a5714;font-weight:500}
+.pinmap__place small{color:#7c8c8e;font-size:12.5px;font-variant-numeric:tabular-nums}
+.pinmap__note{display:grid;gap:5px;font-size:13.5px;color:var(--muted)}
+.pinmap__note input{width:100%;min-width:0;border:1.5px solid #cfdde0;border-radius:11px;padding:9px 12px;font-size:15px;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s}
+.pinmap__note input:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 4px rgba(53,173,142,.15)}
+.pinmap__error{grid-column:1/-1;order:3;padding:9px 12px;border-radius:10px;background:#fff1f1;border:1px solid #f0c6c6;color:#b13030;font-size:13.5px}
+.pinmap__actions{display:flex;justify-content:flex-end;gap:10px}
+.pinmap__actions .btn{padding:11px 20px;border-radius:11px;font-size:15px;white-space:nowrap}
+.pinmap__actions .btn--primary{gap:8px}
+.pinmap__actions .btn--primary .i{width:19px;height:19px}
+.pinmap__actions .btn:disabled{opacity:.6;cursor:wait}
+
+@media (max-width:760px){
+  .pinmap{padding:0}
+  .pinmap__panel{width:100%;height:100%;border-radius:0}
+  .pinmap__head{padding:calc(12px + env(safe-area-inset-top)) 60px 12px 14px;gap:11px}
+  .pinmap__badge{width:40px;height:40px;border-radius:12px}
+  .pinmap__heading h2{font-size:17px}
+  .pinmap__heading p{font-size:12.5px}
+  .pinmap__foot{grid-template-columns:1fr;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom))}
+  .pinmap__actions .btn{padding-inline:16px}
+  .pinmap__actions .btn--primary{flex:1}
+  .pinmap__tool span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .pinmap__tool{width:40px;padding:0;justify-content:center}
+  .pinmap__toast{top:auto;bottom:12px;max-width:calc(100% - 80px)}
+}
+
+@keyframes pinSpin{to{transform:rotate(360deg)}}
+@keyframes pinPulse{50%{opacity:.3}}
+@keyframes pinNudge{0%,70%,100%{transform:none}80%{transform:translateY(-3px)}90%{transform:translateY(1px)}}
+@media (prefers-reduced-motion:reduce){
+  .pinmap,.pinmap *,.pin-card,.pin-card *,.pin-card *::before{animation:none!important;transition:none!important}
+}

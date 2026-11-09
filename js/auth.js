@@ -60,6 +60,7 @@
     var e = new Error(code);
     e.code = code;
     e.fields = data && data.fields;
+    e.data = data || {};
     return e;
   }
 
@@ -217,7 +218,7 @@
   // Shows a server error on the form and marks the fields it names. `fields` maps
   // server field names (districtCode, phone, email, ...) to that form's inputs.
   var FIELD_KEYS = { districtCode: 'district', name: 'name', phone: 'phone', email: 'email', password: 'password', newPassword: 'password' };
-  var CODE_FIELDS = { email_taken: 'email', phone_taken: 'phone', wrong_password: 'currentPassword', same_password: 'newPassword' };
+  var CODE_FIELDS = { office_full: 'districtCode', email_taken: 'email', phone_taken: 'phone', wrong_password: 'currentPassword', same_password: 'newPassword' };
   function handleFailure(form, err, fields) {
     fields = fields || {};
     var codeField = fields[CODE_FIELDS[err.code]];
@@ -334,6 +335,7 @@
       })
       .catch(function (err) {
         handleFailure(regForm, err, { districtCode: regCombo.input, name: name, phone: phone, email: email, password: regPass });
+        if (err.code === 'office_full') showLimit(regCombo, err.data);
       })
       .finally(function () { setBusy(regForm, false); });
   });
@@ -491,6 +493,12 @@
       if (d) setError(input, '');
     }
 
+    // A choice made by the member (not one filled in by code), which the form may want to check.
+    function pick(d) {
+      select(d);
+      if (self.onPick) self.onPick(d);
+    }
+
     // Selects by code, even before the office list has loaded (the profile form opens with one).
     function selectCode(code, name) {
       if (!code) { select(null); return; }
@@ -514,7 +522,7 @@
         scrollActive();
       } else if (e.key === 'Enter' && isOpen()) {
         e.preventDefault();
-        if (active >= 0 && matches[active]) { select(matches[active]); closeList(); }
+        if (active >= 0 && matches[active]) { pick(matches[active]); closeList(); }
       } else if (e.key === 'Escape' && isOpen()) {
         e.preventDefault();
         closeList();
@@ -528,7 +536,7 @@
           // A typed code that exactly matches counts as a choice.
           var typed = input.value.trim();
           for (var i = 0; i < districts.length; i++) {
-            if (districts[i][0] === typed) { select(districts[i]); break; }
+            if (districts[i][0] === typed) { pick(districts[i]); break; }
           }
         }
       }, 120);
@@ -537,7 +545,7 @@
     list.addEventListener('click', function (e) {
       var opt = e.target.closest('.combo__opt');
       if (!opt) return;
-      select(matches[+opt.dataset.i]);
+      pick(matches[+opt.dataset.i]);
       closeList();
     });
     list.addEventListener('mousemove', function (e) {
@@ -639,6 +647,60 @@
       try { document.execCommand('copy'); done(); } catch (err) { /* left selected for manual copy */ }
     }
   });
+
+  /* ---------- Office limit: 5 members per registration office code ---------- */
+  var limitEl = $('officeLimit');
+  var limitCombo = null;
+  var limitBack = null;
+
+  function showLimit(combo, office) {
+    var d = office && office.districtCode ? [office.districtCode, office.districtName] : combo && combo.selected;
+    $('limitOffice').textContent = d ? d[0] + (d[1] ? ' · ' + d[1] : '') : '';
+    limitCombo = combo;
+    limitBack = document.activeElement;
+    clearTimeout(limitEl.closeTimer);
+    limitEl.hidden = false;
+    requestAnimationFrame(function () { limitEl.classList.add('is-open'); });
+    limitEl.querySelector('.limit__panel').focus({ preventScroll: true });
+  }
+
+  function hideLimit(chooseAnother) {
+    if (limitEl.hidden) return;
+    limitEl.classList.remove('is-open');
+    limitEl.closeTimer = setTimeout(function () { limitEl.hidden = true; }, reduceMotion ? 0 : 280);
+    if (chooseAnother && limitCombo) {
+      limitCombo.select(null);
+      limitCombo.input.focus({ preventScroll: true });
+    } else if (limitBack && document.contains(limitBack)) {
+      limitBack.focus({ preventScroll: true });
+    }
+  }
+
+  limitEl.addEventListener('click', function (e) {
+    if (e.target.closest('[data-limit-close]')) hideLimit(false);
+  });
+  $('limitOther').addEventListener('click', function () { hideLimit(true); });
+  // Capture phase, so Escape closes only this popup and not the sign-in screen under it.
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !limitEl.hidden && limitEl.classList.contains('is-open')) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      hideLimit(false);
+    }
+  }, true);
+
+  // Warn as soon as a full office is picked, before the rest of the form is filled in.
+  function watchOffice(combo, currentCode) {
+    combo.onPick = function (d) {
+      if (!d || d[0] === currentCode()) return;
+      api('officeStatus', { districtCode: d[0] }).then(function (res) {
+        if (!res.full || combo.selected !== d) return;
+        setError(combo.input, 'office_full');
+        showLimit(combo, { districtCode: d[0], districtName: d[1] });
+      }, function () { /* the server checks again on submit */ });
+    };
+  }
+  watchOffice(regCombo, function () { return ''; });
 
   /* ---------- Session ---------- */
   var authEl = $('auth');
@@ -837,6 +899,7 @@
   var profileForm = $('profileForm');
   var passwordForm = $('passwordForm');
   var profCombo = districtCombo($('profDistrictCombo'), $('profDistrictStatus'), 'pdopt-');
+  watchOffice(profCombo, function () { var s = session(); return s ? String(s.customer.districtCode) : ''; });
   var profFields = { districtCode: profCombo.input, name: $('profName'), phone: $('profPhone'), email: $('profEmail') };
   var passFields = { currentPassword: $('curPass'), newPassword: $('newPass') };
   var profTabs = { info: $('ptabInfo'), password: $('ptabPassword') };
@@ -1012,6 +1075,7 @@
         if (err.code === 'session_expired') { sessionExpired(); return; }
         if (err.code === 'bad_request') { backendOutdated(profileForm); return; }
         handleFailure(profileForm, err, profFields);
+        if (err.code === 'office_full') showLimit(profCombo, err.data);
       })
       .finally(function () { setBusy(profileForm, false); });
   });

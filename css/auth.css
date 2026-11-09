@@ -439,8 +439,81 @@ html.profile-on,html.profile-on body{overflow:hidden}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes profileLoad{from{background-position:-40% 0}to{background-position:140% 0}}
+/* ==========================================================================
+   Office limit popup: shown when a registration office already has 5 members
+   ========================================================================== */
+.limit{position:fixed;inset:0;z-index:9600;display:grid;place-items:center;padding:20px}
+.limit[hidden]{display:none}
+.limit__backdrop{position:absolute;inset:0;background:rgba(7,31,71,.6);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;transition:opacity .28s}
+.limit.is-open .limit__backdrop{opacity:1}
+.limit__panel{position:relative;display:flex;flex-direction:column;width:min(580px,100%);max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);border-radius:22px;background:#fff;box-shadow:0 30px 80px rgba(7,31,71,.4);overflow:hidden;opacity:0;transform:translateY(22px) scale(.97);transition:opacity .28s,transform .38s cubic-bezier(.2,.8,.2,1)}
+.limit.is-open .limit__panel{opacity:1;transform:none}
+.limit__panel:focus{outline:0}
+/* Official look: navy band with a thin gold rule underneath */
+.limit__head{position:relative;isolation:isolate;display:flex;align-items:center;gap:16px;padding:22px 64px 22px 24px;color:#fff;background:linear-gradient(120deg,var(--gov-navy-deep) 0%,var(--gov-navy) 45%,var(--gov-navy-2) 100%);border-bottom:4px solid var(--gov-gold);overflow:hidden}
+.limit__head::before{content:"";position:absolute;z-index:-1;width:260px;height:260px;right:-80px;top:-140px;border-radius:50%;border:40px solid rgba(255,255,255,.05);box-shadow:0 0 0 28px rgba(224,172,31,.08)}
+.limit__emblem{display:grid;place-items:center;flex:none;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a8,var(--gov-gold) 70%);color:var(--gov-navy);box-shadow:0 0 0 4px rgba(224,172,31,.25),0 8px 18px rgba(0,0,0,.3)}
+.limit__emblem .i{width:30px;height:30px}
+.limit__kicker{color:#ffd76a;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.limit__head h2{font-size:22px;font-weight:700;line-height:1.3}
+.limit__close{position:absolute;top:50%;right:16px;display:grid;place-items:center;width:38px;height:38px;margin-top:-19px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;transition:background .2s,transform .25s}
+.limit__close .i{width:20px;height:20px}
+.limit__close:hover{background:rgba(255,255,255,.24);transform:rotate(90deg)}
+
+.limit__body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:20px 24px 6px}
+.limit__office{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:#f4f7fb;border:1px solid #dde6ef}
+.limit__office>.i{width:24px;height:24px;color:var(--gov-navy-2)}
+.limit__office div{flex:1;min-width:0;line-height:1.35}
+.limit__office small{display:block;color:var(--muted);font-size:12.5px}
+.limit__office strong{display:block;color:var(--gov-navy);font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.limit__count{display:flex;flex-direction:column;align-items:center;flex:none;padding:5px 12px;border-radius:12px;background:var(--danger-soft);border:1px solid #f3c7c7;color:var(--danger);line-height:1.15}
+.limit__count b{font-size:18px}
+.limit__count small{font-size:11.5px;font-weight:600}
+.limit__text{margin-top:14px;padding:12px 14px 12px 16px;border-left:4px solid var(--gov-gold);border-radius:4px 12px 12px 4px;background:var(--gov-gold-soft);color:#4a3b0f;font-size:15px;line-height:1.65}
+.limit__sub{display:flex;align-items:center;gap:12px;margin:18px 0 12px;color:var(--gov-navy);font-size:15px;font-weight:600}
+.limit__sub::before,.limit__sub::after{content:"";flex:1;height:1px;background:#e1e8ef}
+.limit__lines{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.limit__line{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px 12px;border-radius:16px;border:1.5px solid #d5ecd0;background:linear-gradient(180deg,#f6fff3,#fff);color:var(--ink);text-align:center;text-decoration:none;transition:border-color .2s,box-shadow .2s,transform .2s}
+.limit__line:hover{border-color:#06c755;box-shadow:0 10px 22px rgba(6,199,85,.15);transform:translateY(-2px)}
+.limit__qr{width:128px;height:128px;padding:6px;border-radius:12px;background:#fff;border:1px solid #e3ece1;object-fit:contain}
+.limit__id{display:inline-flex;align-items:center;gap:6px;color:#06a347;font-size:16px;font-weight:700}
+.limit__id img{width:22px;height:22px;padding:3px;border-radius:6px;background:#06c755}
+.limit__line small{color:var(--muted);font-size:12.5px;line-height:1.4}
+.limit__calls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.limit__call{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:linear-gradient(100deg,var(--green),var(--teal-900));color:#fff;text-decoration:none;box-shadow:0 6px 16px rgba(34,82,90,.22);transition:box-shadow .2s,transform .2s}
+.limit__call:hover{box-shadow:0 10px 22px rgba(34,82,90,.32);transform:translateY(-2px)}
+.limit__call>.i{flex:none;width:34px;height:34px;padding:7px;border-radius:50%;background:rgba(255,255,255,.18)}
+.limit__call span{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.limit__call small{font-size:12px;opacity:.85}
+.limit__call strong{font-size:15.5px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.limit__foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px 20px;border-top:1px solid #edf2f5;margin-top:14px}
+.limit__foot .btn{padding:11px 22px;border-radius:11px;font-size:15px;white-space:nowrap}
+.limit__foot .btn--primary{background:linear-gradient(100deg,var(--gov-navy-2),var(--gov-navy));min-width:120px}
+@media (max-width:560px){
+  .limit{padding:10px;align-items:end}
+  .limit__panel{max-height:calc(100dvh - 20px);border-radius:20px}
+  .limit__head{padding:16px 58px 16px 16px;gap:12px}
+  .limit__emblem{width:46px;height:46px}
+  .limit__emblem .i{width:24px;height:24px}
+  .limit__head h2{font-size:18px}
+  .limit__kicker{font-size:11.5px}
+  .limit__body{padding:14px 14px 4px}
+  .limit__text{font-size:14px}
+  .limit__lines,.limit__calls{gap:8px}
+  .limit__qr{width:104px;height:104px}
+  .limit__id{font-size:14.5px}
+  .limit__call{padding:9px 10px;gap:8px}
+  .limit__call>.i{width:30px;height:30px;padding:6px}
+  .limit__call strong{font-size:14px}
+  .limit__foot{padding:12px 14px 14px;margin-top:10px}
+  .limit__foot .btn{flex:1;padding-inline:12px}
+}
+@media (max-width:360px){
+  .limit__calls{grid-template-columns:1fr}
+}
+
 @media (prefers-reduced-motion:reduce){
-  .auth *,.auth *::before,.auth *::after,.user *,.profile,.profile *,.profile *::before{animation:none!important;transition:none!important}
+  .auth *,.auth *::before,.auth *::after,.user *,.profile,.profile *,.profile *::before,.limit,.limit *{animation:none!important;transition:none!important}
   html.auth-leaving .auth{animation:none}
   .auth__check circle,.auth__check path{stroke-dashoffset:0}
 }

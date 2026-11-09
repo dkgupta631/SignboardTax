@@ -10,6 +10,7 @@
  *   POST {action:'profile', id, token}      -> the signed-in member's details
  *   POST {action:'updateProfile', id, token, districtCode, name, phone, email, address}
  *   POST {action:'changePassword', id, token, currentPassword, newPassword}
+ *   POST {action:'officeStatus', districtCode} -> whether that office still takes new members
  *   POST {action:'saveBanner', id, token, bannerId?, width, length, signType, fontType,
  *         measuredBy, lat, lng, address, note, photo?} -> new or updated row in "banners"
  * Sign in returns a session token, kept in the Customer sheet, that the profile
@@ -21,6 +22,7 @@ var DISTRICT_SHEET = 'District_code';
 var DISTRICT_FIRST_ROW = 4;       // rows 1-3 are the title and the column headings
 var CUSTOMER_SHEET = 'Customer';
 var TIME_ZONE = 'Asia/Bangkok';
+var MAX_PER_OFFICE = 5;           // members per registration office code; more need staff help
 var HEADERS = ['Customer ID', 'Registered At', 'District Code', 'District Name', 'Name',
   'Phone', 'Email', 'Password', 'Address', 'Last Login', 'Session Token', 'Updated At'];
 var COL = { id: 0, registered: 1, districtCode: 2, districtName: 3, name: 4,
@@ -78,6 +80,7 @@ function doPost(e) {
     if (body.action === 'updateProfile') return updateProfile(body);
     if (body.action === 'changePassword') return changePassword(body);
     if (body.action === 'saveBanner') return saveBanner(body);
+    if (body.action === 'officeStatus') return officeStatus(body);
     if (body.action === 'districts') return { ok: true, districts: getDistricts() };
     return fail('bad_request');
   });
@@ -113,6 +116,27 @@ function readDetails(body) {
 
 function isPassword(value) { return value.length >= 6 && value.length <= 64; }
 
+/** How many members (other than the row at skipIndex) registered under an office code. */
+function officeCount(rows, code, skipIndex) {
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    if (i !== skipIndex && String(rows[i][COL.districtCode]) === String(code)) n++;
+  }
+  return n;
+}
+
+function officeFull(district) {
+  return fail('office_full', { limit: MAX_PER_OFFICE, districtCode: district.code, districtName: district.name });
+}
+
+/** Lets the form warn as soon as a full office is picked; register() still enforces it. */
+function officeStatus(body) {
+  var district = findDistrict(clean(body.districtCode, 20));
+  if (!district) return fail('invalid', { fields: ['districtCode'] });
+  var full = officeCount(customerRows(customerSheet()), district.code, -1) >= MAX_PER_OFFICE;
+  return { ok: true, full: full, limit: MAX_PER_OFFICE };
+}
+
 /** Returns 'email_taken' or 'phone_taken' when another row already uses them. */
 function duplicateOf(rows, data, skipIndex) {
   for (var i = 0; i < rows.length; i++) {
@@ -135,6 +159,7 @@ function register(body) {
   try {
     var sheet = customerSheet();
     var rows = customerRows(sheet);
+    if (officeCount(rows, district.code, -1) >= MAX_PER_OFFICE) return officeFull(district);
     var taken = duplicateOf(rows, data, -1);
     if (taken) return fail(taken);
 
@@ -190,6 +215,11 @@ function updateProfile(body) {
   try {
     var match = authorize(body);
     if (!match) return fail('session_expired');
+    // Moving to another office counts against that office's limit too.
+    if (data.district.code !== String(match.row[COL.districtCode]) &&
+        officeCount(match.rows, data.district.code, match.rowNumber - 2) >= MAX_PER_OFFICE) {
+      return officeFull(data.district);
+    }
     var taken = duplicateOf(match.rows, data, match.rowNumber - 2);
     if (taken) return fail(taken);
     setCell(match, COL.districtCode, data.district.code);

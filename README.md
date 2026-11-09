@@ -37,12 +37,14 @@ After changing `Code.gs` later, use **Deploy → Manage deployments → Edit →
 
 | Action | What the script does |
 | --- | --- |
-| Register | Checks the district code exists, rejects a duplicate email or phone, and appends a row to `Customer` |
+| Register | Checks the district code exists, allows at most 5 members per registration office code, rejects a duplicate email or phone, and appends a row to `Customer` |
 | Sign in | Matches the email or phone number with the password, and records the time in `Last Login` |
 | Forgot password | Shows the stored password for a registered email or phone number |
 | My profile | Shows and updates the member's office, name, phone, email and address. A duplicate email or phone is rejected |
 | Change password | Checks the current password, saves the new one, and signs out the member's other devices |
 | Save sign | Adds a row to `banners` for the member's sign, or updates their own earlier row. See [Sign records](#sign-records) |
+
+Each registration office code takes at most 5 members (`MAX_PER_OFFICE` in `Code.gs`). Picking a full office on the registration or profile form, or submitting one, opens a notice with both LINE QR codes and both phone numbers so the customer can contact staff. Moving a profile to a full office is refused the same way.
 
 Signing in returns a session token, stored in the `Session Token` column. The profile actions only work with a matching token, so nobody can edit another member's details. Changing the password issues a new token.
 
